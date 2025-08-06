@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Event Create — Weekly Date & Time Slots with Navigation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    table {
+      user-select: none;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 900px;
+      margin: 20px auto;
+    }
+    th, td {
+      border: 1px solid #dee2e6;
+      text-align: center;
+      padding: 8px;
+      cursor: pointer;
+      vertical-align: middle;
+      height: 60px;
+      transition: background-color 0.3s ease;
+    }
+    td:hover {
+      background-color: #e9ecef;
+    }
+    td.selected {
+      background-color: #0d6efd;
+      color: white;
+    }
+    th.time-slot {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      cursor: default;
+    }
+    .container {
+      max-width: 900px;
+      margin-top: 40px;
+    }
+    .nav-buttons {
+      max-width: 900px;
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h3 class="mb-4 text-center">Create Event — Select Date & Time Slots</h3>
+
+  <div class="nav-buttons">
+    <button class="btn btn-outline-primary" id="prevWeekBtn">← Previous Week</button>
+    <button class="btn btn-outline-primary" id="nextWeekBtn">Next Week →</button>
+  </div>
+
+  <form id="eventForm">
+    <div class="mb-3">
+      <label for="eventName" class="form-label">Event Name *</label>
+      <input type="text" id="eventName" class="form-control" placeholder="Enter event name" required />
+    </div>
+    <div class="mb-3">
+      <label for="eventDesc" class="form-label">Description</label>
+      <textarea id="eventDesc" class="form-control" rows="3" placeholder="Optional description"></textarea>
+    </div>
+
+    <table id="calendarGrid" class="table table-bordered">
+      <thead>
+        <tr id="calendarHeader">
+          <th class="time-slot">Time / Date</th>
+          <!-- Dates will be inserted here -->
+        </tr>
+      </thead>
+      <tbody id="calendarBody">
+        <!-- Time slots rows will be inserted here -->
+      </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+      <button type="submit" class="btn btn-primary">Create Event(s)</button>
+    </div>
+  </form>
+</div>
+<div id="csrf" th:attr="csrfToken=${_csrf.token}, csrfHeader=${_csrf.headerName}">
+</div>
+<script>
+  const calendarHeader = document.getElementById('calendarHeader');
+  const calendarBody = document.getElementById('calendarBody');
+  const daysCount = 7; // Show full week
+  const timeSlots = ['09:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00'];
+
+  // Calculate Monday of the current week (week starts Monday)
+  function getMonday(d) {
+    const date = new Date(d);
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day; // Sunday=0 → Monday before
+    date.setDate(date.getDate() + diff);
+    return date;
+  }
+
+  // Global variable for current week start date
+  let currentWeekStart = getMonday(new Date());
+
+  function renderCalendar(weekStart) {
+    calendarHeader.innerHTML = '<th class="time-slot">Time / Date</th>';
+    calendarBody.innerHTML = '';
+
+    // Generate header days with date labels
+    for (let i = 0; i < daysCount; i++) {
+      const date = new Date(weekStart);
+      date.setDate(weekStart.getDate() + i);
+      const dayLabel = date.toLocaleDateString(undefined, { weekday: 'short' });
+      const dateLabel = date.toISOString().split('T')[0];
+      const th = document.createElement('th');
+      th.dataset.date = dateLabel;
+      th.innerHTML = `${dayLabel}<br><small>${dateLabel}</small>`;
+      calendarHeader.appendChild(th);
+    }
+
+    // Generate time slot rows
+    timeSlots.forEach(time => {
+      const tr = document.createElement('tr');
+
+      // Time slot label column
+      const th = document.createElement('th');
+      th.classList.add('time-slot');
+      th.textContent = time;
+      tr.appendChild(th);
+
+      // Cells for each date
+      for (let i = 0; i < daysCount; i++) {
+        const date = new Date(weekStart);
+        date.setDate(weekStart.getDate() + i);
+        const dateISO = date.toISOString().split('T')[0];
+
+        const td = document.createElement('td');
+        td.dataset.date = dateISO;
+        td.dataset.time = time;
+        td.title = `${dateISO} ${time}`;
+
+        td.addEventListener('click', () => {
+          td.classList.toggle('selected');
+        });
+
+        tr.appendChild(td);
+      }
+
+      calendarBody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('prevWeekBtn').addEventListener('click', () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    renderCalendar(currentWeekStart);
+  });
+
+  document.getElementById('nextWeekBtn').addEventListener('click', () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    renderCalendar(currentWeekStart);
+  });
+
+  document.getElementById('eventForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const eventName = document.getElementById('eventName').value.trim();
+    const eventDesc = document.getElementById('eventDesc').value.trim();
+
+    if (!eventName) {
+      alert('Please enter an event name.');
+      return;
+    }
+
+    const selectedCells = [...document.querySelectorAll('td.selected')];
+    if (selectedCells.length === 0) {
+      alert('Please select at least one date/time slot.');
+      return;
+    }
+
+    const eventMap = new Map();
+
+    selectedCells.forEach(cell => {
+      const date = cell.dataset.date;
+      const time = cell.dataset.time;
+      const dateTimeSet = new Set();
+      const descriptionSet = new Set();
+      dateTimeSet.add({date, time});
+      descriptionSet.add(eventDesc);
+      if(!eventMap.has(eventName)){
+        eventMap.set(eventName, {
+          descriptionSet,
+          dateTimeSet
+        });
+      }else{
+        event = eventMap.get(eventName);
+        event.descriptionSet.add(eventDesc);
+        event.dateTimeSet.add({date, time});
+      }
+});
+
+    console.log('Events to create:', eventMap);
+const objj = JSON.stringify(Object.fromEntries(eventMap.map(event =>)));
+console.log("obj", objj);
+    fetch('/spring-application-system/test/event-create-page', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        [document.getElementById('csrf').getAttribute('csrfHeader')]: document.getElementById('csrf').getAttribute('csrfToken')
+      },
+    body: objj
+    })
+    .then(response => response.json())
+    .then(result => console.log(result))
+    .catch(error => console.error("Error:", error));
+
+    // Clear form & selections
+    e.target.reset();
+    selectedCells.forEach(cell => cell.classList.remove('selected'));
+  });
+
+  // Initial render of current week
+  renderCalendar(currentWeekStart);
+</script>
+</body>
+</html>
