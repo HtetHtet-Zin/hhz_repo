@@ -6,7 +6,7 @@
  * *************************************************************/
 package com.dat.event.service.impl;
 
-import com.dat.event.config.EventMapper;
+import com.dat.event.config.UniversalMapperConfig;
 import com.dat.event.dto.EventDto;
 import com.dat.event.repository.EventRepository;
 import com.dat.event.service.EventService;
@@ -30,7 +30,7 @@ import java.util.List;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository repository;
-    private final EventMapper eventMapper;
+    private final UniversalMapperConfig eventMapper;
 
     @Override
     public EventDto save(EventDto dto) {

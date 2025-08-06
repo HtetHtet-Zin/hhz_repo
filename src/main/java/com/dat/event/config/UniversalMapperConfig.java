@@ -9,11 +9,12 @@ package com.dat.event.config;
 import com.dat.event.dto.EventDto;
 import com.dat.event.entity.EventEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.MapperConfig;
 
 import java.util.List;
 
 /**
- * EventMapper Class.
+ * UniversalMapperConfig Class.
  * <p>
  * </p>
  *
@@ -21,7 +22,7 @@ import java.util.List;
  */
 
 @Mapper(config = GlobalMapperConfig.class)
-public interface EventMapper {
+public interface UniversalMapperConfig {
 
     EventEntity toEntity(EventDto dto);
 
@@ -30,4 +31,7 @@ public interface EventMapper {
     List<EventDto> toDtoList(List<EventEntity> entityList);
 
     List<EventEntity> toEntityList(List<EventDto> dtoList);
+
 }
+@MapperConfig(componentModel = "spring")
+interface GlobalMapperConfig {}
