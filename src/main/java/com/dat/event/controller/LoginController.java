@@ -5,7 +5,6 @@ import com.dat.event.common.constant.WebUrl;
 import com.dat.event.service.LdapUserService;
 import com.dat.event.service.StaffService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -37,7 +36,6 @@ public class LoginController {
                 return "index";
             }
         }
-        System.out.println("Incorrect Staff ID or Password");
         redirectAttributes.addFlashAttribute("error_message", "Incorrect Staff ID or Password!!!");
         return "redirect:/login";
     }
