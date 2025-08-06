@@ -10,6 +10,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Staff Class.
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 public class StaffEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "staff_id")
     private Long staffId;
 
     private String staffNo;
@@ -38,4 +41,6 @@ public class StaffEntity {
     @Column(name = "admin_flag")
     private Boolean adminFlag;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "staff")
+    private List<EventRegistrationEntity> eventRegistrationEntityList = new ArrayList<>();
 }

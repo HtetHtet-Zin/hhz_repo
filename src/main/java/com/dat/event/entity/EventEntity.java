@@ -10,6 +10,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * EventEntity Class.
@@ -25,6 +27,7 @@ public class EventEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id")
     private Long eventId;
 
     private String eventName;
@@ -32,4 +35,10 @@ public class EventEntity {
     private boolean delFlag;
     private LocalDateTime createdAt;
     private String createdBy;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "event")
+    private List<EventRegistrationEntity> eventRegistrationEntityList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "event")
+    private List<EventScheduleEntity> eventScheduleEntityList = new ArrayList<>();
 }

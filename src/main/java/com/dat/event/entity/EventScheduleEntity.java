@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,22 +25,18 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "tbl_event_schedule")
-public class EventScheduleEntity {
+public class EventScheduleEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("eventId")
-    @JoinColumn(name = "event_id", nullable = false)
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "event_id", referencedColumnName = "event_id")
     private EventEntity event;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("timeSlotId")
-    @JoinColumn(name = "time_slot_id", nullable = false)
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "time_slot_id", referencedColumnName = "time_slot_id")
     private TimeSlotEntity timeSlot;
 
     private LocalDate date;

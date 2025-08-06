@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * EventLeader Class.
  * <p>
@@ -20,22 +22,18 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "tbl_event_registration")
-public class EventRegistrationEntity {
+public class EventRegistrationEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("eventId")
-    @JoinColumn(name = "event_id", nullable = false)
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "event_id", referencedColumnName = "event_id")
     private EventEntity event;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("staffId")
-    @JoinColumn(name = "staff_id", nullable = false)
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "staff_id", referencedColumnName = "staff_id")
     private StaffEntity staff;
 
     private boolean inChargeFlag;
