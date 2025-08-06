@@ -41,7 +41,7 @@ public class LdapUserServiceImpl implements LdapUserService {
 
             DirContext ctx = new InitialDirContext(env);
 
-            String filter = "(sAMAccountName=" + staffID + ")";
+            /*String filter = "(sAMAccountName=" + staffID + ")";
             SearchControls controls = new SearchControls();
             controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
@@ -67,7 +67,7 @@ public class LdapUserServiceImpl implements LdapUserService {
                 }
 
                 System.out.println("------------------------");
-            }
+            }*/
 
             ctx.close();
             return true;

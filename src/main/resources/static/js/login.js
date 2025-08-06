@@ -120,4 +120,42 @@ function createStar() {
 
 setInterval(createStar, 50);
 
+// validation
+/*function validateLoginForm() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    let isValid = 0;
+
+    // Clear previous error messages
+    document.getElementById("username-error").style.display = "none";
+    document.getElementById("password-error").style.display = "none";
+
+    // Check if username is null or whitespace
+    if (!username || username.trim() === "") {
+        document.getElementById("username-error").innerText = "Username cannot be empty.";
+        document.getElementById("username-error").style.display = "block";
+        isValid ++;
+    } else {
+        document.getElementById("username-error").innerText = "";
+    }
+
+    // Check if password is null or whitespace
+    if (!password || password.trim() === "") {
+        document.getElementById("password-error").innerText = "Password cannot be empty.";
+        document.getElementById("password-error").style.display = "block";
+        isValid ++;
+    } else {
+        document.getElementById("password-error").innerText = "";
+    }
+    if (isValid == 0) {
+        return true;
+    };
+    return false;
+}*/
+
+function clearError(errorId) {
+    document.getElementById(errorId).innerText = "";
+    document.getElementById(errorId).style.display = "none";
+}
+
 
