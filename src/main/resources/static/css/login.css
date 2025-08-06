@@ -19,7 +19,7 @@ html, body {
 .left {
     position: relative;
     flex: 1;
-    background: url('/images/gojo.jpg') no-repeat center center;
+    background: url('../images/gojo.jpg') no-repeat center center;
     background-size: cover;
     min-height: 300px;
     overflow: hidden;
