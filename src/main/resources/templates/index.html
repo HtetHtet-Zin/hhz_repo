@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
@@ -54,7 +54,7 @@
           <li><a href="destinations.html">Destinations</a></li>
           <li><a href="tours.html">Tours</a></li>
           <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="blog.html">Blog</a></li>
+          <li><a th:href="@{/event}">Event</a></li>
           <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
               <li><a href="destination-details.html">Destination Details</a></li>

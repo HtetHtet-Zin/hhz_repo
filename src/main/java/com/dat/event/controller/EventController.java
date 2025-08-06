@@ -6,8 +6,11 @@
  * *************************************************************/
 package com.dat.event.controller;
 
+import com.dat.event.common.constant.WebUrl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * EventController Class.
@@ -19,6 +22,14 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @Slf4j
+@RequestMapping(WebUrl.EVENT_URL)
 public class EventController {
+
+
+    @GetMapping
+    public String showCreateEventPage() {
+        return "event-create-page";
+    }
+
 
 }
