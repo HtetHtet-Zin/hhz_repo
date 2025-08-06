@@ -1,0 +1,57 @@
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Baloo 2', cursive; }
+    body { background: #fff5f8; color: #d14789; display: flex; flex-direction: column; align-items: center; padding: 1rem; }
+
+    /* Top Bar */
+    .top-bar { width: 300%; max-width: 1700px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    #themeToggle { background: #7873f5; color: #fff; border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; margin-left: 720px;}
+
+    /* Main Layout */
+    .main-wrapper { display: flex; gap: 2rem; max-width: 1700px; width: 300%;height: 100%; }
+
+    /* Calendar */
+    .calendar-wrapper { background: #fff; border-radius: 18px; padding: 1rem; width: 60%; box-shadow: 0 8px 20px rgba(255, 182, 193, 0.4);height: 100%; }
+    .calendar-header { display: flex; justify-content: space-between; }
+    .calendar-header h2 { color:  #7873f5; }
+    .calendar-header button { background: #ffd6e8; border: none; font-size: 1.8rem; color: #7873f5; border-radius: 10px; cursor: pointer; }
+    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; color: #7873f5; margin-top: 1rem; }
+    .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 10px; }
+    .days div { height: 100px; background: #c9c8f4c7; border-radius: 16px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; position: relative; transition: 0.3s; }
+    .days div:hover { background: #534fb5; color: #fff; }
+    .days div.today { background: #7873f5; color: #fff; }
+    .event-count { position: absolute; top: 6px; right: 6px; background: #ff477e; color: #fff; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; }
+
+    /* Event List */
+    .event-list-wrapper { background: #fff; border-radius: 18px; padding: 1rem; width: 40%; box-shadow: 0 8px 20px rgba(255, 182, 193, 0.4); }
+    .event-header { display: flex; justify-content: space-between; }
+    #searchEvent { width: 100%; margin: 10px 0; padding: 8px; border-radius: 10px; border: 2px solid #7873f5; }
+    #eventList li { background: #ffe4ec; margin-bottom: 10px; padding: 10px; border-radius: 10px; display: flex; gap: 10px; align-items: center; }
+    .event-photo { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+    .event-actions { margin-left: auto; display: flex; gap: 8px; }
+    .event-actions button { background: none; border: none; font-size: 1rem; cursor: pointer; }
+
+    /* Modal */
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 182, 193, 0.7); display: none; justify-content: center; align-items: center; }
+    .modal[aria-hidden="false"] { display: flex; }
+    .modal-content { background: #fff0f5; border-radius: 18px; padding: 2rem; width: 400px; position: relative; }
+    .modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; font-size: 2rem; color: #ff69b4; cursor: pointer; }
+    .modal-content input, .modal-content textarea, .modal-content select { width: 100%; padding: 10px; margin-top: 6px; border-radius: 10px; border: 2px solid #ffc0cb; }
+
+    /* Buttons */
+    .btn-primary { margin-top: 20px; background: #ff69b4; color: #fff; border: none; padding: 10px; border-radius: 10px; width: 100%; cursor: pointer; }
+    .btn-secondary { margin-top: 10px; background: #ffd6e8; color: #ff69b4; border: none; padding: 8px; border-radius: 10px; cursor: pointer; width: 48%; }
+
+    /* Multi-step Form */
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+    .modal-footer { display: flex; justify-content: space-between; margin-top: 20px; }
+
+    /* Progress Bar */
+    .progress-bar { width: 100%; background: #ffe4ec; border-radius: 10px; height: 10px; margin-top: 6px; overflow: hidden; }
+    .progress { width: 0; height: 100%; background: #ff69b4; transition: width 0.3s ease; }
+
+    /* Dark Mode */
+    body.dark { background: #1f1f2e; color: #eee; }
+    body.dark .calendar-wrapper, body.dark .event-list-wrapper { background: #2d2d3a; box-shadow: none; }
+    body.dark .days div { background: #3a3a4f; color: #eee; }
+    body.dark #themeToggle { background: #7873f5; }
