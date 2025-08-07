@@ -1,109 +1,166 @@
-const calendarHeader = document.getElementById('calendarHeader');
-const calendarBody = document.getElementById('calendarBody');
-const daysCount = 7;
-const timeSlots = ['09:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00'];
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const tableBody = document.getElementById("tableBody");
 
-function getMonday(d) {
-  const date = new Date(d);
-  const day = date.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  date.setDate(date.getDate() + diff);
-  return date;
+// Utility: Format date like "Aug 8, 2025"
+function formatDate(date) {
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-let currentWeekStart = getMonday(new Date());
+// Start of this week (Sunday)
+let weekStart = new Date();
+weekStart.setDate(weekStart.getDate() - weekStart.getDay());
 
-function renderCalendar(weekStart) {
-  calendarHeader.innerHTML = '<th class="time-slot">Time / Date</th>';
-  calendarBody.innerHTML = '';
+// Calculate "today" index relative to the current weekStart
+function getTodayIndex() {
+  const now = new Date();
+  const diffDays = Math.floor((now - weekStart) / (1000 * 60 * 60 * 24));
+  if (diffDays >= 0 && diffDays < 7) {
+    return diffDays;
+  }
+  return -1; // no highlight if not current week
+}
 
-  for (let i = 0; i < daysCount; i++) {
+function renderTable() {
+  const todayIndex = getTodayIndex();
+  tableBody.innerHTML = ""; // clear first
+
+  daysOfWeek.forEach((day, i) => {
     const date = new Date(weekStart);
     date.setDate(weekStart.getDate() + i);
-    const dayLabel = date.toLocaleDateString(undefined, { weekday: 'short' });
-    const dateLabel = date.toISOString().split('T')[0];
-    const th = document.createElement('th');
-    th.dataset.date = dateLabel;
-    th.innerHTML = `${dayLabel}<br><small>${dateLabel}</small>`;
-    calendarHeader.appendChild(th);
-  }
 
-  timeSlots.forEach(time => {
-    const tr = document.createElement('tr');
+    const row = document.createElement("tr");
+    row.dataset.day = day;
 
-    const th = document.createElement('th');
-    th.classList.add('time-slot');
-    th.textContent = time;
-    tr.appendChild(th);
-
-    for (let i = 0; i < daysCount; i++) {
-      const date = new Date(weekStart);
-      date.setDate(weekStart.getDate() + i);
-      const dateISO = date.toISOString().split('T')[0];
-
-      const td = document.createElement('td');
-      td.dataset.date = dateISO;
-      td.dataset.time = time;
-      td.title = `${dateISO} ${time}`;
-
-      td.addEventListener('click', () => {
-        td.classList.toggle('selected');
-      });
-
-      tr.appendChild(td);
+    const dayCell = document.createElement("td");
+    dayCell.innerHTML = `<strong>${day}</strong><br><small>${formatDate(date)}</small>`;
+    if (i === todayIndex) {
+      dayCell.style.backgroundColor = "#d1e7dd";
+      dayCell.style.fontWeight = "bold";
     }
 
-    calendarBody.appendChild(tr);
+    const slotWrapper = document.createElement("td");
+    slotWrapper.colSpan = 2;
+    slotWrapper.className = "slot-wrapper";
+    slotWrapper.dataset.day = day;
+
+    // Add initial slot
+    slotWrapper.appendChild(createSlotInput(day, true));
+
+    const addBtnCell = document.createElement("td");
+    const addBtn = document.createElement("button");
+    addBtn.type = "button"; // Important to prevent submit
+    addBtn.className = "btn btn-sm btn-success addSlotBtn";
+    addBtn.textContent = "+";
+    addBtn.dataset.day = day;
+    addBtnCell.appendChild(addBtn);
+
+    row.append(dayCell, slotWrapper, addBtnCell);
+    tableBody.appendChild(row);
   });
 }
 
-document.getElementById('prevWeekBtn').addEventListener('click', () => {
-  currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-  renderCalendar(currentWeekStart);
-});
+function createSlotInput(day, isOnly = false) {
+  const slot = document.createElement("div");
+  slot.className = "time-slot d-flex gap-1 mb-1 align-items-center";
 
-document.getElementById('nextWeekBtn').addEventListener('click', () => {
-  currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-  renderCalendar(currentWeekStart);
-});
+  const start = document.createElement("input");
+  start.type = "time";
+  start.name = `startTime_${day}[]`;
+  start.className = "form-control form-control-sm";
 
-document.getElementById('eventForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const eventName = document.getElementById('eventName').value.trim();
-  const eventDesc = document.getElementById('eventDesc').value.trim();
+  const end = document.createElement("input");
+  end.type = "time";
+  end.name = `endTime_${day}[]`;
+  end.className = "form-control form-control-sm";
 
-  if (!eventName) {
-    alert('Please enter an event name.');
-    return;
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button"; // Important!
+  removeBtn.textContent = "×";
+  removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
+
+  if (isOnly) {
+    removeBtn.disabled = true;
+    removeBtn.title = "At least one slot required";
   }
 
-  const selectedCells = [...document.querySelectorAll('td.selected')];
-  if (selectedCells.length === 0) {
-    alert('Please select at least one date/time slot.');
-    return;
-  }
+  slot.append(start, end, removeBtn);
+  return slot;
+}
 
-  const eventMap = new Map();
+// Event delegation for dynamically created add/remove buttons
+tableBody.addEventListener("click", (e) => {
+  if (e.target.classList.contains("addSlotBtn")) {
+    const day = e.target.dataset.day;
+    const wrapper = document.querySelector(`.slot-wrapper[data-day="${day}"]`);
+    if (wrapper) {
+      const newSlot = createSlotInput(day);
+      wrapper.appendChild(newSlot);
 
-  selectedCells.forEach(cell => {
-    const date = cell.dataset.date;
-    const time = cell.dataset.time;
-    if (!eventMap.has(eventName)) {
-      eventMap.set(eventName, {
-        descriptionSet: new Set([eventDesc]),
-        dateTimeSet: new Set([`${date} ${time}`])
-      });
-    } else {
-      const event = eventMap.get(eventName);
-      event.descriptionSet.add(eventDesc);
-      event.dateTimeSet.add(`${date} ${time}`);
+      // Enable remove buttons if more than one slot
+      if (wrapper.children.length > 1) {
+        wrapper.querySelectorAll(".removeSlotBtn").forEach(btn => btn.disabled = false);
+      }
     }
-  });
+  }
 
-  console.log('Events to create:', eventMap);
-
-  e.target.reset();
-  selectedCells.forEach(cell => cell.classList.remove('selected'));
+  if (e.target.classList.contains("removeSlotBtn")) {
+    const slotDiv = e.target.closest(".time-slot");
+    const wrapper = slotDiv.parentElement;
+    if (wrapper.children.length > 1) {
+      slotDiv.remove();
+      if (wrapper.children.length === 1) {
+        wrapper.querySelector(".removeSlotBtn").disabled = true;
+      }
+    }
+  }
 });
 
-renderCalendar(currentWeekStart);
+function refreshTable() {
+  renderTable();
+}
+
+document.getElementById("nextWeekBtn").addEventListener("click", () => {
+  weekStart.setDate(weekStart.getDate() + 7);
+  refreshTable();
+});
+
+document.getElementById("prevWeekBtn").addEventListener("click", () => {
+  weekStart.setDate(weekStart.getDate() - 7);
+  refreshTable();
+});
+
+// Initial render
+renderTable();
+
+function goToStep(step) {
+  const currentStep = document.querySelector(".wizard-step.active");
+
+  if (step !== 'submit') {
+    const requiredInputs = currentStep.querySelectorAll("input[required], select[required], textarea[required]");
+    for (const input of requiredInputs) {
+      if (!input.checkValidity()) {
+        input.reportValidity();
+        return;
+      }
+    }
+
+    document.querySelectorAll(".wizard-step").forEach(el => el.classList.remove("active"));
+    document.getElementById(`step${step}`).classList.add("active");
+    return;
+  }
+
+  // Submit
+  const requiredInputs = currentStep.querySelectorAll("input[required], select[required], textarea[required]");
+  for (const input of requiredInputs) {
+    if (!input.checkValidity()) {
+      input.reportValidity();
+      return;
+    }
+  }
+
+  // Disable inputs in hidden steps to prevent validation blocking
+  document.querySelectorAll('.wizard-step:not(.active) input, .wizard-step:not(.active) select, .wizard-step:not(.active) textarea')
+    .forEach(el => el.disabled = true);
+
+  document.getElementById("eventForm").submit();
+}

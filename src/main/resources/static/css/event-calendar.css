@@ -1,47 +1,53 @@
-/* event-calendar.css */
-
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 20px;
+}
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 table {
-  user-select: none;
-  border-collapse: collapse;
-  width: 100%;
-  max-width: 900px;
-  margin: 20px auto;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th, td {
   border: 1px solid #dee2e6;
   text-align: center;
-  padding: 8px;
   cursor: pointer;
-  vertical-align: middle;
+  padding: 8px;
   height: 60px;
-  transition: background-color 0.3s ease;
+  transition: background 0.2s;
+}
+button {
+    padding: 6px 12px;
+    font-size: 16px;
+    cursor: pointer;
+}
+input[type="time"] {
+    width: 100px;
 }
 
-td:hover {
-  background-color: #e9ecef;
+.wizard-step {
+  display: none;
 }
 
-td.selected {
-  background-color: #0d6efd;
-  color: white;
+.wizard-step.active {
+  display: block;
 }
+
 
 th.time-slot {
   background-color: #f8f9fa;
-  font-weight: 600;
+  font-weight: bold;
   cursor: default;
+   width: 100px;
 }
 
-.container {
-  max-width: 900px;
-  margin-top: 40px;
-}
-
-.nav-buttons {
-  max-width: 900px;
-  margin: 20px auto;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
+input[type="time"] {
+    width: 150px; /* wider to show full time with AM/PM */
 }
