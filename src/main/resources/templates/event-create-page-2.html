@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Event Create — Weekly Date & Time Slots with Navigation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/event-calendar.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" />
+</head>
+<body>
+<div class="container">
+    <h3 class="mb-4 text-center">Create Event — Select Date & Time Slots</h3>
+
+    <form id="eventForm" th:action="@{/createEvent}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="eventName" class="form-label">Event Name *</label>
+            <input type="text" id="eventName" name="eventName" class="form-control" placeholder="Enter event name" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="eventPhoto" class="form-label">Event Photo *</label>
+            <input type="file" id="eventPhoto" name="eventPhoto" class="form-control" accept="image/*" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="eventDesc" class="form-label">Description</label>
+            <textarea id="eventDesc" name="eventDesc" class="form-control" rows="3" placeholder="Optional description"></textarea>
+        </div>
+
+        <div class="d-flex align-items-end justify-content-between mt-3">
+            <div class="d-flex flex-column" style="max-width: 300px; width: 100%;">
+                <label for="staff" class="form-label mb-1">Select Staff</label>
+                <input class="form-control" list="staffOptions" id="staff" name="staff" placeholder="Enter Name" />
+                <datalist id="staffOptions">
+                    <option value="Kaung Khant Ko">
+                    <option value="Kyi Min Khant">
+                    <option value="Zwel Naing Oo">
+                        <!-- add more as needed -->
+                </datalist>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary" type="button" id="prevWeekBtn">← Previous Week</button>
+                <button class="btn btn-outline-primary" type="button" id="nextWeekBtn">Next Week →</button>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Create Event</button>
+            </div>
+        </div>
+
+        <h4 class="mt-4">Weekly Schedule</h4>
+        <button type="button" id="addTimeSlotBtn" class="btn btn-outline-secondary mb-2">+ Add Start/End Time</button>
+
+        <table id="scheduleTable" class="table table-bordered">
+            <thead>
+            <tr id="headerRow">
+                <th class="day-col">Day</th>
+                <th colspan="2">Time Slot 1</th>
+            </tr>
+            <tr id="subHeaderRow">
+                <th></th>
+                <th>Start</th>
+                <th>End</th>
+            </tr>
+            </thead>
+            <tbody id="bodyRows">
+            <!-- JavaScript will populate rows -->
+            </tbody>
+        </table>
+    </form>
+</div>
+<script th:src="@{/js/schedule.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
