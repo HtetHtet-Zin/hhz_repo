@@ -8,10 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface StaffRepository extends JpaRepository<StaffEntity, Long> {
+    Optional<StaffEntity> findByStaffNo(String staffNo);
 
     @Query(value = "SELECT COUNT(*) FROM tbl_staff WHERE staff_no = :staffNo", nativeQuery = true)
-    long existsByStaffNo(@Param("staffNo") String staffNo);
-
-    Optional<StaffEntity> findByStaffNo(String staffNo);
+    Long existsByStaffNo(@Param("staffNo") String staffNo);
 
 }

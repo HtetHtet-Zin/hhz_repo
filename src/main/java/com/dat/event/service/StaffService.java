@@ -5,9 +5,11 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+import jakarta.servlet.http.HttpSession;
+
 public interface StaffService {
 
-    boolean existsByStaffNo(String staffNo);
+    boolean existsByStaffNo(String staffNo, HttpSession session);
 
     Page<StaffDto> findAll(int page);
 

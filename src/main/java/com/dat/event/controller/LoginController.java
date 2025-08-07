@@ -4,6 +4,7 @@ package com.dat.event.controller;
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.service.LdapUserService;
 import com.dat.event.service.StaffService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,10 +32,10 @@ public class LoginController {
 
     @PostMapping
     public String login(@RequestParam String username,
-                        @RequestParam String password,
-                        RedirectAttributes redirectAttributes) {
+                        @RequestParam String password, HttpSession session,
+                        RedirectAttributes redirectAttributes){
 
-        if (staffService.existsByStaffNo(username)) {
+        if (staffService.existsByStaffNo(username, session)) {
             if (ldapUserService.isADUser(username, password)) {
                 return "redirect:" + WebUrl.EVENT_URL;
             }
@@ -42,5 +43,15 @@ public class LoginController {
         redirectAttributes.addFlashAttribute("error_message", "Incorrect Staff ID or Password!!!");
         return "redirect:/login";
     }
+
+    @GetMapping("/logout")
+    public String logoutPage(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+
+
+
+
 
 }

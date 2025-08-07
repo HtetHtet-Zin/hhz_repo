@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * EventSchedule Class.
@@ -35,12 +36,10 @@ public class EventScheduleEntity implements Serializable {
     @JoinColumn(name = "event_id", referencedColumnName = "event_id")
     private EventEntity event;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "time_slot_id", referencedColumnName = "time_slot_id")
-    private TimeSlotEntity timeSlot;
-
     private LocalDate date;
     private boolean delFlag;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private LocalDateTime createdAt;
     private String createdBy;
     private LocalDateTime updatedAt;

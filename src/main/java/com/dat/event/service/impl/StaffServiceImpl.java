@@ -7,6 +7,7 @@ import com.dat.event.entity.StaffEntity;
 import com.dat.event.repository.StaffRepository;
 import com.dat.event.service.StaffService;
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import java.util.List;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -24,8 +27,19 @@ public class StaffServiceImpl implements StaffService {
     private final StaffMapper staffMapper;
 
     @Override
-    public boolean existsByStaffNo(String staffNo) {
-        return staffRepository.existsByStaffNo(staffNo) > 0;
+    public boolean existsByStaffNo(String staffNo, HttpSession session) {
+        Optional<StaffEntity> optionalStaff = staffRepository.findByStaffNo(staffNo);
+
+        if (optionalStaff.isPresent()) {
+            StaffEntity staff = optionalStaff.get();
+            session.setAttribute("id", staff.getStaffId());
+            session.setAttribute("staffNo", staff.getStaffNo());
+            session.setAttribute("name", staff.getName());
+            session.setAttribute("adminFlag", staff.getAdminFlag());
+            return true;
+        }
+
+        return false;
     }
 
     @Override

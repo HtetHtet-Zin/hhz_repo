@@ -10,42 +10,11 @@ html, body {
     background-color: #f4f7ff;
 }
 
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    height: 100vh;
+.container-fluid {
+  display: flex;
+  height: 100vh; /* full page height */
+  padding: 0; /* no extra space */
 }
-
-/*.left {
-    position: relative;
-    flex: 1;
-    background: url('../images/gojo.jpg') no-repeat center center;
-    background-size: cover;
-    min-height: 300px;
-    overflow: hidden;
-}*/
-.left {
-  position: relative;
-  flex: 1;
-  min-height: 300px;
-  overflow: hidden;
-}
-/* video */
-.background-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
-
-.left > *:not(.background-video) {
-  position: relative;
-  z-index: 1;
-}
-/* video */
 
 #fireworks {
     position: absolute;
@@ -56,19 +25,46 @@ html, body {
     z-index: 2;
 }
 
+.left {
+  position: relative;
+  flex: 1;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.left img {
+  object-fit: cover;
+  width: 100%;
+  height: 100vh;
+}
+
+
 .right {
     position: relative;
     flex: 1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 40px;
-    background: linear-gradient(135deg, #ff6ec4, #7873f5, #fcd34d);
-    background-size: 400% 400%;
+    background: linear-gradient(180deg, #fff085, #799EFF, #FFFCFB);
     animation: gradientShift 10s ease infinite;
     overflow: hidden;
+    height: 100vh;
 }
 
+.left, .right {
+  flex: 1; /* split evenly */
+}
+
+.login-form {
+    z-index: 2;
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    margin-top: auto;
+    margin-bottom: 20em;
+}
 
 .star-field {
     position: absolute;
@@ -108,13 +104,6 @@ html, body {
   100% {
     background-position: 0% 50%;
   }
-}
-
-.login-form {
-    z-index: 2;
-    position: relative;
-    width: 100%;
-    max-width: 380px;
 }
 
 .login-form h2 {

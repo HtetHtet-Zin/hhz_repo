@@ -73,8 +73,12 @@ setInterval(createStar, 50);
 }*/
 
 function clearError(errorId) {
-    document.getElementById(errorId).innerText = "";
-    document.getElementById(errorId).style.display = "none";
+    const errorMessage = document.getElementById(errorId).innerText;
+    if (errorMessage !== "") {
+        document.getElementById(errorId).innerText = "";
+        document.getElementById(errorId).style.display = "none";
+    }
+
 }
 
 

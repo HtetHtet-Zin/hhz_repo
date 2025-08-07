@@ -8,6 +8,7 @@ package com.dat.event.dto;
 
 import lombok.Data;
 
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -22,5 +23,6 @@ import java.util.List;
 public class EventScheduleDto {
     private String name;
     private String description;
-    private List<TimeSlotDto> timeSlotDtoList;
+    private LocalTime startTime;
+    private LocalTime endTime;
 }
