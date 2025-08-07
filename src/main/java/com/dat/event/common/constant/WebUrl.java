@@ -20,6 +20,8 @@ public final class WebUrl {
 
     public static final String STAFF_URL = "/staff";
 
+    public static final String STAFFS_URL = "/staffs";
+
     public static final String LOGIN_URL = "/login";
 
     public static final String LOGOUT_URL = "/logout";

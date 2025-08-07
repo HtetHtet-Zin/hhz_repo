@@ -10,9 +10,10 @@ import com.dat.event.common.constant.WebUrl;
 import com.dat.event.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,13 +28,22 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping(WebUrl.STAFF_URL)
 public class StaffController {
 
     private final StaffService staffService;
 
-    @GetMapping
-    public ModelAndView findAll(@RequestParam("page") final int page){
+    @GetMapping(WebUrl.STAFFS_URL)
+    public ModelAndView findAll(@RequestParam(required = false, defaultValue = "0") final int page) {
         return new ModelAndView("staff", "staffPage", staffService.findAll(page));
+    }
+
+    @PostMapping(WebUrl.STAFF_URL + "/admin-flag")
+    public ResponseEntity<Void> updateAdminFlag(@RequestParam("staffNo") String staffNo,
+                                                @RequestParam(value = "adminFlag", defaultValue = "false") boolean adminFlag) {
+
+        staffService.updateAdminFlag(staffNo, adminFlag);
+
+        return ResponseEntity.ok().build();
+
     }
 }

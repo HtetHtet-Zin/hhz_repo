@@ -10,4 +10,6 @@ public interface StaffService {
     boolean existsByStaffNo(String staffNo);
 
     Page<StaffDto> findAll(int page);
+
+    void updateAdminFlag(String staffNo, boolean adminFlag);
 }

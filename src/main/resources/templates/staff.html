@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>404 - Tour Bootstrap Template</title>
+    <title>Staff List</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
 
@@ -25,6 +25,7 @@
     <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
     <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
 
+
     <!-- Main CSS File -->
     <link href="assets/css/main.css" rel="stylesheet">
     <style>
@@ -32,6 +33,7 @@
           background-color: #007bff;
           border-color: #007bff;
         }
+
     </style>
 
     <!-- =======================================================
@@ -121,52 +123,70 @@
                 </ol>
             </nav>
         </div>
-    </div><!-- End Page Title -->
+    </div>
 
     <div class="">
-        <table class="table table-bordered custom-bordered-table">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Staff-ID</th>
-                <th>Staff Name</th>
-                <th>Email</th>
-                <th>Mobile</th>
-                <th>Date of Birth</th>
-                <th>Admin</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="staff, iterStat : ${staffPage.content}">
-                <td th:text="${iterStat.index + 1}"></td>
-                <td th:text="${staff.staffNo}"></td>
-                <td th:text="${staff.name}"></td>
-                <td th:text="${staff.email}"></td>
-                <td th:text="${staff.mobile}"></td>
-                <td th:text="${staff.dob}"></td>
-                <td><input type="checkbox"></td>
-            </tr>
-            </tbody>
-        </table>
+         <table class="table table-bordered custom-bordered-table">
+             <thead>
+             <tr>
+                 <th>#</th>
+                 <th>Staff-ID</th>
+                 <th>Staff Name</th>
+                 <th>Email</th>
+                 <th>Mobile</th>
+                 <th>Date of Birth</th>
+                 <th>Admin</th>
+             </tr>
+             </thead>
+             <tbody>
+             <tr th:each="staff, iterStat : ${staffPage.content}">
+                 <td th:text="${iterStat.index + 1}"></td>
+                 <td th:text="${staff.staffNo}"></td>
+                 <td th:text="${staff.name}"></td>
+                 <td th:text="${staff.email}"></td>
+                 <td th:text="${staff.mobile}"></td>
+                 <td th:text="${staff.dob}"></td>
+                 <td style="text-align: center;">
+                     <!-- Checkbox with data attributes -->
+                     <input type="checkbox" class="admin-flag-toggle"
+                            th:data-id="${staff.staffNo}"
+                            th:checked="${staff.adminFlag}">
+                 </td>
+             </tr>
 
-        <nav aria-label="Staff pagination">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${staffPage.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/staff(page=${staffPage.number - 1})}">Previous</a>
-                </li>
+             </tbody>
+         </table>
 
-                <li class="page-item"
-                    th:each="i : ${#numbers.sequence(0, staffPage.totalPages - 1)}"
-                    th:classappend="${staffPage.number == i} ? 'active'">
-                    <a class="page-link" th:href="@{/staff(page=${i})}"
-                       th:text="${i + 1}">1</a>
-                </li>
+         <nav aria-label="Staff pagination">
+             <ul class="pagination justify-content-center">
 
-                <li class="page-item" th:classappend="${staffPage.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/staff(page=${staffPage.number + 1})}">Next</a>
-                </li>
-            </ul>
-        </nav>
+                <!-- Previous -->
+                 <li class="page-item" th:classappend="${staffPage.first} ? 'disabled'">
+                     <a class="page-link"
+                        th:href="@{/staffs(page=${staffPage.number - 1})}">Previous</a>
+                 </li>
+
+                <!-- Page Numbers -->
+                 <li class="page-item"
+                     th:each="i : ${#numbers.sequence(
+              T(java.lang.Math).max(0, T(java.lang.Math).min(staffPage.totalPages - 5, staffPage.number - 2)),
+               T(java.lang.Math).min(staffPage.totalPages - 1,
+                  T(java.lang.Math).max(4, staffPage.number + 2)))}"
+                     th:classappend="${staffPage.number == i} ? 'active'">
+                     <a class="page-link"
+                        th:text="${i + 1}"
+                        th:href="@{/staffs(page=${i})}"></a>
+                 </li>
+
+                <!-- Next -->
+                 <li class="page-item" th:classappend="${staffPage.last} ? 'disabled'">
+                     <a class="page-link"
+                        th:href="@{/staffs(page=${staffPage.number + 1})}">Next</a>
+                 </li>
+
+             </ul>
+         </nav>
+
     </div>
 </main>
 
@@ -271,6 +291,38 @@
 
 <!-- Main JS File -->
 <script src="assets/js/main.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".admin-flag-toggle").forEach(checkbox => {
+        checkbox.addEventListener("change", async function () {
+            const id = this.dataset.id;
+            const adminFlag = this.checked;
+
+            try {
+                const response = await fetch('/club/staff/admin-flag', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        staffNo: id,
+                        adminFlag: adminFlag
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Server error");
+                }
+
+                console.log(`Admin flag updated for staff ID ${id}`);
+            } catch (error) {
+                alert("Error updating admin flag.");
+                this.checked = !adminFlag; // revert checkbox state if failed
+            }
+        });
+    });
+});
+</script>
 
 </body>
 
