@@ -47,7 +47,7 @@
 }
 
 .dark-background {
-  --background-color: #031013;
+  --background-color: #676b6c;
   --default-color: #ffffff;
   --heading-color: #ffffff;
   --surface-color: #252525;
@@ -184,7 +184,7 @@ h6 {
 .header .btn-getstarted,
 .header .btn-getstarted:focus {
   color: var(--contrast-color);
-  background: var(--accent-color);
+  background: #7873f5;
   font-size: 14px;
   padding: 8px 20px;
   margin: 0 0 0 30px;
@@ -195,7 +195,7 @@ h6 {
 .header .btn-getstarted:hover,
 .header .btn-getstarted:focus:hover {
   color: var(--contrast-color);
-  background: color-mix(in srgb, var(--accent-color), transparent 15%);
+  background: color-mix(in srgb, #7873f5, transparent 15%);
 }
 
 @media (max-width: 1200px) {
@@ -756,10 +756,9 @@ h6 {
 section,
 .section {
   color: var(--default-color);
-  background-color: var(--background-color);
   padding: 60px 0;
   scroll-margin-top: 90px;
-  overflow: clip;
+  /*overflow: clip;*/
 }
 
 @media (max-width: 1199px) {
@@ -811,7 +810,7 @@ section,
 .travel-hero {
   position: relative;
   overflow: hidden;
-  min-height: 70vh;
+  min-height: 5vh;
   display: flex;
   align-items: center;
   padding: 120px 0 60px 0;
@@ -1046,7 +1045,7 @@ section,
   position: absolute;
   bottom: 20px;
   left: 20px;
-  background: var(--accent-color);
+  background: #7873f5;
   color: var(--contrast-color);
   padding: 1.5rem;
   border-radius: 15px;

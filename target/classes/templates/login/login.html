@@ -10,19 +10,24 @@
 </head>
 <body>
 <div class="container">
-  <div class="left"></div>
+  <div class="left">
+    <video autoplay muted loop playsinline class="background-video">
+      <source th:src="@{/assets/img/travel/video-2.mp4}" type="video/mp4" >
+    </video>
+  </div>
   <div class="right">
     <div class="star-field"></div>
     <canvas id="fireworks"></canvas>
 
     <form class="login-form" th:action="@{/login}" method="post">
+      <span th:if="${error_message}" th:text="${error_message}" class="error-message" id="error-message"></span>
       <div class="input-field">
-        <input type="text" name="username" placeholder="Staff ID" required>
+        <input type="text" name="username" id="username" placeholder="Staff ID" autocomplete="username" onfocus="clearError('error-message')" required>
       </div>
       <div class="input-field">
-        <input type="password" name="password" placeholder="Password" required>
+        <input type="password" name="password" id="password" placeholder="Password" autocomplete="current-password" onfocus="clearError('error-message')" required>
       </div>
-      <button type="submit" class="login-btn">LOGIN</button>
+      <button type="submit" class="login-btn" >LOGIN</button>
     </form>
 
   </div>
