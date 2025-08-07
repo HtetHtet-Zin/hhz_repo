@@ -6,23 +6,12 @@
  * *************************************************************/
 package com.dat.event.service;
 
-import com.dat.event.dto.EventDto;
-
-import java.util.List;
-import java.util.Map;
-
 /**
- * EventService Class.
+ * EventScheduleService Class.
  * <p>
  * </p>
  *
  * @author Zwel Naing Oo
  */
-public interface EventService {
-
-    EventDto save(EventDto dto);
-
-    List<EventDto> findAll();
-
-    EventDto findById(Long id);
+public interface EventScheduleService {
 }

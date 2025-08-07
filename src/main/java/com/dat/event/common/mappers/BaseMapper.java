@@ -4,25 +4,20 @@
  * Version      : 	
  * History  :	
  * *************************************************************/
-package com.dat.event.service;
-
-import com.dat.event.dto.EventDto;
+package com.dat.event.common.mappers;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * EventService Class.
+ * BaseMapper Class.
  * <p>
  * </p>
  *
  * @author Zwel Naing Oo
  */
-public interface EventService {
-
-    EventDto save(EventDto dto);
-
-    List<EventDto> findAll();
-
-    EventDto findById(Long id);
+public interface BaseMapper<D, E> {
+    D toDTO(E entity);
+    E toEntity(D dto);
+    List<D> toDtoList(List<E> entityList);
+    List<E> toEntityList(List<D> dtoList);
 }

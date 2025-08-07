@@ -37,4 +37,6 @@ public class EventRegistrationEntity implements Serializable {
     private StaffEntity staff;
 
     private boolean inChargeFlag;
+
+    private Boolean supportMemberFlag;
 }

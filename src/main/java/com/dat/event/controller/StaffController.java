@@ -7,15 +7,16 @@
 package com.dat.event.controller;
 
 import com.dat.event.common.constant.WebUrl;
-import com.dat.event.service.EventService;
+import com.dat.event.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
- * EventController Class.
+ * StaffController Class.
  * <p>
  * </p>
  *
@@ -25,19 +26,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping
-public class EventController {
+@RequestMapping(WebUrl.STAFF_URL)
+public class StaffController {
 
-    private final EventService eventService;
+    private final StaffService staffService;
 
-    @GetMapping(WebUrl.EVENT_URL + "/create")
-    public String showCreateEventPage() {
-        return "event-create-page";
+    @GetMapping
+    public ModelAndView findAll(){
+        return new ModelAndView("staff", "staffList", staffService.findAll());
     }
-
-    @GetMapping(WebUrl.EVENT_URL)
-    public String view(){
-        return "event";
-    }
-
 }

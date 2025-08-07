@@ -5,7 +5,10 @@ import com.dat.event.common.constant.WebUrl;
 import com.dat.event.service.LdapUserService;
 import com.dat.event.service.StaffService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -29,11 +32,11 @@ public class LoginController {
     @PostMapping
     public String login(@RequestParam String username,
                         @RequestParam String password,
-                        RedirectAttributes redirectAttributes){
+                        RedirectAttributes redirectAttributes) {
 
         if (staffService.existsByStaffNo(username)) {
-            if(ldapUserService.isADUser(username, password)){
-                return "index";
+            if (ldapUserService.isADUser(username, password)) {
+                return "redirect:" + WebUrl.EVENT_URL;
             }
         }
         redirectAttributes.addFlashAttribute("error_message", "Incorrect Staff ID or Password!!!");

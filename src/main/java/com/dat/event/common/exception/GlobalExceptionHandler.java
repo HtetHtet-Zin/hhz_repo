@@ -26,6 +26,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String handleException(Exception ex, Model model) {
         model.addAttribute("errorMessage", ex.getMessage());
-        return "pages/error";
+        return "404";
     }
 }

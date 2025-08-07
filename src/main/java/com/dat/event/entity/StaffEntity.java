@@ -9,6 +9,7 @@ package com.dat.event.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class StaffEntity {
     private String createdBy;
     @Column(name = "admin_flag")
     private Boolean adminFlag;
+    private LocalDate dob;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "staff")
     private List<EventRegistrationEntity> eventRegistrationEntityList = new ArrayList<>();

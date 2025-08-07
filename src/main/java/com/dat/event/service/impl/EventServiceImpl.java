@@ -6,16 +6,16 @@
  * *************************************************************/
 package com.dat.event.service.impl;
 
-import com.dat.event.config.UniversalMapperConfig;
+import com.dat.event.common.mappers.EventMapper;
 import com.dat.event.dto.EventDto;
 import com.dat.event.repository.EventRepository;
 import com.dat.event.service.EventService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * EventServiceImpl Class.
@@ -30,10 +30,10 @@ import java.util.List;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository repository;
-    private final UniversalMapperConfig eventMapper;
+    private final EventMapper eventMapper;
 
     @Override
-    public EventDto save(EventDto dto) {
+    public EventDto save(final EventDto dto) {
         return eventMapper.toDTO(repository.save(eventMapper.toEntity(dto)));
     }
 
@@ -43,15 +43,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto findById(Long id) {
+    public EventDto findById(final Long id) {
         return eventMapper.toDTO(repository.findById(id).orElseThrow());
-    }
-
-    @PostConstruct
-    public void test(){
-        System.out.println("Testing");
-        System.out.println(findAll());
-        System.out.println(findById(1L));
     }
 
 }

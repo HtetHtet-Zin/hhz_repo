@@ -11,7 +11,7 @@ package com.dat.event.common.constant;
  * <p>
  * </p>
  *
- * @author
+ * @author Zwel Naing Oo
  */
 
 public final class WebUrl {
@@ -25,5 +25,11 @@ public final class WebUrl {
     public static final String LOGOUT_URL = "/logout";
 
     public static final String EVENT_URL = "/event";
+
+    public static final String GALLERY_URL = "/gallery";
+
+    public static final String API_URL = "/api";
+
+    public static final String EVENT_API_URL = API_URL + EVENT_URL;
 
 }

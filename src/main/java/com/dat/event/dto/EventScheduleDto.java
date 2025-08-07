@@ -4,25 +4,23 @@
  * Version      : 	
  * History  :	
  * *************************************************************/
-package com.dat.event.service;
+package com.dat.event.dto;
 
-import com.dat.event.dto.EventDto;
+import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * EventService Class.
+ * EventScheduleDto Class.
  * <p>
  * </p>
  *
  * @author Zwel Naing Oo
  */
-public interface EventService {
 
-    EventDto save(EventDto dto);
-
-    List<EventDto> findAll();
-
-    EventDto findById(Long id);
+@Data
+public class EventScheduleDto {
+    private String name;
+    private String description;
+    private List<TimeSlotDto> timeSlotDtoList;
 }
