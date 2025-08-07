@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -32,7 +33,7 @@ public class StaffController {
     private final StaffService staffService;
 
     @GetMapping
-    public ModelAndView findAll(){
-        return new ModelAndView("staff", "staffList", staffService.findAll());
+    public ModelAndView findAll(@RequestParam("page") final int page){
+        return new ModelAndView("staff", "staffPage", staffService.findAll(page));
     }
 }

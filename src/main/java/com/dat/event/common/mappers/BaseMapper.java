@@ -6,6 +6,8 @@
  * *************************************************************/
 package com.dat.event.common.mappers;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 /**

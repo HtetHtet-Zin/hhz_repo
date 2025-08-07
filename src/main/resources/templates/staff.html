@@ -15,7 +15,8 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+          rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -26,6 +27,12 @@
 
     <!-- Main CSS File -->
     <link href="assets/css/main.css" rel="stylesheet">
+    <style>
+        .pagination .active .page-link {
+          background-color: #007bff;
+          border-color: #007bff;
+        }
+    </style>
 
     <!-- =======================================================
     * Template Name: Tour
@@ -55,7 +62,8 @@
                 <li><a href="tours.html">Tours</a></li>
                 <li><a href="gallery.html">Gallery</a></li>
                 <li><a href="blog.html">Blog</a></li>
-                <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <li class="dropdown"><a href="#"><span>More Pages</span> <i
+                        class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
                         <li><a href="destination-details.html">Destination Details</a></li>
                         <li><a href="tour-details.html">Tour Details</a></li>
@@ -68,10 +76,12 @@
                         <li><a href="404.html" class="active">404</a></li>
                     </ul>
                 </li>
-                <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <li class="dropdown"><a href="#"><span>Dropdown</span> <i
+                        class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
                         <li><a href="#">Dropdown 1</a></li>
-                        <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                        <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i
+                                class="bi bi-chevron-down toggle-dropdown"></i></a>
                             <ul>
                                 <li><a href="#">Deep Dropdown 1</a></li>
                                 <li><a href="#">Deep Dropdown 2</a></li>
@@ -98,10 +108,12 @@
 <main class="main">
 
     <!-- Page Title -->
-    <div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/travel/showcase-8.webp);">
+    <div class="page-title dark-background" data-aos="fade"
+         style="background-image: url(assets/img/travel/showcase-8.webp);">
         <div class="container position-relative">
             <h1>404</h1>
-            <p>Esse dolorum voluptatum ullam est sint nemo et est ipsa porro placeat quibusdam quia assumenda numquam molestias.</p>
+            <p>Esse dolorum voluptatum ullam est sint nemo et est ipsa porro placeat quibusdam quia assumenda numquam
+                molestias.</p>
             <nav class="breadcrumbs">
                 <ol>
                     <li><a href="index.html">Home</a></li>
@@ -111,12 +123,51 @@
         </div>
     </div><!-- End Page Title -->
 
-    <section id="error-404" class="error-404 section">
+    <div class="">
+        <table class="table table-bordered custom-bordered-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Staff-ID</th>
+                <th>Staff Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Date of Birth</th>
+                <th>Admin</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="staff, iterStat : ${staffPage.content}">
+                <td th:text="${iterStat.index + 1}"></td>
+                <td th:text="${staff.staffNo}"></td>
+                <td th:text="${staff.name}"></td>
+                <td th:text="${staff.email}"></td>
+                <td th:text="${staff.mobile}"></td>
+                <td th:text="${staff.dob}"></td>
+                <td><input type="checkbox"></td>
+            </tr>
+            </tbody>
+        </table>
 
-        <p>Staff list</p>
+        <nav aria-label="Staff pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${staffPage.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/staff(page=${staffPage.number - 1})}">Previous</a>
+                </li>
 
-    </section>
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(0, staffPage.totalPages - 1)}"
+                    th:classappend="${staffPage.number == i} ? 'active'">
+                    <a class="page-link" th:href="@{/staff(page=${i})}"
+                       th:text="${i + 1}">1</a>
+                </li>
 
+                <li class="page-item" th:classappend="${staffPage.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/staff(page=${staffPage.number + 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </main>
 
 <footer id="footer" class="footer position-relative dark-background">
@@ -128,7 +179,8 @@
                     <h4>Join Our Newsletter</h4>
                     <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
                     <form action="forms/newsletter.php" method="post" class="php-email-form">
-                        <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Subscribe"></div>
+                        <div class="newsletter-form"><input type="email" name="email"><input type="submit"
+                                                                                             value="Subscribe"></div>
                         <div class="loading">Loading</div>
                         <div class="error-message"></div>
                         <div class="sent-message">Your subscription request has been sent. Thank you!</div>
@@ -187,7 +239,8 @@
     </div>
 
     <div class="container copyright text-center mt-4">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">MyWebsite</strong> <span>All Rights Reserved</span></p>
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">MyWebsite</strong> <span>All Rights Reserved</span>
+        </p>
         <div class="credits">
             <!-- All the links in the footer should remain intact. -->
             <!-- You can delete the links only if you've purchased the pro version. -->
@@ -200,7 +253,8 @@
 </footer>
 
 <!-- Scroll Top -->
-<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 
 <!-- Preloader -->
 <div id="preloader"></div>

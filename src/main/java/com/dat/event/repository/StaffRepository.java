@@ -11,4 +11,6 @@ public interface StaffRepository extends JpaRepository<StaffEntity, Long> {
     long existsByStaffNo(@Param("staffNo") String staffNo);
 
 
+
+
 }
