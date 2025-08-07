@@ -4,7 +4,7 @@
     const prevBtn = document.getElementById("prev");
     const nextBtn = document.getElementById("next");
     const eventList = document.getElementById("eventList");
-    const selectedDateText = document.getElementById("selectedDateText");
+//    const selectedDateText = document.getElementById("selectedDateText");
 //    const openAddEventBtn = document.getElementById("openAddEventBtn");
     const eventModal = document.getElementById("eventModal");
     const closeModalBtn = document.getElementById("closeModalBtn");
@@ -63,7 +63,7 @@
 
         dayElement.addEventListener("click", () => {
           selectedDate = key;
-          selectedDateText.textContent = selectedDate;
+//          selectedDateText.textContent = selectedDate;
 //          openAddEventBtn.disabled = false;
           displayEvents();
         });
