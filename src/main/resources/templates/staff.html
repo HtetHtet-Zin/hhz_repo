@@ -140,7 +140,7 @@
              </thead>
              <tbody>
              <tr th:each="staff, iterStat : ${staffPage.content}">
-                 <td th:text="${iterStat.index + 1}"></td>
+                 <td th:text="${(staffPage.number * staffPage.size) + iterStat.index + 1}"></td>
                  <td th:text="${staff.staffNo}"></td>
                  <td th:text="${staff.name}"></td>
                  <td th:text="${staff.email}"></td>
