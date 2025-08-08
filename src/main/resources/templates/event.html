@@ -23,23 +23,19 @@
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link th:href="@{/css/home.css}" rel="stylesheet" />
+
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: Tour
-  * Template URL: https://bootstrapmade.com/tour-bootstrap-travel-website-template/
-  * Updated: Jul 01 2025 with Bootstrap v5.3.7
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+  <link th:href="@{/css/home.css}" rel="stylesheet" />
+  <link th:href="@{/css/footer.css}" rel="stylesheet" />
+
 </head>
 
 <body class="index-page">
 
-  <div th:replace="~{fragments/header :: header}"></div>&nbsp;
+  <div th:replace="~{fragments/header :: header}"></div>
 
   <main class="main-wrapper">
 
@@ -130,197 +126,8 @@
           </form>
         </div>
       </div>
-
-
-    </section><!-- /Why Us Section -->
-
-<!--    &lt;!&ndash; Gallery Slider Section &ndash;&gt;-->
-<!--    <section id="gallery-slider" class="gallery-slider section">-->
-
-<!--      <div class="container" data-aos="fade-up" data-aos-delay="100">-->
-
-<!--        <div class="gallery-container">-->
-<!--          <div class="swiper init-swiper">-->
-<!--            <script type="application/json" class="swiper-config">-->
-<!--              {-->
-<!--                "loop": true,-->
-<!--                "speed": 800,-->
-<!--                "autoplay": {-->
-<!--                  "delay": 4000-->
-<!--                },-->
-<!--                "effect": "coverflow",-->
-<!--                "grabCursor": true,-->
-<!--                "centeredSlides": true,-->
-<!--                "slidesPerView": "auto",-->
-<!--                "coverflowEffect": {-->
-<!--                  "rotate": 50,-->
-<!--                  "stretch": 0,-->
-<!--                  "depth": 100,-->
-<!--                  "modifier": 1,-->
-<!--                  "slideShadows": true-->
-<!--                },-->
-<!--                "pagination": {-->
-<!--                  "el": ".swiper-pagination",-->
-<!--                  "type": "bullets",-->
-<!--                  "clickable": true-->
-<!--                },-->
-<!--                "navigation": {-->
-<!--                  "nextEl": ".swiper-button-next",-->
-<!--                  "prevEl": ".swiper-button-prev"-->
-<!--                },-->
-<!--                "breakpoints": {-->
-<!--                  "320": {-->
-<!--                    "slidesPerView": 1,-->
-<!--                    "spaceBetween": 10-->
-<!--                  },-->
-<!--                  "768": {-->
-<!--                    "slidesPerView": 2,-->
-<!--                    "spaceBetween": 20-->
-<!--                  },-->
-<!--                  "1024": {-->
-<!--                    "slidesPerView": 3,-->
-<!--                    "spaceBetween": 30-->
-<!--                  }-->
-<!--                }-->
-<!--              }-->
-<!--            </script>-->
-<!--            <div class="swiper-wrapper">-->
-<!--              <div class="swiper-slide">-->
-<!--                <div class="gallery-item">-->
-<!--                  <div class="gallery-img">-->
-<!--                    <a class="glightbox" data-gallery="images-gallery" href="assets/img/gallery/gallery-3.webp">-->
-<!--                      <img src="assets/img/gallery/gallery-3.webp" class="img-fluid" alt="">-->
-<!--                      <div class="gallery-overlay">-->
-<!--                        <i class="bi bi-plus-circle"></i>-->
-<!--                      </div>-->
-<!--                    </a>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="swiper-slide">-->
-<!--                <div class="gallery-item">-->
-<!--                  <div class="gallery-img">-->
-<!--                    <a class="glightbox" data-gallery="images-gallery" href="assets/img/gallery/gallery-1.webp">-->
-<!--                      <img src="assets/img/gallery/gallery-1.webp" class="img-fluid" alt="">-->
-<!--                      <div class="gallery-overlay">-->
-<!--                        <i class="bi bi-plus-circle"></i>-->
-<!--                      </div>-->
-<!--                    </a>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="swiper-slide">-->
-<!--                <div class="gallery-item">-->
-<!--                  <div class="gallery-img">-->
-<!--                    <a class="glightbox" data-gallery="images-gallery" href="assets/img/gallery/gallery-5.webp">-->
-<!--                      <img src="assets/img/gallery/gallery-5.webp" class="img-fluid" alt="">-->
-<!--                      <div class="gallery-overlay">-->
-<!--                        <i class="bi bi-plus-circle"></i>-->
-<!--                      </div>-->
-<!--                    </a>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="swiper-slide">-->
-<!--                <div class="gallery-item">-->
-<!--                  <div class="gallery-img">-->
-<!--                    <a class="glightbox" data-gallery="images-gallery" href="assets/img/gallery/gallery-7.webp">-->
-<!--                      <img src="assets/img/gallery/gallery-7.webp" class="img-fluid" alt="">-->
-<!--                      <div class="gallery-overlay">-->
-<!--                        <i class="bi bi-plus-circle"></i>-->
-<!--                      </div>-->
-<!--                    </a>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="swiper-slide">-->
-<!--                <div class="gallery-item">-->
-<!--                  <div class="gallery-img">-->
-<!--                    <a class="glightbox" data-gallery="images-gallery" href="assets/img/gallery/gallery-2.webp">-->
-<!--                      <img src="assets/img/gallery/gallery-2.webp" class="img-fluid" alt="">-->
-<!--                      <div class="gallery-overlay">-->
-<!--                        <i class="bi bi-plus-circle"></i>-->
-<!--                      </div>-->
-<!--                    </a>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="swiper-slide">-->
-<!--                <div class="gallery-item">-->
-<!--                  <div class="gallery-img">-->
-<!--                    <a class="glightbox" data-gallery="images-gallery" href="assets/img/gallery/gallery-4.webp">-->
-<!--                      <img src="assets/img/gallery/gallery-4.webp" class="img-fluid" alt="">-->
-<!--                      <div class="gallery-overlay">-->
-<!--                        <i class="bi bi-plus-circle"></i>-->
-<!--                      </div>-->
-<!--                    </a>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="swiper-slide">-->
-<!--                <div class="gallery-item">-->
-<!--                  <div class="gallery-img">-->
-<!--                    <a class="glightbox" data-gallery="images-gallery" href="assets/img/gallery/gallery-6.webp">-->
-<!--                      <img src="assets/img/gallery/gallery-6.webp" class="img-fluid" alt="">-->
-<!--                      <div class="gallery-overlay">-->
-<!--                        <i class="bi bi-plus-circle"></i>-->
-<!--                      </div>-->
-<!--                    </a>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="swiper-slide">-->
-<!--                <div class="gallery-item">-->
-<!--                  <div class="gallery-img">-->
-<!--                    <a class="glightbox" data-gallery="images-gallery" href="assets/img/gallery/gallery-8.webp">-->
-<!--                      <img src="assets/img/gallery/gallery-8.webp" class="img-fluid" alt="">-->
-<!--                      <div class="gallery-overlay">-->
-<!--                        <i class="bi bi-plus-circle"></i>-->
-<!--                      </div>-->
-<!--                    </a>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="swiper-pagination"></div>-->
-<!--            <div class="swiper-button-next"></div>-->
-<!--            <div class="swiper-button-prev"></div>-->
-<!--          </div>-->
-<!--        </div>-->
-
-<!--      </div>-->
-
-<!--    </section>&lt;!&ndash; /Gallery Slider Section &ndash;&gt;-->
-
-
-<!--    &lt;!&ndash; Featured Destinations Section &ndash;&gt;-->
-    <section id="featured-destinations" class="featured-destinations section">
-
-
-
-    </section><!-- /Featured Destinations Section -->
-
-<!--    &lt;!&ndash; Featured Tours Section &ndash;&gt;-->
-    <section id="featured-tours" class="featured-tours section">
-
-
-
-    </section><!-- /Featured Tours Section -->
-
-<!--    &lt;!&ndash; Testimonials Home Section &ndash;&gt;-->
-    <section id="testimonials-home" class="testimonials-home section">
-
-
-    </section><!-- /Call To Action Section -->
-
+    </section>
   </main>
-
-  <footer id="footer" class="footer position-relative dark-background">
-
-
-
-  </footer>
-
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 

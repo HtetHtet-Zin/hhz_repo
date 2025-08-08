@@ -1,10 +1,12 @@
 package com.dat.event.service;
 
 import com.dat.event.dto.EventStaffDto;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface EventRegistrationService {
 
-    List<EventStaffDto> fetchEventStaffList();
+    Page<EventStaffDto> fetchEventStaffList(String keyword, int page);
+
+    int registerCount();
 }

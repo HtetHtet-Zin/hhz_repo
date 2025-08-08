@@ -1,4 +1,3 @@
-
 const starField = document.querySelector('.star-field');
 
 const colors = [
