@@ -58,6 +58,6 @@ public class StaffController {
     public ModelAndView birthdayStaff(){
 
 
-        return new ModelAndView("gallery","birthdayStaffList",staffService.birthdayStaffList());
+        return new ModelAndView("birthday","birthdayStaffList",staffService.birthdayStaffList());
     }
 }
