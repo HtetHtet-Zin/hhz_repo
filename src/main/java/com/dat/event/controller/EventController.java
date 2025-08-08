@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Objects;
 
 
 /**
@@ -48,6 +48,27 @@ public class EventController {
         log.info("staff-list {}",staffDtoList);
         return new ModelAndView("event-create-page", "staffs", staffDtoList);
     }
+
+    @PostMapping(WebUrl.EVENT_URL + "/create")
+    public ResponseEntity<?> createEvent(
+            @RequestParam String eventName,
+            @RequestParam String inChargePerson,
+            @RequestParam MultipartFile file,
+            @RequestParam String description
+    ) {
+        // handle text params
+        System.out.println("dex" + description);
+        System.out.println("Event Name: " + eventName);
+        System.out.println("Incharge: " + inChargePerson);
+
+        // handle file
+        if (!file.isEmpty()) {
+            System.out.println("Uploaded file: " + file.getOriginalFilename());
+        }
+
+        return ResponseEntity.ok("Event created successfully!");
+    }
+
 
     @GetMapping(WebUrl.EVENT_URL)
     public String view(HttpSession session){

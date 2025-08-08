@@ -329,19 +329,40 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Please add at least one supported member.");
       return;
     }
+   const formData = new FormData();
+   formData.append("eventName", `${form.eventName.value}`);
+   formData.append("description", `${form.eventDesc.value}`);
+   formData.append("dateTimeList", "");
+   formData.append("inChargePerson", `${form.inchargePerson.value}`);
+   formData.append("supportedMembers", []);
 
-//    const formData = {
-//        eventName:
-//        inchargePerson:
-//
-//    };
+   // Example: attach a file from an <input type="file" id="eventFile">
+   const fileInput = document.getElementById("eventPhoto");
+   if (fileInput.files.length > 0) {
+       formData.append("file", fileInput.files[0]);
+   }
+
+   fetch('/club/event/create', {
+       method: 'POST',
+       body: formData // No need for Content-Type, browser sets it automatically
+   })
+   .then(response => {
+       if (!response.ok) {
+           throw new Error("Network response was not ok");
+       }
+       return response.json();
+   })
+   .then(data => console.log(data))
+   .catch(error => console.error("Error:", error));
 
 
-    alert(
-      `Submitting event:\nName: ${form.eventName.value}\nIncharge: ${form.inchargePerson}\nSupported Members: ${members}`
-    );
+//    alert(
+//      `Submitting event:\nName: ${form.eventName.value}\nIncharge: ${form.inchargePerson}\nSupported Members: ${members}`
+//    );
 
-    // form.submit();
+
+
+     //form.submit();
   }
 
   // Expose functions globally
