@@ -107,38 +107,6 @@
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".admin-flag-toggle").forEach(checkbox => {
-        checkbox.addEventListener("change", async function () {
-            const id = this.dataset.id;
-            const adminFlag = this.checked;
-
-            try {
-                const response = await fetch('/club/staff/admin-flag', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        staffNo: id,
-                        adminFlag: adminFlag
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error("Server error");
-                }
-
-                console.log(`Admin flag updated for staff ID ${id}`);
-            } catch (error) {
-                alert("Error updating admin flag.");
-                this.checked = !adminFlag; // revert checkbox state if failed
-            }
-        });
-    });
-});
-</script>
-<script>
 const tableBody = document.getElementById("staffTableBody");
 const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("search");
@@ -193,6 +161,7 @@ function renderTable(data) {
             </tr>
         `;
     });
+    setUpAdminFlag();
 }
 
 function renderPagination(data) {
@@ -228,6 +197,37 @@ function changePage(page) {
     if (page < 0) return;
     currentPage = page;
     loadStaffData();
+}
+
+function setUpAdminFlag(){
+     document.querySelectorAll(".admin-flag-toggle").forEach(checkbox => {
+        checkbox.addEventListener("change", async function () {
+            const id = this.dataset.id;
+            const adminFlag = this.checked;
+
+            try {
+                const response = await fetch('/club/staff/admin-flag', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        staffNo: id,
+                        adminFlag: adminFlag
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Server error");
+                }
+
+                console.log(`Admin flag updated for staff ID ${id}`);
+            } catch (error) {
+                alert("Error updating admin flag.");
+                this.checked = !adminFlag; // revert checkbox state if failed
+            }
+        });
+    });
 }
 </script>
 
