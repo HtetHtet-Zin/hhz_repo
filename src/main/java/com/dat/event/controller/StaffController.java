@@ -53,4 +53,11 @@ public class StaffController {
         return ResponseEntity.ok().build();
 
     }
+
+    @GetMapping("/birthdayStaff")
+    public ModelAndView birthdayStaff(){
+
+
+        return new ModelAndView("gallery","birthdayStaffList",staffService.birthdayStaffList());
+    }
 }

@@ -18,4 +18,6 @@ public interface StaffService {
     List<StaffDto> findAll();
 
     void updateAdminFlag(String staffNo, boolean adminFlag);
+
+    List<StaffDto> birthdayStaffList();
 }

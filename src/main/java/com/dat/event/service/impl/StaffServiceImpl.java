@@ -13,6 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
+
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import java.util.Optional;
@@ -61,5 +64,13 @@ public class StaffServiceImpl implements StaffService {
         final StaffEntity staffEntity = staffRepository.findByStaffNo(staffNo).orElseThrow();
         staffEntity.setAdminFlag(adminFlag);
         staffRepository.save(staffEntity);
+    }
+
+    @Override
+    public List<StaffDto> birthdayStaffList() {
+
+        LocalDate today = LocalDate.now();
+       int month = today.getMonthValue();
+        return staffMapper.toDtoList(staffRepository.birthdayStaff(month));
     }
 }
