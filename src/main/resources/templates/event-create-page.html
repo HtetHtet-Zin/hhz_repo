@@ -12,7 +12,7 @@
     <h3 class="text-center mb-4">Event Registration</h3>
 
     <!-- Note: added action and method attributes as example -->
-    <form id="eventForm" action="/club/event/create" method="POST" enctype="multipart/form-data" novalidate>
+    <form id="eventForm" th:action="@{/event/create}" method="POST" enctype="multipart/form-data" novalidate>
         <div id="wizard">
             <!-- Step 1: Event Details -->
             <div class="wizard-step active" id="step1">

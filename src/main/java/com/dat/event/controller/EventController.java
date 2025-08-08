@@ -56,7 +56,6 @@ public class EventController {
         }
         return WebUrl.LOGIN_URL;
     }
-
     @GetMapping("/event-list")
     public String eventList() {
         return "event-list";

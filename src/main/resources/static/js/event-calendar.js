@@ -28,7 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = li.textContent.toLowerCase();
       li.style.display = text.includes(filter) ? "" : "none";
     });
+    // Ensure member list visible while typing
+    memberList.style.display = "";
   });
+
 
   // --- Modal Show Event Handlers ---
   document.getElementById("personModal").addEventListener("show.bs.modal", () => {
@@ -42,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedMember.value = "";
     Array.from(memberList.children).forEach(li => (li.style.display = ""));
     monthSelect.selectedIndex = 0;
+    memberList.style.display = ""; // Show the list again on modal open
     setTimeout(() => memberSearch.focus(), 50);
   });
 
@@ -54,7 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
   window.selectMember = function (element) {
     selectedMember.value = element.textContent;
     memberSearch.value = element.textContent;
-    memberList.innerHTML = ""; // clear to show selection clearly
+    document.getElementById('memberList').style.display = 'none';
+    // Do NOT clear the member list; keep it visible for multiple adds
+    // memberList.innerHTML = "";  <-- Removed this line
+    // Instead, optionally hide the list visually if desired:
+    // memberList.style.display = "none";
   };
 
   // --- Add supported member to table ---
@@ -107,7 +115,13 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedMember.value = "";
     memberSearch.value = "";
     monthSelect.selectedIndex = 0;
+    // Show the member list again just in case
+    memberList.style.display = "";
     bootstrap.Modal.getInstance(document.getElementById("memberModal")).hide();
+
+    // Optional: update count or UI here if needed
+    updateSupportedCount();
+    document.getElementById('memberList').style.display = 'block';
   }
 
   document.getElementById("addMemberBtn").addEventListener("click", addSupportedMember);
@@ -118,22 +132,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const row = e.target.closest("tr");
       row.remove();
 
-      // After removing, check if list empty
-      if (supportedList.querySelectorAll("tr").length === 0) {
-        // Optionally show a placeholder row or message
-        // Or disable submit button, etc.
-        console.log("No supported members left.");
-      }
-
-      // If you have some cached data or UI dependent on supported members, update here.
-      // Example: update summary count
+      // Optional: update count or UI here if needed
       updateSupportedCount();
     }
   });
 
   function updateSupportedCount() {
     const count = supportedList.querySelectorAll("tr").length;
-    const countElem = document.getElementById("supportedCount"); // assuming you have
+    const countElem = document.getElementById("supportedCount"); // Add this element in your HTML if you want
     if (countElem) {
       countElem.textContent = `Supported Members: ${count}`;
     }
@@ -309,10 +315,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function submitEvent() {
     const form = document.getElementById("eventForm");
 
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
+//    if (!form.checkValidity()) {
+//      form.reportValidity();
+//      return;
+//    }
 
     const members = Array.from(supportedList.querySelectorAll("tr")).map((row) => {
       const tds = row.querySelectorAll("td");
@@ -324,8 +330,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+//    const formData = {
+//        eventName:
+//        inchargePerson:
+//
+//    };
+
+
     alert(
-      `Submitting event:\nName: ${form.eventName.value}\nIncharge: ${form.inchargePerson.value}\nSupported Members: ${members.length}`
+      `Submitting event:\nName: ${form.eventName.value}\nIncharge: ${form.inchargePerson}\nSupported Members: ${members}`
     );
 
     // form.submit();
@@ -334,4 +347,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Expose functions globally
   window.goToStep = goToStep;
   window.submitEvent = submitEvent;
+  window.selectIncharge = window.selectIncharge;
+  window.selectMember = window.selectMember;
 });
