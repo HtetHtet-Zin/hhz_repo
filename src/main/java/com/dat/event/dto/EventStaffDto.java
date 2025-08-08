@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @RequiredArgsConstructor
@@ -13,16 +14,15 @@ public class EventStaffDto {
     private String eventName;
     private String staffNo;
     private String staffName;
-    private String email;
-    private String mobile;
-    private LocalDate dob;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
-    public EventStaffDto(String eventName, String staffNo, String staffName, String email, String mobile, LocalDate dob) {
+    public EventStaffDto(String eventName, String staffNo, String staffName, LocalTime startTime, LocalTime endTime) {
         this.eventName = eventName;
         this.staffNo = staffNo;
         this.staffName = staffName;
-        this.email = email;
-        this.mobile = mobile;
-        this.dob = dob;
+        this.startTime = startTime;
+        this.endTime = endTime;
+
     }
 }

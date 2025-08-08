@@ -15,6 +15,8 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * EventSchedule Class.
@@ -44,6 +46,9 @@ public class EventScheduleEntity implements Serializable {
     private String createdBy;
     private LocalDateTime updatedAt;
     private String updatedBy;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<EventRegistrationEntity> eventRegistrationEntityList = new ArrayList<>();
 
 
 }

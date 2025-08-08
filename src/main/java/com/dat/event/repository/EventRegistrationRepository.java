@@ -10,14 +10,19 @@ import org.springframework.data.repository.query.Param;
 
 public interface EventRegistrationRepository extends JpaRepository<EventRegistrationEntity, Long> {
 
-    @Query("SELECT new com.dat.event.dto.EventStaffDto(" +
-            "e.name, s.staffNo, s.name, s.email, s.mobile, s.dob) " +
+    @Query("SELECT new com.dat.event.dto.EventStaffDto( " +
+            "e.name, s.staffNo, s.name, sch.startTime, sch.endTime) " +
             "FROM EventRegistrationEntity er " +
-            "JOIN er.event e " +
+            "JOIN er.schedule sch " +
+            "JOIN sch.event e " +
             "JOIN er.staff s " +
-            "WHERE (:keyword IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "WHERE (:keyword IS NULL OR " +
+            "LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(s.staffNo) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "ORDER BY function('RAND')")
     Page<EventStaffDto> fetchEventStaffList(@Param("keyword") String keyword, Pageable pageable);
+
 
 
 }

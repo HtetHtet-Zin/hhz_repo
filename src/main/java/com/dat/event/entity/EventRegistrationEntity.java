@@ -29,8 +29,8 @@ public class EventRegistrationEntity implements Serializable {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id", referencedColumnName = "event_id")
-    private EventEntity event;
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    private EventScheduleEntity schedule;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "staff_id", referencedColumnName = "staff_id")

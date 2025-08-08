@@ -37,8 +37,5 @@ public class EventEntity {
     private String createdBy;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "event")
-    private List<EventRegistrationEntity> eventRegistrationEntityList = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "event")
     private List<EventScheduleEntity> eventScheduleEntityList = new ArrayList<>();
 }
