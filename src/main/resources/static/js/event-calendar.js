@@ -1,12 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const persons = [
-    "Alice Smith",
-    "Bob Johnson",
-    "Charlie Davis",
-    "Diana Prince",
-    "Ethan Clark",
-    "Fiona Adams",
-  ];
 
   // Cache DOM elements
   const inchargeInput = document.getElementById("inchargePerson");
@@ -19,102 +11,60 @@ document.addEventListener("DOMContentLoaded", () => {
   const monthSelect = document.getElementById("monthSelect");
   const supportedList = document.getElementById("supportedList");
 
-  // --- Person Modal ---
-
-  function renderPersonList(filter = "") {
-    personList.innerHTML = "";
-    const filtered = persons.filter((p) =>
-      p.toLowerCase().includes(filter.toLowerCase())
-    );
-    if (filtered.length === 0) {
-      const li = document.createElement("li");
-      li.className = "list-group-item text-muted";
-      li.textContent = "No results";
-      personList.appendChild(li);
-      return;
-    }
-
-    filtered.forEach((name) => {
-      const li = document.createElement("li");
-      li.className = "list-group-item list-group-item-action";
-      li.textContent = name;
-      li.style.cursor = "pointer";
-      li.addEventListener("click", () => {
-        inchargeInput.value = name;
-        bootstrap.Modal.getOrCreateInstance(
-          document.getElementById("personModal")
-        ).hide();
-      });
-      personList.appendChild(li);
-    });
-  }
-
+  // --- Person Modal Search Filter ---
   personSearch.addEventListener("input", () => {
-    renderPersonList(personSearch.value);
+    const filter = personSearch.value.toLowerCase();
+    Array.from(personList.children).forEach(li => {
+      const text = li.textContent.toLowerCase();
+      li.style.display = text.includes(filter) ? "" : "none";
+    });
   });
 
-  document
-    .getElementById("personModal")
-    .addEventListener("show.bs.modal", () => {
-      personSearch.value = "";
-      renderPersonList();
-      setTimeout(() => personSearch.focus(), 50);
-    });
-
-  // --- Member Modal ---
-
-  function renderMemberList(filter = "") {
-    memberList.innerHTML = "";
-    const filtered = persons.filter((p) =>
-      p.toLowerCase().includes(filter.toLowerCase())
-    );
-    if (filtered.length === 0) {
-      const li = document.createElement("li");
-      li.className = "list-group-item text-muted";
-      li.textContent = "No results";
-      memberList.appendChild(li);
-      return;
-    }
-
-    filtered.forEach((name) => {
-      const li = document.createElement("li");
-      li.className = "list-group-item list-group-item-action";
-      li.textContent = name;
-      li.style.cursor = "pointer";
-      li.addEventListener("click", () => {
-        selectedMember.value = name;
-        memberSearch.value = name;
-        memberList.innerHTML = "";
-      });
-      memberList.appendChild(li);
-    });
-  }
-
+  // --- Member Modal Search Filter ---
   memberSearch.addEventListener("input", () => {
-    selectedMember.value = ""; // reset if user typing new
-    renderMemberList(memberSearch.value);
+    const filter = memberSearch.value.toLowerCase();
+    selectedMember.value = ""; // reset on typing new search
+    Array.from(memberList.children).forEach(li => {
+      const text = li.textContent.toLowerCase();
+      li.style.display = text.includes(filter) ? "" : "none";
+    });
   });
 
-  document
-    .getElementById("memberModal")
-    .addEventListener("show.bs.modal", () => {
-      memberSearch.value = "";
-      selectedMember.value = "";
-      renderMemberList();
-      monthSelect.selectedIndex = 0;
-      setTimeout(() => memberSearch.focus(), 50);
-    });
+  // --- Modal Show Event Handlers ---
+  document.getElementById("personModal").addEventListener("show.bs.modal", () => {
+    personSearch.value = "";
+    Array.from(personList.children).forEach(li => (li.style.display = ""));
+    setTimeout(() => personSearch.focus(), 50);
+  });
 
-  // Escape HTML to prevent injection in table rows
+  document.getElementById("memberModal").addEventListener("show.bs.modal", () => {
+    memberSearch.value = "";
+    selectedMember.value = "";
+    Array.from(memberList.children).forEach(li => (li.style.display = ""));
+    monthSelect.selectedIndex = 0;
+    setTimeout(() => memberSearch.focus(), 50);
+  });
+
+  // --- Select handlers called from onclick in <li> ---
+  window.selectIncharge = function (element) {
+    inchargeInput.value = element.textContent;
+    bootstrap.Modal.getInstance(document.getElementById("personModal")).hide();
+  };
+
+  window.selectMember = function (element) {
+    selectedMember.value = element.textContent;
+    memberSearch.value = element.textContent;
+    memberList.innerHTML = ""; // clear to show selection clearly
+  };
+
+  // --- Add supported member to table ---
   function escapeHtml(text) {
-    return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+    return text.replace(/&/g, "&amp;")
+               .replace(/</g, "&lt;")
+               .replace(/>/g, "&gt;")
+               .replace(/"/g, "&quot;");
   }
 
-  // Add supported member to the table without duplicates
   function addSupportedMember(event) {
     if (event) event.preventDefault();
 
@@ -132,13 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Check for duplicates (name + month)
     const rows = Array.from(supportedList.querySelectorAll("tr"));
-    const duplicate = rows.some((row) => {
+    const duplicate = rows.some(row => {
       const cells = row.querySelectorAll("td");
-      return (
-        cells.length >= 2 &&
-        cells[0].textContent.trim() === name &&
-        cells[1].textContent.trim() === month
-      );
+      return cells.length >= 2 && cells[0].textContent.trim() === name && cells[1].textContent.trim() === month;
     });
     if (duplicate) {
       alert("This member with the same month is already added.");
@@ -147,35 +93,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-        <td>${escapeHtml(name)}</td>
-        <td>${escapeHtml(month)}</td>
-        <td>
-            <button type="button" class="btn btn-sm btn-danger remove-supported" aria-label="Remove supported member">
-                <i class="bi bi-trash"></i>
-            </button>
-        </td>
+      <td>${escapeHtml(name)}</td>
+      <td>${escapeHtml(month)}</td>
+      <td>
+        <button type="button" class="btn btn-sm btn-danger remove-supported" aria-label="Remove supported member">
+          <i class="bi bi-trash"></i>
+        </button>
+      </td>
     `;
     supportedList.appendChild(tr);
 
-    // Clear modal inputs and close modal
+    // Clear inputs and close modal
     selectedMember.value = "";
     memberSearch.value = "";
     monthSelect.selectedIndex = 0;
-    bootstrap.Modal.getOrCreateInstance(
-      document.getElementById("memberModal")
-    ).hide();
+    bootstrap.Modal.getInstance(document.getElementById("memberModal")).hide();
   }
 
-  // Make sure you have a button with id="addMemberBtn" in your modal for adding supported members
-  // Or replace this line with the actual button you have:
   document.getElementById("addMemberBtn").addEventListener("click", addSupportedMember);
 
-  // Delegate remove supported member button click
+  // Remove supported member handler
   supportedList.addEventListener("click", (e) => {
     if (e.target.closest(".remove-supported")) {
-      e.target.closest("tr").remove();
+      const row = e.target.closest("tr");
+      row.remove();
+
+      // After removing, check if list empty
+      if (supportedList.querySelectorAll("tr").length === 0) {
+        // Optionally show a placeholder row or message
+        // Or disable submit button, etc.
+        console.log("No supported members left.");
+      }
+
+      // If you have some cached data or UI dependent on supported members, update here.
+      // Example: update summary count
+      updateSupportedCount();
     }
   });
+
+  function updateSupportedCount() {
+    const count = supportedList.querySelectorAll("tr").length;
+    const countElem = document.getElementById("supportedCount"); // assuming you have
+    if (countElem) {
+      countElem.textContent = `Supported Members: ${count}`;
+    }
+  }
+
 
   // ==== Wizard Step Navigation ====
 

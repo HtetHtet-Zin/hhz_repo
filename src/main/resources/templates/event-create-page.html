@@ -47,7 +47,7 @@
                     <button type="button"  class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#memberModal" >Add Supported Member </button>
                 </div>
 
-                <div>
+                <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -75,7 +75,12 @@
                         </div>
                         <div class="modal-body">
                             <label for="personSearch"></label><input type="text" id="personSearch" class="form-control mb-3" placeholder="Search by name..." autocomplete="off" />
-                            <ul id="personList" class="list-group"></ul>
+                            <ul id="personList" class="list-group">
+                                <li th:each="staff : ${staffs}" class="list-group-item list-group-item-action"
+                                    th:text="${staff.name}"  th:data-id="${staff.staffNo}" style="cursor:pointer" onclick="selectIncharge(this)">
+                                </li>
+                                <li th:if="${#lists.isEmpty(staffs)}" class="list-group-item text-muted">No persons found</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -91,7 +96,16 @@
                         </div>
                         <div class="modal-body">
                             <label for="memberSearch"></label><input type="text" id="memberSearch" class="form-control mb-3" placeholder="Search member..." autocomplete="off" />
-                            <ul id="memberList" class="list-group mb-3"></ul>
+                            <ul id="memberList" class="list-group mb-3">
+                                <li th:each="member : ${staffs}"
+                                    class="list-group-item list-group-item-action"
+                                    th:text="${member.name}"
+                                    th:data-id="${member.staffNo}"
+                                    style="cursor:pointer"
+                                    onclick="selectMember(this)">
+                                </li>
+                                <li th:if="${#lists.isEmpty(members)}" class="list-group-item text-muted">No members found</li>
+                            </ul>
                             <label for="monthSelect" class="form-label">Month</label>
                             <select id="monthSelect" name="monthSelect" class="form-select mb-3" required>
                                 <option value="" selected>--Select Month--</option>

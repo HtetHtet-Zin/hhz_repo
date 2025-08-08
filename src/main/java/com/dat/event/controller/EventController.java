@@ -7,9 +7,9 @@
 package com.dat.event.controller;
 
 import com.dat.event.common.constant.WebUrl;
-import com.dat.event.dto.StaffDto;
 import com.dat.event.service.EventRegistrationService;
 import com.dat.event.service.EventService;
+import com.dat.event.service.StaffService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +34,13 @@ public class EventController {
 
     private final EventService eventService;
     private final EventRegistrationService eventRegistrationService;
+    private final StaffService staffService;
 
     @GetMapping(WebUrl.EVENT_URL + "/create")
-    public String showCreateEventPage() {
-        return "event-create-page";
+    public ModelAndView showCreateEventPage() {
+        var staffDtoList=staffService.findAll();
+        log.info("staff-list {}",staffDtoList);
+        return new ModelAndView("event-create-page", "staffs", staffDtoList);
     }
 
     @GetMapping(WebUrl.EVENT_URL)
