@@ -198,8 +198,12 @@
     <div>
         <!-- Search box -->
         <div class="d-flex justify-content-end m-3 align-items-center">
-            <label for="search" class="me-2">Search:</label>
-            <input class="form-control" name="keyword" id="search" placeholder="Search staff...">
+            <div>
+                <label for="search" class="me-2">Search:</label>
+            </div>
+            <div>
+                <input class="form-control" name="keyword" id="search" placeholder="Search staff...">
+            </div>
         </div>
 
         <!-- Table -->
@@ -425,7 +429,7 @@ function renderPagination(data) {
     // Previous button
     pagination.innerHTML += `
         <li class="page-item ${data.first ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${data.number - 1})">Previous</a>
+            <a class="page-link" onclick="changePage(${data.number - 1})">Previous</a>
         </li>
     `;
 
@@ -435,7 +439,7 @@ function renderPagination(data) {
     for (let i = start; i <= end; i++) {
         pagination.innerHTML += `
             <li class="page-item ${i === data.number ? 'active' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${i})">${i + 1}</a>
+                <a class="page-link" onclick="changePage(${i})">${i + 1}</a>
             </li>
         `;
     }
@@ -443,7 +447,7 @@ function renderPagination(data) {
     // Next button
     pagination.innerHTML += `
         <li class="page-item ${data.last ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${data.number + 1})">Next</a>
+            <a class="page-link" onclick="changePage(${data.number + 1})">Next</a>
         </li>
     `;
 }
