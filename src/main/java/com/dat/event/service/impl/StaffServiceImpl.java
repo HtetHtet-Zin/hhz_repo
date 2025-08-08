@@ -48,6 +48,11 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    public List<StaffDto> findAll() {
+        return staffMapper.toDtoList(staffRepository.findAll());
+    }
+
+    @Override
     public void updateAdminFlag(final String staffNo, final boolean adminFlag) {
         final StaffEntity staffEntity = staffRepository.findByStaffNo(staffNo).orElseThrow();
         staffEntity.setAdminFlag(adminFlag);
