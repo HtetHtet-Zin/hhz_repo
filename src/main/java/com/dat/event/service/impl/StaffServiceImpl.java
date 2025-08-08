@@ -9,7 +9,6 @@ import com.dat.event.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -45,6 +44,11 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Page<StaffDto> findAll(final int page) {
         return staffRepository.findAll(PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("createdAt").descending())).map(staffMapper::toDTO);
+    }
+
+    @Override
+    public Page<StaffDto> findAll(final String keyword, final int page) {
+        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCase(keyword, keyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("createdAt").descending())).map(staffMapper::toDTO);
     }
 
     @Override

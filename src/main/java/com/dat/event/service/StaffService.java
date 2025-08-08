@@ -13,6 +13,8 @@ public interface StaffService {
 
     Page<StaffDto> findAll(int page);
 
+    Page<StaffDto> findAll(String keyword, int page);
+
     List<StaffDto> findAll();
 
     void updateAdminFlag(String staffNo, boolean adminFlag);

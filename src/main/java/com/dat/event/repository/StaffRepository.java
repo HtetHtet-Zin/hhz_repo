@@ -1,6 +1,8 @@
 package com.dat.event.repository;
 
 import com.dat.event.entity.StaffEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,5 +14,8 @@ public interface StaffRepository extends JpaRepository<StaffEntity, Long> {
 
     @Query(value = "SELECT COUNT(*) FROM tbl_staff WHERE staff_no = :staffNo", nativeQuery = true)
     Long existsByStaffNo(@Param("staffNo") String staffNo);
+
+    Page<StaffEntity> findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCase(
+            String name, String staffNo, Pageable pageable);
 
 }

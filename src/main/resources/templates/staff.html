@@ -125,69 +125,109 @@
         </div>
     </div>
 
-    <div class="">
-         <table class="table table-bordered custom-bordered-table">
-             <thead>
-             <tr>
-                 <th>#</th>
-                 <th>Staff-ID</th>
-                 <th>Staff Name</th>
-                 <th>Email</th>
-                 <th>Mobile</th>
-                 <th>Date of Birth</th>
-                 <th>Admin</th>
-             </tr>
-             </thead>
-             <tbody>
-             <tr th:each="staff, iterStat : ${staffPage.content}">
-                 <td th:text="${(staffPage.number * staffPage.size) + iterStat.index + 1}"></td>
-                 <td th:text="${staff.staffNo}"></td>
-                 <td th:text="${staff.name}"></td>
-                 <td th:text="${staff.email}"></td>
-                 <td th:text="${staff.mobile}"></td>
-                 <td th:text="${staff.dob}"></td>
-                 <td style="text-align: center;">
-                     <!-- Checkbox with data attributes -->
-                     <input type="checkbox" class="admin-flag-toggle"
-                            th:data-id="${staff.staffNo}"
-                            th:checked="${staff.adminFlag}">
-                 </td>
-             </tr>
+<!--    <div class="">-->
+<!--         <table class="table table-bordered custom-bordered-table">-->
+<!--             <form action="/club/staffs" method="post">-->
+<!--                 <div class="d-flex justify-content-end m-3 align-items-center">-->
+<!--                     <div>-->
+<!--                         <label for="search">Search:</label>-->
+<!--                     </div>-->
+<!--                     <div>-->
+<!--                         <input class="form-control" name="keyword" id="search">-->
+<!--                     </div>-->
+<!--                 </div>-->
+<!--             </form>-->
+<!--             <thead>-->
+<!--             <tr>-->
+<!--                 <th>#</th>-->
+<!--                 <th>Staff-ID</th>-->
+<!--                 <th>Staff Name</th>-->
+<!--                 <th>Email</th>-->
+<!--                 <th>Mobile</th>-->
+<!--                 <th>Date of Birth</th>-->
+<!--                 <th>Admin</th>-->
+<!--             </tr>-->
+<!--             </thead>-->
+<!--             <tbody>-->
+<!--             <tr th:each="staff, iterStat : ${staffPage.content}">-->
+<!--                 <td th:text="${(staffPage.number * staffPage.size) + iterStat.index + 1}"></td>-->
+<!--                 <td th:text="${staff.staffNo}"></td>-->
+<!--                 <td th:text="${staff.name}"></td>-->
+<!--                 <td th:text="${staff.email}"></td>-->
+<!--                 <td th:text="${staff.mobile}"></td>-->
+<!--                 <td th:text="${staff.dob}"></td>-->
+<!--                 <td style="text-align: center;">-->
+<!--                     <input type="checkbox" class="admin-flag-toggle"-->
+<!--                            th:data-id="${staff.staffNo}"-->
+<!--                            th:checked="${staff.adminFlag}">-->
+<!--                 </td>-->
+<!--             </tr>-->
+<!--             </tbody>-->
+<!--         </table>-->
 
-             </tbody>
-         </table>
+<!--         <nav aria-label="Staff pagination">-->
+<!--             <ul class="pagination justify-content-center">-->
 
-         <nav aria-label="Staff pagination">
-             <ul class="pagination justify-content-center">
+<!--                &lt;!&ndash; Previous &ndash;&gt;-->
+<!--                 <li class="page-item" th:classappend="${staffPage.first} ? 'disabled'">-->
+<!--                     <a class="page-link"-->
+<!--                        th:href="@{/staffs(page=${staffPage.number - 1})}">Previous</a>-->
+<!--                 </li>-->
 
-                <!-- Previous -->
-                 <li class="page-item" th:classappend="${staffPage.first} ? 'disabled'">
-                     <a class="page-link"
-                        th:href="@{/staffs(page=${staffPage.number - 1})}">Previous</a>
-                 </li>
+<!--                &lt;!&ndash; Page Numbers &ndash;&gt;-->
+<!--                 <li class="page-item"-->
+<!--                     th:each="i : ${#numbers.sequence(-->
+<!--              T(java.lang.Math).max(0, T(java.lang.Math).min(staffPage.totalPages - 5, staffPage.number - 2)),-->
+<!--               T(java.lang.Math).min(staffPage.totalPages - 1,-->
+<!--                  T(java.lang.Math).max(4, staffPage.number + 2)))}"-->
+<!--                     th:classappend="${staffPage.number == i} ? 'active'">-->
+<!--                     <a class="page-link"-->
+<!--                        th:text="${i + 1}"-->
+<!--                        th:href="@{/staffs(page=${i})}"></a>-->
+<!--                 </li>-->
 
-                <!-- Page Numbers -->
-                 <li class="page-item"
-                     th:each="i : ${#numbers.sequence(
-              T(java.lang.Math).max(0, T(java.lang.Math).min(staffPage.totalPages - 5, staffPage.number - 2)),
-               T(java.lang.Math).min(staffPage.totalPages - 1,
-                  T(java.lang.Math).max(4, staffPage.number + 2)))}"
-                     th:classappend="${staffPage.number == i} ? 'active'">
-                     <a class="page-link"
-                        th:text="${i + 1}"
-                        th:href="@{/staffs(page=${i})}"></a>
-                 </li>
+<!--                &lt;!&ndash; Next &ndash;&gt;-->
+<!--                 <li class="page-item" th:classappend="${staffPage.last} ? 'disabled'">-->
+<!--                     <a class="page-link"-->
+<!--                        th:href="@{/staffs(page=${staffPage.number + 1})}">Next</a>-->
+<!--                 </li>-->
+<!--             </ul>-->
+<!--         </nav>-->
+<!--    </div>-->
 
-                <!-- Next -->
-                 <li class="page-item" th:classappend="${staffPage.last} ? 'disabled'">
-                     <a class="page-link"
-                        th:href="@{/staffs(page=${staffPage.number + 1})}">Next</a>
-                 </li>
+    <div>
+        <!-- Search box -->
+        <div class="d-flex justify-content-end m-3 align-items-center">
+            <label for="search" class="me-2">Search:</label>
+            <input class="form-control" name="keyword" id="search" placeholder="Search staff...">
+        </div>
 
-             </ul>
-         </nav>
+        <!-- Table -->
+        <table class="table table-bordered custom-bordered-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Staff-ID</th>
+                <th>Staff Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Date of Birth</th>
+                <th>Admin</th>
+            </tr>
+            </thead>
+            <tbody id="staffTableBody">
+            <!-- JS will insert rows here -->
+            </tbody>
+        </table>
 
+        <!-- Pagination -->
+        <nav aria-label="Staff pagination">
+            <ul class="pagination justify-content-center" id="pagination">
+                <!-- JS will insert pagination here -->
+            </ul>
+        </nav>
     </div>
+
 </main>
 
 <footer id="footer" class="footer position-relative dark-background">
@@ -323,6 +363,98 @@
     });
 });
 </script>
+<script>
+const tableBody = document.getElementById("staffTableBody");
+const pagination = document.getElementById("pagination");
+const searchInput = document.getElementById("search");
+
+let currentPage = 0;
+let currentKeyword = "";
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadStaffData();
+});
+
+searchInput.addEventListener("input", () => {
+    currentKeyword = searchInput.value.trim();
+    currentPage = 0;
+    loadStaffData();
+});
+
+function loadStaffData() {
+    fetch("/club/staffs", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+            keyword: currentKeyword,
+            page: currentPage
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        renderTable(data);
+        renderPagination(data);
+    })
+    .catch(err => console.error("Error loading staff:", err));
+}
+
+function renderTable(data) {
+    tableBody.innerHTML = "";
+    data.content.forEach((staff, index) => {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${(data.number * data.size) + index + 1}</td>
+                <td>${staff.staffNo}</td>
+                <td>${staff.name}</td>
+                <td>${staff.email}</td>
+                <td>${staff.mobile}</td>
+                <td>${staff.dob ?? ""}</td>
+                <td style="text-align:center;">
+                    <input type="checkbox" class="admin-flag-toggle"
+                           data-id="${staff.staffNo}"
+                           ${staff.adminFlag ? "checked" : ""}>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderPagination(data) {
+    pagination.innerHTML = "";
+
+    // Previous button
+    pagination.innerHTML += `
+        <li class="page-item ${data.first ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${data.number - 1})">Previous</a>
+        </li>
+    `;
+
+    // Page numbers
+    const start = Math.max(0, Math.min(data.totalPages - 5, data.number - 2));
+    const end = Math.min(data.totalPages - 1, Math.max(4, data.number + 2));
+    for (let i = start; i <= end; i++) {
+        pagination.innerHTML += `
+            <li class="page-item ${i === data.number ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${i})">${i + 1}</a>
+            </li>
+        `;
+    }
+
+    // Next button
+    pagination.innerHTML += `
+        <li class="page-item ${data.last ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${data.number + 1})">Next</a>
+        </li>
+    `;
+}
+
+function changePage(page) {
+    if (page < 0) return;
+    currentPage = page;
+    loadStaffData();
+}
+</script>
+
 
 </body>
 
