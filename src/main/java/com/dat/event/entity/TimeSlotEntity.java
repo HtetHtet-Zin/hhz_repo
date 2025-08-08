@@ -32,6 +32,6 @@ public class TimeSlotEntity {
     private String timeSlot;
     private  boolean delFlag;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "timeSlot")
-    private List<EventScheduleEntity> eventScheduleEntityList = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "timeSlot")
+//    private List<EventScheduleEntity> eventScheduleEntityList = new ArrayList<>();
 }
