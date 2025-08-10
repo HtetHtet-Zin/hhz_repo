@@ -13,9 +13,10 @@ import com.dat.event.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 /**
  * EventServiceImpl Class.
@@ -33,8 +34,14 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
 
     @Override
-    public EventDto save(final EventDto dto) {
-        return eventMapper.toDTO(repository.save(eventMapper.toEntity(dto)));
+    public EventDto save(String eventName, String description, MultipartFile file, String staffNo) {
+        return eventMapper.toDTO(repository.save(eventMapper.toEntity(EventDto.builder()
+                        .name(eventName)
+                        .description(description)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy(staffNo)
+                        .delFlag(false)
+                .build())));
     }
 
     @Override
@@ -45,6 +52,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto findById(final Long id) {
         return eventMapper.toDTO(repository.findById(id).orElseThrow());
+    }
+
+    @Override
+    public EventDto findByEventName(String eventName) {
+        return eventMapper.toDTO(repository.findByName(eventName));
     }
 
 }

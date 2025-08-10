@@ -6,6 +6,7 @@
  * *************************************************************/
 package com.dat.event.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,10 @@ import java.time.LocalDateTime;
  * @author Zwel Naing Oo
  */
 @Data
+@Builder
 public class EventDto {
+
+    private Long eventId;
     private String name;
     private String description;
     private boolean delFlag;

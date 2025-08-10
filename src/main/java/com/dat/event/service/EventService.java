@@ -7,9 +7,9 @@
 package com.dat.event.service;
 
 import com.dat.event.dto.EventDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * EventService Class.
@@ -20,9 +20,12 @@ import java.util.Map;
  */
 public interface EventService {
 
-    EventDto save(EventDto dto);
+    EventDto save(String eventName, String description, MultipartFile file, String staffNo);
 
     List<EventDto> findAll();
 
     EventDto findById(Long id);
+
+    EventDto findByEventName(String eventName);
+
 }

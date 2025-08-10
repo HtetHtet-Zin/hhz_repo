@@ -18,4 +18,6 @@ import org.springframework.stereotype.Repository;
  * @author Zwel Naing Oo
  */
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
+
+    EventEntity findByName(String eventName);
 }

@@ -7,7 +7,9 @@
 package com.dat.event.controller;
 
 import com.dat.event.common.constant.WebUrl;
+import com.dat.event.dto.EventDto;
 import com.dat.event.dto.EventStaffDto;
+import com.dat.event.service.EventPlannerService;
 import com.dat.event.service.EventRegistrationService;
 import com.dat.event.service.EventService;
 import com.dat.event.service.StaffService;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -41,42 +44,45 @@ public class EventController {
     private final EventService eventService;
     private final EventRegistrationService eventRegistrationService;
     private final StaffService staffService;
+    private final EventPlannerService eventPlannerService;
 
     @GetMapping(WebUrl.EVENT_URL + "/create")
     public ModelAndView showCreateEventPage() {
-        var staffDtoList=staffService.findAll();
-        log.info("staff-list {}",staffDtoList);
+        var staffDtoList = staffService.findAll();
+        log.info("staff-list {}", staffDtoList);
         return new ModelAndView("event-create-page", "staffs", staffDtoList);
     }
 
     @PostMapping(WebUrl.EVENT_URL + "/create")
     public ResponseEntity<?> createEvent(
+            HttpSession session,
             @RequestParam String eventName,
             @RequestParam String inChargePerson,
             @RequestParam MultipartFile file,
-            @RequestParam String description
-    ) {
-        // handle text params
-        System.out.println("dex" + description);
-        System.out.println("Event Name: " + eventName);
-        System.out.println("Incharge: " + inChargePerson);
+            @RequestParam String description) {
+        // step-1 create event, (name,description,createAt,createBy)
+        // step-2 create schedule, (eventId,date,startTime,endTime,createAt,createBy,updateAt,updateBy)
+        // step-3 create eventPlanner, (staffId,eventId,supportedMemberFlg,delFlg)
 
-        // handle file
-        if (!file.isEmpty()) {
-            System.out.println("Uploaded file: " + file.getOriginalFilename());
+        EventDto eventDto = eventService.findByEventName(eventName);
+        if (eventDto != null && session != null && session.getAttribute("staffNo") != null) {
+            String staffNo = session.getAttribute("staffNo").toString();
+            EventDto savedDto = eventService.save(eventName, description, file, staffNo);
         }
+
 
         return ResponseEntity.ok("Event created successfully!");
     }
 
 
     @GetMapping(WebUrl.EVENT_URL)
-    public String view(HttpSession session){
+    public String view(HttpSession session) {
         if (session != null && session.getAttribute("staffNo") != null) {
             return "event";
         }
         return WebUrl.LOGIN_URL;
     }
+
     @GetMapping("/event-list")
     public String eventList() {
         return "event-list";
