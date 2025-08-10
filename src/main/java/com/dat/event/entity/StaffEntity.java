@@ -29,7 +29,6 @@ import java.util.List;
 @Data
 @Table(name = "tbl_staff")
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
 public class StaffEntity {
     @Id

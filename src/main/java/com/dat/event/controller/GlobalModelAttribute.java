@@ -7,6 +7,7 @@
 package com.dat.event.controller;
 
 import com.dat.event.common.constant.WebUrl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -21,8 +22,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class GlobalModelAttribute {
 
+
     @ModelAttribute("WebUrl")
     public Class<WebUrl> WebUrl(){
         return WebUrl.class;
     }
+
+
 }

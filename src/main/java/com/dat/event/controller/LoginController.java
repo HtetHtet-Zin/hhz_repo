@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
-@RequestMapping(WebUrl.LOGIN_URL)
 public class LoginController {
 
     private final LdapUserService ldapUserService;
@@ -25,12 +24,12 @@ public class LoginController {
         this.staffService = staffService;
     }
 
-    @GetMapping
+    @GetMapping(WebUrl.LOGIN_URL)
     public String loginPage() {
         return "login/login";
     }
 
-    @PostMapping
+    @PostMapping(WebUrl.LOGIN_URL)
     public String login(@RequestParam String username,
                         @RequestParam String password, HttpSession session,
                         RedirectAttributes redirectAttributes){
@@ -44,7 +43,7 @@ public class LoginController {
         return "redirect:/login";
     }
 
-    @GetMapping("/logout")
+    @GetMapping(WebUrl.LOGOUT_URL)
     public String logoutPage(HttpSession session) {
         session.invalidate();
         return "redirect:/login";

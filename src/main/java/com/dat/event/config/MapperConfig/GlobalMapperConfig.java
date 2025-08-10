@@ -7,6 +7,7 @@
 package com.dat.event.config.MapperConfig;
 
 import org.mapstruct.MapperConfig;
+import org.mapstruct.ReportingPolicy;
 
 /**
  * GlobalMapperConfig Class.
@@ -15,5 +16,9 @@ import org.mapstruct.MapperConfig;
  *
  * @author Zwel Naing Oo
  */
-@MapperConfig(componentModel = "spring")
-public interface GlobalMapperConfig {}
+@MapperConfig(
+        componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
+public interface GlobalMapperConfig {
+}

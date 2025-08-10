@@ -9,9 +9,7 @@ package com.dat.event.common.mappers;
 import com.dat.event.config.MapperConfig.GlobalMapperConfig;
 import com.dat.event.dto.StaffDto;
 import com.dat.event.entity.StaffEntity;
-import org.hibernate.query.Page;
 import org.mapstruct.Mapper;
-import org.springframework.data.domain.PageImpl;
 
 /**
  * StaffMapper Class.

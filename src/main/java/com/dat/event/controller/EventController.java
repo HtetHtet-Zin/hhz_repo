@@ -82,13 +82,12 @@ public class EventController {
         }
         return WebUrl.LOGIN_URL;
     }
-
-    @GetMapping("/event-list")
+    @GetMapping(WebUrl.EVENTS_URL)
     public String eventList() {
         return "event-list";
     }
 
-    @PostMapping("/event-list")
+    @PostMapping(WebUrl.EVENTS_URL)
     public ResponseEntity<Page<EventStaffDto>> eventList(@RequestParam(required = false, defaultValue = "") final String keyword, @RequestParam(required = false, defaultValue = "0") final int page) {
         return ResponseEntity.ok(keyword.isBlank() ? eventRegistrationService.fetchEventStaffList(null, page) : eventRegistrationService.fetchEventStaffList(keyword, page));
     }

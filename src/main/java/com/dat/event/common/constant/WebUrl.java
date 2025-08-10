@@ -6,6 +6,10 @@
  * *************************************************************/
 package com.dat.event.common.constant;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
 /**
  * WebUrl Class.
  * <p>
@@ -14,11 +18,15 @@ package com.dat.event.common.constant;
  * @author Zwel Naing Oo
  */
 
+@ControllerAdvice
 public final class WebUrl {
 
-    private WebUrl(){}
+    private WebUrl() {
+    }
 
     public static final String STAFF_URL = "/staff";
+
+    public static final String STAFF_BIRTHDAY_URL = STAFF_URL + "/birthday";
 
     public static final String STAFFS_URL = "/staffs";
 
@@ -28,10 +36,13 @@ public final class WebUrl {
 
     public static final String EVENT_URL = "/event";
 
+    public static final String EVENTS_URL = "/event-list";
+
     public static final String GALLERY_URL = "/gallery";
 
     public static final String API_URL = "/api";
 
     public static final String EVENT_API_URL = API_URL + EVENT_URL;
+
 
 }

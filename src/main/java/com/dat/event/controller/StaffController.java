@@ -40,7 +40,7 @@ public class StaffController {
     }
 
     @PostMapping(WebUrl.STAFFS_URL)
-    public ResponseEntity<Page<StaffDto>> findAll(@RequestParam(required = false, defaultValue = "") final String keyword, @RequestParam(required = false, defaultValue = "0") final int page){
+    public ResponseEntity<Page<StaffDto>> findAll(@RequestParam(required = false, defaultValue = "") final String keyword, @RequestParam(required = false, defaultValue = "0") final int page) {
         return ResponseEntity.ok(keyword.isBlank() ? staffService.findAll(page) : staffService.findAll(keyword, page));
     }
 
@@ -54,10 +54,8 @@ public class StaffController {
 
     }
 
-    @GetMapping("/birthdayStaff")
-    public ModelAndView birthdayStaff(){
-
-
-        return new ModelAndView("birthday","birthdayStaffList",staffService.birthdayStaffList());
+    @GetMapping(WebUrl.STAFF_BIRTHDAY_URL)
+    public ModelAndView birthdayStaff() {
+        return new ModelAndView("birthday", "birthdayStaffList", staffService.birthdayStaffList());
     }
 }
