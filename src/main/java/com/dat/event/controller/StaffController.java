@@ -9,11 +9,13 @@ package com.dat.event.controller;
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.dto.StaffDto;
 import com.dat.event.service.StaffService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,8 +37,9 @@ public class StaffController {
     private final StaffService staffService;
 
     @GetMapping(WebUrl.STAFFS_URL)
-    public String findAll() {
-        return "staff";
+    public String findAll(HttpSession session) {
+        if (session != null && session.getAttribute("staffNo") != null) return "staff";
+        return WebUrl.LOGIN_URL;
     }
 
     @PostMapping(WebUrl.STAFFS_URL)
@@ -55,7 +58,11 @@ public class StaffController {
     }
 
     @GetMapping(WebUrl.STAFF_BIRTHDAY_URL)
-    public ModelAndView birthdayStaff() {
-        return new ModelAndView("birthday", "birthdayStaffList", staffService.birthdayStaffList());
+    public String birthdayStaff(HttpSession session, Model model){
+        if (session != null && session.getAttribute("staffNo") != null) {
+            model.addAttribute("birthdayStaffList", staffService.birthdayStaffList());
+            return "birthday";
+        }
+        return WebUrl.LOGIN_URL;
     }
 }

@@ -9,7 +9,7 @@
     <meta name="keywords" content="">
 
     <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon">
+    <link th:href="@{assets/img/favicon.png}" rel="icon">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Fonts -->
@@ -88,7 +88,7 @@
         </nav>
     </div>
 </main>
-
+<div id="preloader"></div>
 <!-- Vendor JS Files -->
 <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/assets/vendor/php-email-form/validate.js}"></script>
@@ -103,6 +103,7 @@
 <script th:src="@{/assets/js/main.js}"></script>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
 <script>
 const tableBody = document.getElementById("staffTableBody");
 const pagination = document.getElementById("pagination");

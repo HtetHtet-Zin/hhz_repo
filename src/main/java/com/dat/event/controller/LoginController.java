@@ -40,13 +40,15 @@ public class LoginController {
             }
         }
         redirectAttributes.addFlashAttribute("error_message", "Incorrect Staff ID or Password!!!");
-        return "redirect:/login";
+        return "redirect:" + WebUrl.LOGIN_URL;
     }
 
     @GetMapping(WebUrl.LOGOUT_URL)
     public String logoutPage(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
+        if (session != null && session.getAttribute("staffNo") != null) {
+            session.invalidate();
+        }
+        return "redirect:" + WebUrl.LOGIN_URL;
     }
 
 

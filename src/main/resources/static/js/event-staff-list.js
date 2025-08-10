@@ -40,8 +40,7 @@ function renderTable(data) {
             <tr>
                 <td>${(data.number * data.size) + index + 1}</td>
                 <td>${staff.eventName}</td>
-                <td>${staff.startTime}</td>
-                <td>${staff.endTime}</td>
+                <td>${staff.startTime} - ${staff.endTime}</td>
                 <td>${staff.staffNo}</td>
                 <td>${staff.staffName}</td>
             </tr>

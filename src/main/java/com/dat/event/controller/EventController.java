@@ -80,11 +80,12 @@ public class EventController {
         if (session != null && session.getAttribute("staffNo") != null) {
             return "event";
         }
-        return WebUrl.LOGIN_URL;
+        return "redirect:" + WebUrl.LOGIN_URL;
     }
     @GetMapping(WebUrl.EVENTS_URL)
-    public String eventList() {
-        return "event-list";
+    public String eventList(HttpSession session) {
+        if (session != null && session.getAttribute("staffNo") != null) return "event-list";
+        return "redirect:" + WebUrl.LOGIN_URL;
     }
 
     @PostMapping(WebUrl.EVENTS_URL)
