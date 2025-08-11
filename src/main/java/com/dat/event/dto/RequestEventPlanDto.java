@@ -10,7 +10,7 @@ public class RequestEventPlanDto {
 
     private String eventName;
     private String description;
-    private int inChargePerson;
+    private Long inChargePerson;
     private SupportedMember[] supportedMembers;
     private EventTime[] eventTimes;
 
