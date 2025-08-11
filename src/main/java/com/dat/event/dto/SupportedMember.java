@@ -1,4 +1,4 @@
 package com.dat.event.dto;
 
-public record SupportedMember(int memberId, String name, String month) {
+public record SupportedMember(Long memberId, String name, String month) {
 }
