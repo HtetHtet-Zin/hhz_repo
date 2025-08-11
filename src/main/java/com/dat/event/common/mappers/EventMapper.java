@@ -10,6 +10,7 @@ import com.dat.event.config.MapperConfig.GlobalMapperConfig;
 import com.dat.event.dto.EventDto;
 import com.dat.event.entity.EventEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * EventMapper Class.
@@ -20,4 +21,12 @@ import org.mapstruct.Mapper;
  */
 @Mapper(config = GlobalMapperConfig.class)
 public interface EventMapper extends BaseMapper<EventDto, EventEntity> {
+
+    @Override
+    @Mapping(target = "eventId", source = "eventId") // ensure ID is mapped
+    EventDto toDTO(EventEntity entity);
+
+    @Override
+    @Mapping(target = "eventId", source = "eventId")
+    EventEntity toEntity(EventDto dto);
 }

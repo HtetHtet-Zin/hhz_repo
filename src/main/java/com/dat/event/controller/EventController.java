@@ -9,10 +9,8 @@ package com.dat.event.controller;
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.dto.EventDto;
 import com.dat.event.dto.EventStaffDto;
-import com.dat.event.service.EventPlannerService;
-import com.dat.event.service.EventRegistrationService;
-import com.dat.event.service.EventService;
-import com.dat.event.service.StaffService;
+import com.dat.event.dto.RequestEventPlanDto;
+import com.dat.event.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.time.LocalTime;
 import java.util.Objects;
 
 
@@ -45,6 +45,7 @@ public class EventController {
     private final EventService eventService;
     private final EventRegistrationService eventRegistrationService;
     private final StaffService staffService;
+    private final EventScheduleService eventScheduleService;
     private final EventPlannerService eventPlannerService;
 
     @GetMapping(WebUrl.EVENT_CREATE_URL)
@@ -57,22 +58,27 @@ public class EventController {
     @PostMapping(WebUrl.EVENT_CREATE_URL)
     public ResponseEntity<?> createEvent(
             HttpSession session,
-            @RequestParam String eventName,
-            @RequestParam String inChargePerson,
-            @RequestParam MultipartFile file,
-            @RequestParam String description) {
+            @RequestPart("eventData") RequestEventPlanDto requestEventPlanDto,
+            @RequestPart("eventPhoto") MultipartFile eventPhotoFile) {
         // step-1 create event, (name,description,createAt,createBy)
         // step-2 create schedule, (eventId,date,startTime,endTime,createAt,createBy,updateAt,updateBy)
         // step-3 create eventPlanner, (staffId,eventId,supportedMemberFlg,delFlg)
 
-        EventDto eventDto = eventService.findByEventName(eventName);
-        if (eventDto != null && session != null && session.getAttribute("staffNo") != null) {
-            String staffNo = session.getAttribute("staffNo").toString();
-            EventDto savedDto = eventService.save(eventName, description, file, staffNo);
+        log.info("RequestEventPlanner {}", requestEventPlanDto);
+        log.info("eventPhoto {}", eventPhotoFile);
+        String loginStaffNo = session != null && session.getAttribute("staffNo") != null
+                ? session.getAttribute("staffNo").toString()
+                : null;
+        log.info("loginStaffNo {}", loginStaffNo);
+        EventDto eventDto = eventService.findByEventName(requestEventPlanDto.getEventName());
+        if (eventDto == null && loginStaffNo != null) {
+            EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
+            log.info("Event Saved. {}",savedDto.getEventId());
+            eventScheduleService.save(savedDto, requestEventPlanDto, loginStaffNo);
+            eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
         }
 
-
-        return ResponseEntity.ok("Event created successfully!");
+        return ResponseEntity.ok(requestEventPlanDto);
     }
 
 
@@ -84,6 +90,7 @@ public class EventController {
         }
         return "redirect:" + WebUrl.LOGIN_URL;
     }
+
     @GetMapping(WebUrl.EVENTS_URL)
     public String eventList(HttpSession session) {
         if (session != null && session.getAttribute("staffNo") != null) return "event-list";

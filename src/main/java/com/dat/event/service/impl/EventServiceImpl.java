@@ -8,6 +8,7 @@ package com.dat.event.service.impl;
 
 import com.dat.event.common.mappers.EventMapper;
 import com.dat.event.dto.EventDto;
+import com.dat.event.entity.EventEntity;
 import com.dat.event.repository.EventRepository;
 import com.dat.event.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +37,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto save(String eventName, String description, MultipartFile file, String staffNo) {
         return eventMapper.toDTO(repository.save(eventMapper.toEntity(EventDto.builder()
-                        .name(eventName)
-                        .description(description)
-                        .createdAt(LocalDateTime.now())
-                        .createdBy(staffNo)
-                        .delFlag(false)
+                .name(eventName)
+                .description(description)
+                .createdAt(LocalDateTime.now())
+                .createdBy(staffNo)
+                .delFlag(false)
                 .build())));
     }
 

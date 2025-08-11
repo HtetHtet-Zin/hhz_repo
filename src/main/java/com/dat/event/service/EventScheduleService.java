@@ -6,6 +6,9 @@
  * *************************************************************/
 package com.dat.event.service;
 
+import com.dat.event.dto.EventDto;
+import com.dat.event.dto.RequestEventPlanDto;
+
 /**
  * EventScheduleService Class.
  * <p>
@@ -14,4 +17,5 @@ package com.dat.event.service;
  * @author Zwel Naing Oo
  */
 public interface EventScheduleService {
+    void save(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo);
 }
