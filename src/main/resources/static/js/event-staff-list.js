@@ -26,9 +26,9 @@ function loadStaffData() {
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById('count').textContent = data.totalElements;
+        document.getElementById('count').textContent = data.page.totalElements;
         renderTable(data);
-        renderPagination(data);
+        renderPagination(data.page);
     })
     .catch(err => console.error("Error loading staff:", err));
 }
@@ -38,7 +38,7 @@ function renderTable(data) {
     data.content.forEach((staff, index) => {
         tableBody.innerHTML += `
             <tr>
-                <td>${(data.number * data.size) + index + 1}</td>
+                <td>${(data.page.number * data.page.size) + index + 1}</td>
                 <td>${staff.eventName}</td>
                 <td>${staff.startTime} - ${staff.endTime}</td>
                 <td>${staff.staffNo}</td>
@@ -48,22 +48,22 @@ function renderTable(data) {
     });
 }
 
-function renderPagination(data) {
+function renderPagination(page) {
     pagination.innerHTML = "";
 
     // Previous button
     pagination.innerHTML += `
-        <li class="page-item ${data.first ? 'disabled' : ''}">
-            <a class="page-link"  onclick="changePage(${data.number - 1})">Previous</a>
+        <li class="page-item ${page.number == 0 ? 'disabled' : ''}">
+            <a class="page-link"  onclick="changePage(${page.number - 1})">Previous</a>
         </li>
     `;
 
     // Page numbers
-    const start = Math.max(0, Math.min(data.totalPages - 5, data.number - 2));
-    const end = Math.min(data.totalPages - 1, Math.max(4, data.number + 2));
+    const start = Math.max(0, Math.min(page.totalPages - 5, page.number - 2));
+    const end = Math.min(page.totalPages - 1, Math.max(4, page.number + 2));
     for (let i = start; i <= end; i++) {
         pagination.innerHTML += `
-            <li class="page-item ${i === data.number ? 'active' : ''}">
+            <li class="page-item ${i === page.number ? 'active' : ''}">
                 <a class="page-link" onclick="changePage(${i})">${i + 1}</a>
             </li>
         `;
@@ -71,8 +71,8 @@ function renderPagination(data) {
 
     // Next button
     pagination.innerHTML += `
-        <li class="page-item ${data.last ? 'disabled' : ''}">
-            <a class="page-link" onclick="changePage(${data.number + 1})">Next</a>
+        <li class="page-item ${page.number + 1 == page.totalPages ? 'disabled' : ''}">
+            <a class="page-link" onclick="changePage(${page.number + 1})">Next</a>
         </li>
     `;
 }
