@@ -17,6 +17,9 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+  <link th:href="@{/css/home.css}" rel="stylesheet" />
+
+
   <link rel="stylesheet" th:href="@{/css/footer.css}">
   <link rel="stylesheet" th:href="@{/css/ballon.css}">
   <link th:href="@{/css/main.css}" rel="stylesheet">
@@ -112,7 +115,7 @@
   </section>
 
   <!-- Static Gallery Section -->
-  <section id="gallery" class="gallery section">
+  <section id="gallery" class="gallery section" style="margin-bottom: 550px;">
     <div class="container" data-aos="fade-up" data-aos-delay="100">
       <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
         <div class="row gallery-grid isotope-container" data-aos="fade-up" data-aos-delay="300">
@@ -145,13 +148,6 @@
 
 </main>
 
-<!-- Scroll Top -->
-<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
-  <i class="bi bi-arrow-up-short"></i>
-</a>
-
-<!-- Preloader -->
-<div id="preloader"></div>
 
 <!-- Footer Fragment -->
 <div th:replace="~{fragments/footer :: footer}"></div>

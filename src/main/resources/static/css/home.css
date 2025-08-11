@@ -1,5 +1,5 @@
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Baloo 2', cursive; }
+
     /*body { background: #fff5f8; color: #d14789; display: flex; flex-direction: column; align-items: center; padding: 1rem; }
         */
     /* Top Bar */
@@ -8,6 +8,11 @@
 
     /* Main Layout */
     .main-wrapper { display: flex; gap: 2rem; max-width: 1700px; width: 100%;height: 100%; }
+    .main {
+      min-height: calc(100vh - 60px); /* 60px = height of your footer */
+      padding-bottom: 60px; /* keeps content above footer */
+      box-sizing: border-box;
+    }
 
     /* Calendar */
     .calendar-wrapper { background: #fff; border-radius: 18px; padding: 1rem; width: 60%; box-shadow: 0 8px 20px rgba(255, 182, 193, 0.4);height: 100%; }
