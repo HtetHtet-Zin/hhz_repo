@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
@@ -18,14 +18,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/aos/aos.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/swiper/swiper-bundle.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/glightbox/css/glightbox.min.css}" rel="stylesheet">
 
   <!-- Main CSS File -->
-  <link href="assets/css/main.css" rel="stylesheet">
+  <link th:href="@{/assets/css/main.css}" rel="stylesheet">
 
   <!-- =======================================================
   * Template Name: Tour
@@ -38,62 +38,7 @@
 
 <body class="page-404">
 
-  <header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-
-      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.webp" alt=""> -->
-        <h1 class="sitename">Tour</h1>
-      </a>
-
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="destinations.html">Destinations</a></li>
-          <li><a href="tours.html">Tours</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="destination-details.html">Destination Details</a></li>
-              <li><a href="tour-details.html">Tour Details</a></li>
-              <li><a href="booking.html">Booking</a></li>
-              <li><a href="testimonials">Testimonials</a></li>
-              <li><a href="faq.html">Frequently Asked Questions</a></li>
-              <li><a href="blog-details.html">Blog Details</a></li>
-              <li><a href="terms.html">Terms</a></li>
-              <li><a href="privacy.html">Privacy</a></li>
-              <li><a href="404.html" class="active">404</a></li>
-            </ul>
-          </li>
-          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
-          </li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
-
-      <a class="btn-getstarted" href="destiantios.html">Get Started</a>
-
-    </div>
-  </header>
+<!--<div th:replace="~{fragments/header :: header}"></div>-->
 
   <main class="main">
 
@@ -250,17 +195,17 @@
   <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  <script th:src="@{/assets/vendor/php-email-form/validate.js}"></script>
+  <script th:src="@{/assets/vendor/aos/aos.js}"></script>
+  <script th:src="@{/assets/vendor/purecounter/purecounter_vanilla.js}"></script>
+  <script th:src="@{/assets/vendor/swiper/swiper-bundle.min.js}"></script>
+  <script th:src="@{/assets/vendor/isotope-layout/isotope.pkgd.min.js}"></script>
+  <script th:src="@{/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js}"></script>
+  <script th:src="@{/assets/vendor/glightbox/js/glightbox.min.js}"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
+  <script th:src="@{/assets/js/main.js}"></script>
 
 </body>
 

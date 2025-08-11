@@ -38,7 +38,6 @@ import java.util.Objects;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping
 public class EventController {
 
     private final EventService eventService;

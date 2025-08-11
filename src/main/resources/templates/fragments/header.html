@@ -2,7 +2,7 @@
         th:fragment="siteHeader" xmlns:th="http://www.thymeleaf.org">
     <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
-        <a onclick="window.location.href='./event';" class="logo d-flex align-items-center me-auto me-xl-0">
+        <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'" class="logo d-flex align-items-center me-auto me-xl-0">
             <h1 class="sitename">DAT Event</h1>
         </a>
 
