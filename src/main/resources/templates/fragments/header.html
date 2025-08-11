@@ -11,13 +11,13 @@
             <ul>
                 <li ><a
                         th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'">Home</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFFS_URL}} + '\';'">Staff</a></li>
+                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFFS_URL}} + '\';'" th:if="${IsAdmin}">Staff</a></li>
                 <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFF_BIRTHDAY_URL}} + '\';'">Birthday</a>
                 </li>
                 <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENTS_URL}} + '\';'">Event List</a></li>
                 <!--                <li class="dropdown"><a><span>Event</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>-->
                 <!--                    <ul>-->
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'">Create Event</a>
+                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'" th:if="${IsAdmin}">Create Event</a>
                 </li>
                 <!--                    </ul>-->
                 <!--                </li>-->

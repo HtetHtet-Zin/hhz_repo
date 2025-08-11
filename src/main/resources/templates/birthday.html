@@ -6,7 +6,7 @@
   <title>Gallery - Tour Bootstrap Template</title>
 
   <!-- Favicons -->
-  <link rel="icon" th:href="@{./images/DAT Logo.png}">
+  <link rel="icon" th:href="@{/images/DAT Logo.png}">
 
   <!-- Vendor CSS Files -->
   <link rel="stylesheet" th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}">
@@ -44,7 +44,7 @@
 <main class="main">
 
   <!-- Page Title Section -->
-<!--  <div class="page-title dark-background" data-aos="fade" style="background-image: url('./images/birthday1.jpg');">-->
+  <div class="page-title dark-background" data-aos="fade" style="background-image: url('./images/birthday1.jpg');">
     <canvas id="fireworks"></canvas>
     <div class="balloon-container" id="balloon-container"></div>
     <div class="container position-relative text-center">
@@ -95,8 +95,8 @@
               <div class="gallery-item">
                 <div class="gallery-img">
                   <a class="glightbox" data-gallery="images-gallery"
-                     th:href="@{'/photo/birthdayphoto/' + ${birthday.staffNo} + '.jpg'}">
-                    <img th:src="@{'/photo/birthdayphoto/' + ${birthday.staffNo} + '.jpg'}" class="img-fluid" alt="">
+                     th:href="@{'/photo/birthdayPhoto/' + ${birthday.staffNo} + '.jpg'}">
+                    <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffNo} + '.jpg'}" class="img-fluid" alt="">
                     <div class="gallery-overlay">
                       <i class="bi bi-plus-circle"></i>
                     </div>
@@ -122,7 +122,7 @@
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="birthday : ${birthdayStaffList}">
             <div class="gallery-card text-center">
               <div class="gallery-image">
-                <img th:src="@{'/photo/birthdayphoto/' + ${birthday.staffNo} + '.jpg'}" class="img-fluid" alt="">
+                <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffNo} + '.jpg'}" class="img-fluid" alt="">
               </div>
 
               <div class="mt-2">
@@ -134,7 +134,7 @@
                 <h4 th:text="${birthday.name}">Employee Name</h4>
                 <p>Happy Birthday!</p>
                 <div class="gallery-actions">
-                  <a th:href="@{'/photo/birthdayphoto/' + ${birthday.staffNo} + '.jpg'}" class="glightbox" title="Happy Birthday!">
+                  <a th:href="@{'/photo/birthdayPhoto/' + ${birthday.staffNo} + '.jpg'}" class="glightbox" title="Happy Birthday!">
                     <i class="bi bi-eye"></i>
                   </a>
                 </div>

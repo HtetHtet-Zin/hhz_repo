@@ -7,6 +7,7 @@
 package com.dat.event.controller;
 
 import com.dat.event.common.constant.WebUrl;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,8 +24,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class GlobalModelAttribute {
 
     @ModelAttribute("WebUrl")
-    public Class<WebUrl> WebUrl(){
+    public Class<WebUrl> WebUrl() {
         return WebUrl.class;
+    }
+
+    @ModelAttribute("IsAdmin")
+    public boolean isAdmin(HttpSession httpSession) {
+        Object isAdmin = httpSession.getAttribute("adminFlag");
+        if (isAdmin != null) {
+            if (isAdmin instanceof Boolean b) {
+                return b;
+            }
+        }
+        return false;
+
     }
 
 }

@@ -27,10 +27,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/photo/birthdayphoto/**")
-                .addResourceLocations("file:" + Paths.get("photo/birthdayphoto").toAbsolutePath()+"/");
+        registry.addResourceHandler("/photo/birthdayPhoto/**")
+                .addResourceLocations("file:" + Paths.get("photo/birthdayPhoto").toAbsolutePath()+"/");
 
-        registry.addResourceHandler("/photo/eventphoto/**")
-                .addResourceLocations("file:" + Paths.get("photo/eventphoto").toAbsolutePath()+"/");
+        registry.addResourceHandler("/photo/eventPhoto/**")
+                .addResourceLocations("file:" + Paths.get("photo/eventPhoto").toAbsolutePath()+"/");
     }
 }

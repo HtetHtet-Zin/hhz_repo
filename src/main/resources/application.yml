@@ -6,8 +6,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   web:
     resources:
-      static-locations: file:staffPhoto/, classpath:/static/, classpath:/static/images , classpath:/static/assets
-
+      static-locations:
+        - file:photo/
+        - classpath:/static/
+        - classpath:/static/images/
+        - classpath:/static/assets/
 
   jpa:
     properties:
