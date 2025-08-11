@@ -241,8 +241,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const date = new Date(weekStart);
       date.setDate(weekStart.getDate() + i);
 
+      const isoDate = date.toISOString().split('T')[0];
       const row = document.createElement("tr");
       row.dataset.day = day;
+      row.dataset.date = isoDate;
 
       const dayCell = document.createElement("td");
       dayCell.innerHTML = `<strong>${day}</strong><br><small>${formatDate(date)}</small>`;
@@ -313,56 +315,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Submit form handler (example, enhance as needed)
   function submitEvent() {
+    const dateTimeList = [];
     const form = document.getElementById("eventForm");
-
-//    if (!form.checkValidity()) {
-//      form.reportValidity();
-//      return;
-//    }
-
     const members = Array.from(supportedList.querySelectorAll("tr")).map((row) => {
-      const tds = row.querySelectorAll("td");
-      return { member: tds[0].textContent.trim(), month: tds[1].textContent.trim() };
+    const tds = row.querySelectorAll("td");
+      return {
+        name: tds[0].textContent.trim(),
+        month: tds[1].textContent.trim()
+        };
     });
 
     if (members.length === 0) {
       alert("Please add at least one supported member.");
       return;
     }
-   const formData = new FormData();
-   formData.append("eventName", `${form.eventName.value}`);
-   formData.append("description", `${form.eventDesc.value}`);
-   formData.append("dateTimeList", "");
-   formData.append("inChargePerson", `${form.inchargePerson.value}`);
-   formData.append("supportedMembers", []);
 
-   // Example: attach a file from an <input type="file" id="eventFile">
+
+      tableBody.querySelectorAll("tr").forEach(row => {
+        const date = row.dataset.date;
+        console.log(date);
+         if (!date) {
+            console.error("Missing date for a time slot wrapper. Skipping.");
+            return; // Skips this iteration if date is missing
+          }
+        row.querySelectorAll(".time-slot").forEach(slot => {
+          const startTime = slot.querySelector('input[type="time"]:first-child').value;
+          const endTime = slot.querySelector('input[type="time"]:nth-child(2)').value;
+          if (startTime && endTime) {
+            dateTimeList.push({
+              startDateTime: `${date} ${startTime}`,
+              endDateTime: `${date} ${endTime}`
+            });
+          }
+        });
+      });
+
+    if (dateTimeList.length === 0) {
+        alert("Please add at least one time slot.");
+        return;
+    }
+
+    const jsonPayload = {
+        eventName: form.eventName.value,
+        description: form.eventDesc.value,
+        inChargePerson: form.inchargePerson.value,
+        supportedMembers: members,
+        eventTimes: dateTimeList
+      };
+
+   const formData = new FormData();
    const fileInput = document.getElementById("eventPhoto");
    if (fileInput.files.length > 0) {
-       formData.append("file", fileInput.files[0]);
+       formData.append("eventPhoto", fileInput.files[0]);
    }
+    formData.append("eventData", new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
 
    fetch('/club/event/create', {
        method: 'POST',
-       body: formData // No need for Content-Type, browser sets it automatically
+       body: formData
    })
    .then(response => {
        if (!response.ok) {
            throw new Error("Network response was not ok");
        }
-       return response.json();
+       window.location.href = "/club/event";
+       return Promise.resolve();
    })
-   .then(data => console.log(data))
+   .then(data => {
+    console.log(data);
+   })
    .catch(error => console.error("Error:", error));
 
-
-//    alert(
-//      `Submitting event:\nName: ${form.eventName.value}\nIncharge: ${form.inchargePerson}\nSupported Members: ${members}`
-//    );
-
-
-
-     //form.submit();
   }
 
   // Expose functions globally
