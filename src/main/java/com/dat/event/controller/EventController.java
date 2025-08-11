@@ -41,6 +41,7 @@ public class EventController {
     private final StaffService staffService;
     private final EventScheduleService eventScheduleService;
     private final EventPlannerService eventPlannerService;
+    private final ImageStorageService imageStorageService;
 
     @GetMapping(WebUrl.EVENT_CREATE_URL)
     public ModelAndView showCreateEventPage() {
@@ -60,14 +61,12 @@ public class EventController {
 
         log.info("RequestEventPlanner {}", requestEventPlanDto);
         log.info("eventPhoto {}", eventPhotoFile);
-        String loginStaffNo = session != null && session.getAttribute("staffNo") != null
-                ? session.getAttribute("staffNo").toString()
-                : null;
+        String loginStaffNo = session != null && session.getAttribute("staffNo") != null ? session.getAttribute("staffNo").toString() : null;
         log.info("loginStaffNo {}", loginStaffNo);
         EventDto eventDto = eventService.findByEventName(requestEventPlanDto.getEventName());
         if (eventDto == null && loginStaffNo != null) {
             EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
-            log.info("Event Saved. {}",savedDto.getEventId());
+            imageStorageService.saveImage(eventPhotoFile,savedDto.getName());
             eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
             eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
         }
@@ -79,7 +78,7 @@ public class EventController {
     @GetMapping(WebUrl.EVENT_URL)
     public String view(HttpSession session, Model model) {
         if (session != null && session.getAttribute("staffNo") != null) {
-            model.addAttribute("eventList",eventService.findAll());
+            model.addAttribute("eventList", eventService.findAll());
             return "event";
         }
         return "redirect:" + WebUrl.LOGIN_URL;
