@@ -39,7 +39,7 @@ public class StaffController {
     @GetMapping(WebUrl.STAFFS_URL)
     public String findAll(HttpSession session) {
         if (session != null && session.getAttribute("staffNo") != null) return "staff";
-        return WebUrl.LOGIN_URL;
+        return "redirect:" + WebUrl.LOGIN_URL;
     }
 
     @PostMapping(WebUrl.STAFFS_URL)
@@ -63,6 +63,6 @@ public class StaffController {
             model.addAttribute("birthdayStaffList", staffService.birthdayStaffList());
             return "birthday";
         }
-        return WebUrl.LOGIN_URL;
+        return "redirect:" + WebUrl.LOGIN_URL;
     }
 }

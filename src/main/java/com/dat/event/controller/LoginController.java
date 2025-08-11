@@ -5,6 +5,7 @@ import com.dat.event.common.constant.WebUrl;
 import com.dat.event.service.LdapUserService;
 import com.dat.event.service.StaffService;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
+@Slf4j
 @Controller
 public class LoginController {
 
@@ -49,6 +50,11 @@ public class LoginController {
             session.invalidate();
         }
         return "redirect:" + WebUrl.LOGIN_URL;
+    }
+
+    @GetMapping(WebUrl.ERROR_URL)
+    public String ErrorPage() {
+        return "404";
     }
 
 

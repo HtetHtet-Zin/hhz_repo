@@ -30,6 +30,8 @@ server:
   port : 8080
   servlet:
     context-path: /club
+    session :
+      timeout : 3600s
   error:
     whitelabel:
       enabled: false

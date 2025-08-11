@@ -46,14 +46,14 @@ public class EventController {
     private final StaffService staffService;
     private final EventPlannerService eventPlannerService;
 
-    @GetMapping(WebUrl.EVENT_URL + "/create")
+    @GetMapping(WebUrl.EVENT_CREATE_URL)
     public ModelAndView showCreateEventPage() {
         var staffDtoList = staffService.findAll();
         log.info("staff-list {}", staffDtoList);
         return new ModelAndView("event-create-page", "staffs", staffDtoList);
     }
 
-    @PostMapping(WebUrl.EVENT_URL + "/create")
+    @PostMapping(WebUrl.EVENT_CREATE_URL)
     public ResponseEntity<?> createEvent(
             HttpSession session,
             @RequestParam String eventName,
