@@ -52,11 +52,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Select handlers called from onclick in <li> ---
   window.selectIncharge = function (element) {
     inchargeInput.value = element.textContent;
+    inchargeInput.dataset.dataId = element.getAttribute("data-id");
     bootstrap.Modal.getInstance(document.getElementById("personModal")).hide();
   };
 
   window.selectMember = function (element) {
     selectedMember.value = element.textContent;
+    selectedMember.dataset.dataId = element.getAttribute('data-id');
     memberSearch.value = element.textContent;
     document.getElementById('memberList').style.display = 'none';
     // Do NOT clear the member list; keep it visible for multiple adds
@@ -77,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (event) event.preventDefault();
 
     const name = (selectedMember.value || memberSearch.value || "").trim();
+    const staffNo = selectedMember.getAttribute('data-id');
     const month = (monthSelect.value || "").trim();
 
     if (!name) {
@@ -103,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
     tr.innerHTML = `
       <td>${escapeHtml(name)}</td>
       <td>${escapeHtml(month)}</td>
+      <td style="display: none;">${escapeHtml(staffNo)}</td>
       <td>
         <button type="button" class="btn btn-sm btn-danger remove-supported" aria-label="Remove supported member">
           <i class="bi bi-trash"></i>
@@ -321,7 +325,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const tds = row.querySelectorAll("td");
       return {
         name: tds[0].textContent.trim(),
-        month: tds[1].textContent.trim()
+        month: tds[1].textContent.trim(),
+        staffNo: tds[2].textContent.trim(),
         };
     });
 
@@ -354,12 +359,11 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Please add at least one time slot.");
         return;
     }
-
     const jsonPayload = {
         eventName: form.eventName.value,
         description: form.eventDesc.value,
-        inChargePerson: form.inchargePerson.value,
-        supportedMembers: members,
+        inChargePerson: form.inchargePerson.dataset.dataId,
+        supportedMembers: members,//todo: bind id
         eventTimes: dateTimeList
       };
 
