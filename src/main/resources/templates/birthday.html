@@ -19,6 +19,7 @@
   <link rel="stylesheet" th:href="@{/assets/css/main.css}">
   <link rel="stylesheet" th:href="@{/css/footer.css}">
   <link rel="stylesheet" th:href="@{/css/ballon.css}">
+  <link th:href="@{/css/main.css}" rel="stylesheet">
 
   <style>
     #fireworks {
@@ -40,7 +41,7 @@
 <main class="main">
 
   <!-- Page Title Section -->
-  <div class="page-title dark-background" data-aos="fade" style="background-image: url('./images/birthday1.jpg');">
+<!--  <div class="page-title dark-background" data-aos="fade" style="background-image: url('./images/birthday1.jpg');">-->
     <canvas id="fireworks"></canvas>
     <div class="balloon-container" id="balloon-container"></div>
     <div class="container position-relative text-center">
@@ -169,6 +170,7 @@
 <script th:src="@{/assets/js/main.js}"></script>
 <script th:src="@{/js/firework.js}"></script>
 <script th:src="@{/js/ballon.js}"></script>
+<script th:src="@{/js/main.js}"></script>
 
 </body>
 </html>

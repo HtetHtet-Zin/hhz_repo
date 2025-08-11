@@ -29,6 +29,7 @@
     <link th:href="@{/assets/css/main.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/pagination.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
 
 </head>
 
@@ -101,132 +102,8 @@
     <!-- Main JS File -->
     <script th:src="@{/assets/js/main.js}"></script>
     <script th:src="@{/js/staff.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
-
-    <script>
-    const tableBody = document.getElementById("staffTableBody");
-    const pagination = document.getElementById("pagination");
-    const searchInput = document.getElementById("search");
-
-    let currentPage = 0;
-    let currentKeyword = "";
-
-    document.addEventListener("DOMContentLoaded", () => {
-        loadStaffData();
-    });
-
-    searchInput.addEventListener("input", () => {
-        currentKeyword = searchInput.value.trim();
-        currentPage = 0;
-        loadStaffData();
-    });
-
-    function loadStaffData() {
-        fetch("/club/staffs", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({
-                keyword: currentKeyword,
-                page: currentPage
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('count').textContent = data.totalElements;
-            renderTable(data);
-            renderPagination(data);
-        })
-        .catch(err => console.error("Error loading staff:", err));
-    }
-
-    function renderTable(data) {
-        tableBody.innerHTML = "";
-        data.content.forEach((staff, index) => {
-            tableBody.innerHTML += `
-                <tr>
-                    <td>${(data.number * data.size) + index + 1}</td>
-                    <td>${staff.staffNo}</td>
-                    <td>${staff.name}</td>
-                    <td>${staff.email}</td>
-                    <td>${staff.mobile}</td>
-                    <td>${staff.dob ?? ""}</td>
-                    <td style="text-align:center;">
-                        <input type="checkbox" class="admin-flag-toggle"
-                               data-id="${staff.staffNo}"
-                               ${staff.adminFlag ? "checked" : ""}>
-                    </td>
-                </tr>
-            `;
-        });
-        setUpAdminFlag();
-    }
-
-    function renderPagination(data) {
-        pagination.innerHTML = "";
-
-        // Previous button
-        pagination.innerHTML += `
-            <li class="page-item ${data.first ? 'disabled' : ''}">
-                <a class="page-link" onclick="changePage(${data.number - 1})">Previous</a>
-            </li>
-        `;
-
-        // Page numbers
-        const start = Math.max(0, Math.min(data.totalPages - 5, data.number - 2));
-        const end = Math.min(data.totalPages - 1, Math.max(4, data.number + 2));
-        for (let i = start; i <= end; i++) {
-            pagination.innerHTML += `
-                <li class="page-item ${i === data.number ? 'active' : ''}">
-                    <a class="page-link" onclick="changePage(${i})">${i + 1}</a>
-                </li>
-            `;
-        }
-
-        // Next button
-        pagination.innerHTML += `
-            <li class="page-item ${data.last ? 'disabled' : ''}">
-                <a class="page-link" onclick="changePage(${data.number + 1})">Next</a>
-            </li>
-        `;
-    }
-
-    function changePage(page) {
-        if (page < 0) return;
-        currentPage = page;
-        loadStaffData();
-    }
-
-    function setUpAdminFlag(){
-         document.querySelectorAll(".admin-flag-toggle").forEach(checkbox => {
-            checkbox.addEventListener("change", async function () {
-                const id = this.dataset.id;
-                const adminFlag = this.checked;
-
-                try {
-                    const response = await fetch('/club/staff/admin-flag', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: new URLSearchParams({
-                            staffNo: id,
-                            adminFlag: adminFlag
-                        })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Server error");
-                    }
-
-                    console.log(`Admin flag updated for staff ID ${id}`);
-                } catch (error) {
-                    alert("Error updating admin flag.");
-                    this.checked = !adminFlag; // revert checkbox state if failed
-                }
-            });
-        });
-    }
-    </script>
 </body>
 </html>
