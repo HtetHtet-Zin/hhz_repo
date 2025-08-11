@@ -19,11 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -75,8 +77,9 @@ public class EventController {
 
 
     @GetMapping(WebUrl.EVENT_URL)
-    public String view(HttpSession session) {
+    public String view(HttpSession session, Model model) {
         if (session != null && session.getAttribute("staffNo") != null) {
+            model.addAttribute("eventList",eventService.findAll());
             return "event";
         }
         return "redirect:" + WebUrl.LOGIN_URL;

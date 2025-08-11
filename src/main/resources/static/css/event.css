@@ -1,0 +1,76 @@
+   * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+
+    .container {
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d14789;
+      margin-bottom: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.6rem;
+      text-align: center;
+     box-shadow: 0 10px 25px rgba(117, 110, 111, 0.3);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: #333;
+
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card img {
+      margin-bottom: 0.5rem;
+      border-radius: 16px;
+     max-width: 100%;
+      height: auto;
+    }
+
+    .card-title {
+      font-weight: bold;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      color: #d14789;
+    }
+
+     .fly-in {
+    opacity: 0;
+    transform: translateX(-100%);
+    animation: flyIn 1.2s ease-out forwards;
+    transition: transform 1s ease;
+    margin-top: 30px;
+  }
+
+  @keyframes flyIn {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    60% {
+      transform: translateX(20px);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }

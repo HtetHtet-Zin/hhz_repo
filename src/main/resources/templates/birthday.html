@@ -52,8 +52,8 @@
         <p>Happy Birthday to you.Happy Birthday ,Happy Birthday</p>
         <nav class="breadcrumbs">
           <ol>
-            <li><a href="index.html">Home</a></li>
-            <li><a th:href="@{/gallery}">gallery</a></li>
+            <li><a th:href="@{/event}">Home</a></li>
+            <li><a th:href="@{/birthdayStaff}">gallery</a></li>
           </ol>
         </nav>
       </div>
@@ -114,8 +114,8 @@
               <div class="swiper-slide" th:each="birthday : ${birthdayStaffList}">
                 <div class="gallery-item">
                   <div class="gallery-img" >
-                    <a class="glightbox" data-gallery="images-gallery" th:href="@{'/staffPhoto/' + ${birthday.staffNo}+'.jpg'}">
-                      <img th:src="@{'/staffPhoto/' + ${birthday.staffNo}+'.jpg'}" class="img-fluid" alt="">
+                    <a class="glightbox" data-gallery="images-gallery" th:href="@{'/photo/birthdayphoto/' + ${birthday.staffNo}+'.jpg'}">
+                      <img th:src="@{'/photo/birthdayphoto/' + ${birthday.staffNo}+'.jpg'}" class="img-fluid" alt="" width="300" height="200">
                       <div class="gallery-overlay">
                         <i class="bi bi-plus-circle"></i>
                       </div>
