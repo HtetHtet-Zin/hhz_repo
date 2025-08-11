@@ -27,7 +27,7 @@ public final class WebUrl {
     public static final String ERROR_URL = "/404";
     public static final String STAFF_URL = "/staff";
 
-    public static final String STAFF_BIRTHDAY_URL = STAFF_URL + "/birthday";
+    public static final String STAFF_BIRTHDAY_URL = "staff-birthday";
 
     public static final String STAFFS_URL = "/staffs";
 
@@ -36,7 +36,7 @@ public final class WebUrl {
     public static final String LOGOUT_URL = "/logout";
 
     public static final String EVENT_URL = "/event";
-    public static final String EVENT_CREATE_URL = EVENT_URL + "/create";
+    public static final String EVENT_CREATE_URL = "event-create";
 
     public static final String EVENTS_URL = "/event-list";
 
