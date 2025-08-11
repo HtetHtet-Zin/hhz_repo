@@ -36,18 +36,12 @@
     <div class="container position-relative">
       <h1>Welcome From DAT Event World</h1>
       <p>Have a nice Day!!!</p>
-      <nav class="breadcrumbs">
-        <ol>
-          <li><a th:href="@{/event}">Home</a></li>
-          <li><a th:href="@{/birthdayStaff}">gallery</a></li>
-        </ol>
-      </nav>
     </div>
   </div>
 
   <div class="container">
     <div class="grid">
-      <div th:each="event : ${eventList}">
+      <div class="img-container" th:each="event : ${eventList}">
         <a th:href="@{/event-registration(title=${event.eventId})}" class="card fly-in">
           <img th:src="@{'/photo/eventphoto/' + ${event.name} + '.jpg'}" alt="Event photo"/>
           <div class="card-title" th:text="${event.name}"></div>
