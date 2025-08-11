@@ -16,9 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.Arrays;
 
 /**
  * EventScheduleServiceImpl Class.
@@ -38,12 +37,9 @@ public class EventScheduleServiceImpl implements EventScheduleService {
 
 
     @Override
-    public void save(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
+    public void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
         // create schedule, (eventId,date,startTime,endTime,createAt,createBy,updateAt,updateBy)
-
-
-        RequestEventPlanDto.EventTime[] eventTimes=requestEventPlanDto.getEventTimes();
-        for(RequestEventPlanDto.EventTime eventTime: eventTimes){
+        Arrays.stream(requestEventPlanDto.getEventTimes()).forEach(eventTime -> {
             var date = eventTime.startDateTime().toLocalDate();
             var start = eventTime.startDateTime().toLocalTime();
             var end = eventTime.endDateTime().toLocalTime();
@@ -60,21 +56,8 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                     .updatedBy(staffNo)
                     .delFlg(false)
                     .build();
-//            eventScheduleRepository.save();
-        }
+            eventScheduleRepository.save(eventScheduleMapper.toEntity(dto));
+        });
 
-        EventScheduleDto.builder()
-                .eventDto(eventDto)
-                .name(requestEventPlanDto.getEventName())
-                .description(requestEventPlanDto.getDescription())
-                .date(LocalDate.now())
-                .startTime(LocalTime.now())
-                .endTime(LocalTime.now().plusMinutes(30))
-                .createdBy(staffNo)
-                .createdAt(LocalDateTime.now())
-                .updateAt(LocalDateTime.now())
-                .updatedBy(staffNo)
-                .delFlg(false)
-                .build();
     }
 }

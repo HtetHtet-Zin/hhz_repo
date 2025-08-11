@@ -17,5 +17,5 @@ import com.dat.event.dto.RequestEventPlanDto;
  * @author Zwel Naing Oo
  */
 public interface EventScheduleService {
-    void save(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo);
+    void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo);
 }

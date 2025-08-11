@@ -19,6 +19,8 @@ import java.time.LocalDate;
  */
 @Data
 public class StaffDto {
+
+    private String staffId;
     private String staffNo;
     private String name;
     private String email;

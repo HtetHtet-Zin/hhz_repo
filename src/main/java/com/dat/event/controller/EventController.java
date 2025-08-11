@@ -22,12 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.time.LocalTime;
-import java.util.Objects;
-
 
 /**
  * EventController Class.
@@ -74,7 +68,7 @@ public class EventController {
         if (eventDto == null && loginStaffNo != null) {
             EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
             log.info("Event Saved. {}",savedDto.getEventId());
-            eventScheduleService.save(savedDto, requestEventPlanDto, loginStaffNo);
+            eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
             eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
         }
 

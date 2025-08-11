@@ -20,6 +20,7 @@ public class EventPlannerEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
     private EventEntity event;
+    private String supportedMonth;
     private Boolean supportedMemberFlg;
     private Boolean delFlg;
 }

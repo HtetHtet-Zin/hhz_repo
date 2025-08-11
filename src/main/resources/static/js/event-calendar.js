@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.selectMember = function (element) {
     selectedMember.value = element.textContent;
-    selectedMember.dataset.dataId = element.getAttribute('data-id');
+    selectedMember.dataset.id = element.getAttribute('data-id');
     memberSearch.value = element.textContent;
     document.getElementById('memberList').style.display = 'none';
     // Do NOT clear the member list; keep it visible for multiple adds
@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return {
         name: tds[0].textContent.trim(),
         month: tds[1].textContent.trim(),
-        staffNo: tds[2].textContent.trim(),
+        memberId: tds[2].textContent.trim(),
         };
     });
 

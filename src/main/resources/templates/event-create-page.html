@@ -78,7 +78,7 @@
                             <label for="personSearch"></label><input type="text" id="personSearch" class="form-control mb-3" placeholder="Search by name..." autocomplete="off" />
                             <ul id="personList" class="list-group">
                                 <li th:each="staff : ${staffs}" class="list-group-item list-group-item-action"
-                                    th:text="${staff.name}"  th:data-id="${staff.staffNo}" style="cursor:pointer" onclick="selectIncharge(this)">
+                                    th:text="${staff.name}"  th:data-id="${staff.staffId}" style="cursor:pointer" onclick="selectIncharge(this)">
                                 </li>
                                 <li th:if="${#lists.isEmpty(staffs)}" class="list-group-item text-muted">No persons found</li>
                             </ul>
@@ -101,7 +101,7 @@
                                 <li th:each="member : ${staffs}"
                                     class="list-group-item list-group-item-action"
                                     th:text="${member.name}"
-                                    th:data-id="${member.staffNo}"
+                                    th:data-id="${member.staffId}"
                                     style="cursor:pointer"
                                     onclick="selectMember(this)">
                                 </li>

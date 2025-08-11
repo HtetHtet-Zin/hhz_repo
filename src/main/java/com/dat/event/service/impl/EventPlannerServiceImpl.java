@@ -2,7 +2,6 @@ package com.dat.event.service.impl;
 
 import com.dat.event.common.mappers.EventPlannerMapper;
 import com.dat.event.dto.EventDto;
-import com.dat.event.dto.EventPlannerDto;
 import com.dat.event.dto.RequestEventPlanDto;
 import com.dat.event.repository.EventPlannerRepository;
 import com.dat.event.service.EventPlannerService;
@@ -19,13 +18,14 @@ public class EventPlannerServiceImpl implements EventPlannerService {
     private final EventPlannerMapper eventPlannerMapper;
 
     @Override
-    public EventPlannerDto saveEventPlanner(EventPlannerDto dto) {
-        return eventPlannerMapper.toDTO(eventPlannerRepository.save(eventPlannerMapper.toEntity(dto)));
-    }
+    public void saveEventPlanner(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String loginStaffNo) {
+        // step-3 create eventPlanner, (staffId,eventId,supportedMonth,supportedMemberFlg,delFlg)
 
-    @Override
-    public void saveEventPlanner(EventDto eventId, RequestEventPlanDto requestEventPlanDto, String loginStaffNo) {
+        var eventId = eventDto.getEventId();
+        var inChargePersonId = requestEventPlanDto.getInChargePerson();
+        var supportedMembers = requestEventPlanDto.getSupportedMembers();
 
+//        Arrays.stream(supportedMembers).forEach();
 
     }
 }

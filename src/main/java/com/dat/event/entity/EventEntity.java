@@ -30,6 +30,7 @@ public class EventEntity {
     @Column(name = "event_id")
     private Long eventId;
 
+    @Column(unique = true)
     private String name;
     private String description;
     private boolean delFlag;

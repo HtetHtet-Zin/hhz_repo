@@ -6,7 +6,5 @@ import com.dat.event.dto.RequestEventPlanDto;
 
 public interface EventPlannerService {
 
-    EventPlannerDto saveEventPlanner(EventPlannerDto dto);
-
-    void saveEventPlanner(EventDto eventId, RequestEventPlanDto requestEventPlanDto, String loginStaffNo);
+    void saveEventPlanner(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String loginStaffNo);
 }

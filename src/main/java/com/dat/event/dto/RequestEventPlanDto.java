@@ -10,19 +10,10 @@ public class RequestEventPlanDto {
 
     private String eventName;
     private String description;
-    private String inChargePerson;
+    private int inChargePerson;
     private SupportedMember[] supportedMembers;
     private EventTime[] eventTimes;
 
-    public record EventTime(
-            @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-            LocalDateTime startDateTime,
-            @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-            LocalDateTime endDateTime) {
-    }
-
-    public record SupportedMember(String name, String month) {
-    }
 }
 
 
