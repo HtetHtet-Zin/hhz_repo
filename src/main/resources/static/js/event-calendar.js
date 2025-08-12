@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectedMember = document.getElementById("selectedMember");
   const monthSelect = document.getElementById("monthSelect");
   const supportedList = document.getElementById("supportedList");
+  const nextWeekBtn = document.getElementById("nextWeekBtn");
+  const prevWeekBtn = document.getElementById("prevWeekBtn")
+
 
   // --- Person Modal Search Filter ---
   personSearch.addEventListener("input", () => {
@@ -209,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Create a time slot input group
-  function createSlotInput(day, isOnly = false) {
+  function createSlotInput(day, disabledAction, isOnly = false) {
     const slot = document.createElement("div");
     slot.className = "time-slot d-flex gap-1 mb-1 align-items-center";
 
@@ -217,19 +220,21 @@ document.addEventListener("DOMContentLoaded", () => {
     start.type = "time";
     start.name = `startTime_${day}[]`;
     start.className = "form-control form-control-sm";
+    disableOrEnableInput(start, disabledAction);
 
     const end = document.createElement("input");
     end.type = "time";
     end.name = `endTime_${day}[]`;
     end.className = "form-control form-control-sm";
+    disableOrEnableInput(end, disabledAction);
 
     const removeBtn = document.createElement("button");
     removeBtn.type = "button";
     removeBtn.textContent = "×";
     removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
-
+    disableOrEnableInput(removeBtn, disabledAction);
     if (isOnly) {
-      removeBtn.disabled = true;
+      disableInput(removeBtn);
       removeBtn.title = "At least one slot required";
     }
 
@@ -237,45 +242,60 @@ document.addEventListener("DOMContentLoaded", () => {
     return slot;
   }
 
+  let latestPage = 0;
+  let currentPage = 1;
+
   function renderTable() {
     const todayIndex = getTodayIndex();
-    tableBody.innerHTML = "";
+   // tableBody.innerHTML = "";
 
-    daysOfWeek.forEach((day, i) => {
-      const date = new Date(weekStart);
-      date.setDate(weekStart.getDate() + i);
+    if(/*canCreateNewPage*/ latestPage < currentPage){
+     latestPage++;
+     daysOfWeek.forEach((day, i) => {
+          const date = new Date(weekStart);
+          const disabledAction = i < todayIndex;
+          date.setDate(weekStart.getDate() + i);
 
-      const isoDate = date.toISOString().split('T')[0];
-      const row = document.createElement("tr");
-      row.dataset.day = day;
-      row.dataset.date = isoDate;
+          const isoDate = date.toISOString().split('T')[0];
+          const row = document.createElement("tr");
+          row.dataset.day = day;
+          row.dataset.date = isoDate;
 
-      const dayCell = document.createElement("td");
-      dayCell.innerHTML = `<strong>${day}</strong><br><small>${formatDate(date)}</small>`;
-      if (i === todayIndex) {
-        dayCell.style.backgroundColor = "#d1e7dd";
-        dayCell.style.fontWeight = "bold";
-      }
+          const dayCell = document.createElement("td");
+          dayCell.innerHTML = `<strong>${day}</strong><br><small>${formatDate(date)}</small>`;
+          if (i === todayIndex) {
+            dayCell.style.backgroundColor = "#d1e7dd";
+            dayCell.style.fontWeight = "bold";
+          }
 
-      const slotWrapper = document.createElement("td");
-      slotWrapper.colSpan = 2;
-      slotWrapper.className = "slot-wrapper";
-      slotWrapper.dataset.day = day;
+          const slotWrapper = document.createElement("td");
+          slotWrapper.colSpan = 2;
+          slotWrapper.className = "slot-wrapper";
+          slotWrapper.dataset.day = day;
 
-      // Add initial slot input
-      slotWrapper.appendChild(createSlotInput(day, true));
+          // Add initial slot input
+          slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
 
-      const addBtnCell = document.createElement("td");
-      const addBtn = document.createElement("button");
-      addBtn.type = "button";
-      addBtn.className = "btn btn-sm btn-success addSlotBtn";
-      addBtn.textContent = "+";
-      addBtn.dataset.day = day;
-      addBtnCell.appendChild(addBtn);
+          const addBtnCell = document.createElement("td");
+          const addBtn = document.createElement("button");
+          addBtn.type = "button";
+          addBtn.className = "btn btn-sm btn-success addSlotBtn";
+          addBtn.textContent = "+";
+          addBtn.dataset.day = day;
+          disableOrEnableInput(addBtn, disabledAction);
+          addBtnCell.appendChild(addBtn);
 
-      row.append(dayCell, slotWrapper, addBtnCell);
-      tableBody.appendChild(row);
-    });
+          row.append(dayCell, slotWrapper, addBtnCell);
+          tableBody.appendChild(row);
+        });
+    } else {
+        showPage();
+    }
+    disableOrEnableInput(prevWeekBtn, currentPage == 1);
+  }
+
+  function showPage(){
+
   }
 
   // Event delegation for add/remove time slots
@@ -283,11 +303,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.classList.contains("addSlotBtn")) {
       const day = e.target.dataset.day;
       const wrapper = document.querySelector(`.slot-wrapper[data-day="${day}"]`);
+      const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
+      if(wrapper.children.length > 1) {
+        disableInput(addBtn);
+      }
       if (wrapper) {
-        wrapper.appendChild(createSlotInput(day));
+        wrapper.appendChild(createSlotInput(day, false));
         if (wrapper.children.length > 1) {
-          wrapper.querySelectorAll(".removeSlotBtn").forEach((btn) => {
-            btn.disabled = false;
+            wrapper.querySelectorAll(".removeSlotBtn").forEach((btn) => {
+            disableInput(btn);
+            btn.onclick = function (event) {
+                if(wrapper.children.length < 4){
+                    disableInput(addBtn);
+                }
+            }
           });
         }
       }
@@ -298,18 +327,20 @@ document.addEventListener("DOMContentLoaded", () => {
       if (wrapper.children.length > 1) {
         slotDiv.remove();
         if (wrapper.children.length === 1) {
-          wrapper.querySelector(".removeSlotBtn").disabled = true;
+          disableInput(wrapper.querySelector(".removeSlotBtn"));
         }
       }
     }
   });
 
-  document.getElementById("nextWeekBtn").addEventListener("click", () => {
+  nextWeekBtn.addEventListener("click", () => {
+    currentPage++;
     weekStart.setDate(weekStart.getDate() + 7);
     renderTable();
   });
 
-  document.getElementById("prevWeekBtn").addEventListener("click", () => {
+  prevWeekBtn.addEventListener("click", () => {
+    currentPage--;
     weekStart.setDate(weekStart.getDate() - 7);
     renderTable();
   });
@@ -363,7 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
         eventName: form.eventName.value,
         description: form.eventDesc.value,
         inChargePerson: form.inchargePerson.dataset.dataId,
-        supportedMembers: members,//todo: bind id
+        supportedMembers: members,
         eventTimes: dateTimeList
       };
 

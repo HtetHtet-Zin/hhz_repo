@@ -145,8 +145,8 @@
                     <div class="wizard-step" id="step2">
                         <h5>Step 2: Weekly Time Slot Planner</h5>
                         <div class="d-flex justify-content-between mb-2">
-                            <button class="btn btn-outline-primary" type="button" id="prevWeekBtn" > ← Previous Week </button>
-                            <button class="btn btn-outline-primary" type="button" id="nextWeekBtn" > Next Week → </button>
+                            <button class="btn btn-outline-primary border border-primary" type="button" id="prevWeekBtn" > ← Previous Week </button>
+                            <button class="btn btn-outline-primary border border-primary" type="button" id="nextWeekBtn" > Next Week → </button>
                         </div>
                         <table class="table table-bordered" id="timeSlotTable">
                             <thead>
@@ -169,6 +169,7 @@
 
 <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/event-calendar.js}"></script>
+<script th:src="@{/js/commonUtility.js}"></script>
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:src="@{/js/main.js}"></script>
 </body>
