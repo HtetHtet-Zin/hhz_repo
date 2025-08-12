@@ -2,37 +2,52 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Event Planner Wizard</title>
+    <title>Event Planner</title>
+    <link th:href="@{./images/DAT Logo.png}" rel="icon">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" th:href="@{/css/event-calendar.css}"/>
-    <link th:href="@{/css/main.css}" rel="stylesheet">
+
+    <link th:href="@{/css/event-calendar.css}" rel="stylesheet"/>
+    <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
+    <link th:href="@{/css/footer.css}" rel="stylesheet"/>
+
 </head>
-<body>
-<div class="container my-5">
-    <h3 class="text-center mb-4">Event Registration</h3>
+<body class="registration">
 
-    <!-- Note: added action and method attributes as example -->
-    <form id="eventForm" th:action="@{/event/create}" method="POST" enctype="multipart/form-data" novalidate>
-        <div id="wizard">
-            <!-- Step 1: Event Details -->
-            <div class="wizard-step active" id="step1">
-                <h5>Step 1: Enter Event Details</h5>
+    <div th:replace="~{fragments/header :: header}"></div>
 
-                <div class="mb-3">
-                    <label for="eventName" class="form-label">Event Name *</label>
-                    <input type="text"  id="eventName" name="eventName"  class="form-control"  placeholder="Enter Event Name"  required  />
-                </div>
+    <main class="main" style="padding-bottom: 50px;">
 
-                <div class="mb-3">
-                    <label for="eventPhoto" class="form-label">Event Photo *</label>
-                    <input type="file"  id="eventPhoto" name="eventPhoto"  class="form-control" accept="image/*" required />
-                </div>
+        <!-- Page Title -->
+        <div class="page-title dark-background" data-aos="fade"
+             style="background-image: url(./images/DSC_0694.JPG);">
+            <div class="position-relative">
+                <h1>Event Registration</h1>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label for="eventDesc" class="form-label">Description</label>
-                    <textarea id="eventDesc"  name="eventDesc" class="form-control"  rows="3" placeholder="Optional description"  ></textarea>
-                </div>
+        <div class="container my-5">
+            <form id="eventForm" th:action="@{/event-create}" method="POST" enctype="multipart/form-data" novalidate>
+                <div id="wizard">
+                    <!-- Step 1: Event Details -->
+                    <div class="wizard-step active" id="step1">
+                        <h5>Step 1: Enter Event Details</h5>
+
+                        <div class="mb-3">
+                            <label for="eventName" class="form-label">Event Name *</label>
+                            <input type="text"  id="eventName" name="eventName"  class="form-control"  placeholder="Enter Event Name"  required  />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="eventPhoto" class="form-label">Event Photo *</label>
+                            <input type="file"  id="eventPhoto" name="eventPhoto"  class="form-control" accept="image/*" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="eventDesc" class="form-label">Description</label>
+                            <textarea id="eventDesc"  name="eventDesc" class="form-control"  rows="3" placeholder="Optional description"  ></textarea>
+                        </div>
 
                 <div class="mb-3">
                     <label for="inchargePerson" class="form-label">Incharge Person *</label>
@@ -44,27 +59,27 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <button type="button"  class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#memberModal" >Add Supported Member </button>
-                </div>
+                        <div class="mb-3">
+                            <button type="button"  class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#memberModal" >Add Supported Member </button>
+                        </div>
 
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>Member</th>
-                            <th>Month</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody id="supportedList"></tbody>
-                    </table>
-                </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Month</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="supportedList"></tbody>
+                            </table>
+                        </div>
 
-                <div>
-                    <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next</button>
-                </div>
-            </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next</button>
+                        </div>
+                    </div>
 
             <!-- Incharge Person Modal -->
             <div class="modal fade"  id="personModal" tabindex="-1"  aria-labelledby="personModalLabel" aria-hidden="true"  >
@@ -77,7 +92,7 @@
                         <div class="modal-body">
                             <label for="personSearch"></label><input type="text" id="personSearch" class="form-control mb-3" placeholder="Search by name..." autocomplete="off" />
                             <ul id="personList" class="list-group">
-                                <li th:each="staff : ${staffs}" class="list-group-item list-group-item-action"
+                                <li th:if="${!#lists.isEmpty(staffs)}" th:each="staff : ${staffs}" class="list-group-item list-group-item-action"
                                     th:text="${staff.name}"  th:data-id="${staff.staffId}" style="cursor:pointer" onclick="selectIncharge(this)">
                                 </li>
                                 <li th:if="${#lists.isEmpty(staffs)}" class="list-group-item text-muted">No persons found</li>
@@ -98,7 +113,7 @@
                         <div class="modal-body">
                             <label for="memberSearch"></label><input type="text" id="memberSearch" class="form-control mb-3" placeholder="Search member..." autocomplete="off" />
                             <ul id="memberList" class="list-group mb-3">
-                                <li th:each="member : ${staffs}"
+                                <li th:if="${!#lists.isEmpty(members)}" th:each="member : ${staffs}"
                                     class="list-group-item list-group-item-action"
                                     th:text="${member.name}"
                                     th:data-id="${member.staffId}"
@@ -130,33 +145,35 @@
                 </div>
             </div>
 
-            <!-- Step 2: Select Time Slots -->
-            <div class="wizard-step" id="step2">
-                <h5>Step 2: Weekly Time Slot Planner</h5>
-                <div class="d-flex justify-content-between mb-2">
-                    <button class="btn btn-outline-primary" type="button" id="prevWeekBtn" > ← Previous Week </button>
-                    <button class="btn btn-outline-primary" type="button" id="nextWeekBtn" > Next Week → </button>
-                </div>
-                <table class="table table-bordered" id="timeSlotTable">
-                    <thead>
-                    <tr id="headerRow">
-                        <th>Day</th>
-                        <th colspan="2">Time Slots</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
+                    <!-- Step 2: Select Time Slots -->
+                    <div class="wizard-step" id="step2">
+                        <h5>Step 2: Weekly Time Slot Planner</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <button class="btn btn-outline-primary" type="button" id="prevWeekBtn" > ← Previous Week </button>
+                            <button class="btn btn-outline-primary" type="button" id="nextWeekBtn" > Next Week → </button>
+                        </div>
+                        <table class="table table-bordered" id="timeSlotTable">
+                            <thead>
+                            <tr id="headerRow">
+                                <th>Day</th>
+                                <th colspan="2">Time Slots</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
 
-                <button type="button" class="btn btn-secondary"  onclick="goToStep(1)"  > Back </button>
-                <button type="button" class="btn btn-success" onclick="submitEvent()" > Submit Event </button>
-            </div>
+                        <button type="button" class="btn btn-secondary"  onclick="goToStep(1)"  > Back </button>
+                        <button type="button" class="btn btn-success" onclick="submitEvent()" > Submit Event </button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-</div>
+    </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/event-calendar.js}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script th:src="@{/js/main.js}"></script>
 </body>
 </html>
