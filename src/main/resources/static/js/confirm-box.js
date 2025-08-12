@@ -12,7 +12,7 @@
         }
         .modal-backdrop{
           position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;
-          background:rgba(255,255,255,0.01);backdrop-filter:blur(1px);
+          background:rgba(255,255,255,0.01);/*backdrop-filter:blur(1px);*/
           opacity:0;pointer-events:none;transition:opacity .25s ease;
         }
         .modal-backdrop.open{opacity:1;pointer-events:auto}
@@ -34,10 +34,10 @@
         .modal-title{font-size:18px;font-weight:700;color:#8b5cf6}
         .modal-body{color:var(--muted);margin-top:10px;line-height:1.5}
         .controls{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
-        .btn{width: 80px;border:none;padding:8px 14px;width: ;border-radius:10px;cursor:pointer;font-weight:600;transition:transform .18s ease}
+        .btn{border:none;padding:8px 14px;width: ;border-radius:10px;cursor:pointer;font-weight:600;transition:transform .18s ease}
         .btn:hover{transform:translateY(-3px) scale(1.02)}
-        .btn.cancel{background:linear-gradient(180deg,rgba(255,255,255),transparent);border:1px solid #8b5cf6;color:#8b5cf6}
-        .btn.confirm{background:linear-gradient(90deg,var(--accent),#8b5cf6);color:white}
+        .btn.cancel{width: 80px;background:linear-gradient(180deg,rgba(255,255,255),transparent);border:1px solid #8b5cf6;color:#8b5cf6}
+        .btn.confirm{width: 80px;background:linear-gradient(90deg,var(--accent),#8b5cf6);color:white}
         body.modal-open{overflow:hidden}
     `;
     document.head.appendChild(style);
