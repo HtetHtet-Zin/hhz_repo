@@ -258,6 +258,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const isoDate = date.toISOString().split('T')[0];
           const row = document.createElement("tr");
+          row.classList.add('page');
+          row.classList.add('page-' + currentPage);
           row.dataset.day = day;
           row.dataset.date = isoDate;
 
@@ -272,6 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
           slotWrapper.colSpan = 2;
           slotWrapper.className = "slot-wrapper";
           slotWrapper.dataset.day = day;
+          slotWrapper.classList.add('group-' + currentPage);
 
           // Add initial slot input
           slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
@@ -288,21 +291,25 @@ document.addEventListener("DOMContentLoaded", () => {
           row.append(dayCell, slotWrapper, addBtnCell);
           tableBody.appendChild(row);
         });
-    } else {
-        showPage();
     }
+    showPage();
     disableOrEnableInput(prevWeekBtn, currentPage == 1);
   }
 
   function showPage(){
-
+    document.querySelectorAll('.page').forEach(element => {
+        element.style.display = "none";
+    });
+    document.querySelectorAll(`.page-${currentPage}`).forEach(element => {
+        element.style.display = "table-row";
+    });
   }
 
   // Event delegation for add/remove time slots
   tableBody.addEventListener("click", (e) => {
     if (e.target.classList.contains("addSlotBtn")) {
       const day = e.target.dataset.day;
-      const wrapper = document.querySelector(`.slot-wrapper[data-day="${day}"]`);
+      const wrapper = document.querySelector(`.group-${currentPage}.slot-wrapper[data-day="${day}"]`);
       const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
       if(wrapper.children.length > 1) {
         disableInput(addBtn);
@@ -311,10 +318,10 @@ document.addEventListener("DOMContentLoaded", () => {
         wrapper.appendChild(createSlotInput(day, false));
         if (wrapper.children.length > 1) {
             wrapper.querySelectorAll(".removeSlotBtn").forEach((btn) => {
-            disableInput(btn);
+            enableInput(btn);
             btn.onclick = function (event) {
                 if(wrapper.children.length < 4){
-                    disableInput(addBtn);
+                    enableInput(addBtn);
                 }
             }
           });
@@ -365,8 +372,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Please add at least one supported member.");
       return;
     }
-
-
       tableBody.querySelectorAll("tr").forEach(row => {
         const date = row.dataset.date;
         console.log(date);
