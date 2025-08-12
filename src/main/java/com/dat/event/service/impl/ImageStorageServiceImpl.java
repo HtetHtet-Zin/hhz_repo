@@ -24,12 +24,27 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             if (!Files.exists(imageDir)) {
                 Files.createDirectories(imageDir);
             }
-            Path filePath = imageDir.resolve(eventName);
+
+            String originalFilename = file.getOriginalFilename();
+            String extension = "";
+
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+            } else {
+                log.warn("No file extension found. Defaulting to .jpg");
+                extension = ".jpg";
+            }
+
+            String renamedFileName = eventName + extension;
+            Path filePath = imageDir.resolve(renamedFileName);
+
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            log.info("Photo Saved..");
+
+            log.info("Photo saved as {}", renamedFileName);
 
         } catch (IOException exception) {
-            log.error(exception.getMessage());
+            log.error("Error saving image: {}", exception.getMessage());
         }
     }
+
 }

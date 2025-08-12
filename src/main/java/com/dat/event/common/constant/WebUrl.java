@@ -36,7 +36,8 @@ public final class WebUrl {
     public static final String LOGOUT_URL = "/logout";
 
     public static final String EVENT_URL = "/event";
-    public static final String EVENT_CREATE_URL = "event-create";
+    
+    public static final String EVENT_CREATE_URL = "event/create";
 
     public static final String EVENTS_URL = "/event-list";
 

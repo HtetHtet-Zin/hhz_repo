@@ -66,9 +66,9 @@ public class EventController {
         EventDto eventDto = eventService.findByEventName(requestEventPlanDto.getEventName());
         if (eventDto == null && loginStaffNo != null) {
             EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
-            imageStorageService.saveImage(eventPhotoFile,savedDto.getName());
             eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
             eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
+            imageStorageService.saveImage(eventPhotoFile,savedDto.getName());
         }
 
         return ResponseEntity.ok(requestEventPlanDto);

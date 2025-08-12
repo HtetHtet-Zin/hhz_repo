@@ -39,12 +39,15 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     @Override
     public void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
         // create schedule, (eventId,date,startTime,endTime,createAt,createBy,updateAt,updateBy)
+
+        log.info("Event ID {}",eventDto.getEventId());
+        log.info("Request DTO {}",requestEventPlanDto);
         Arrays.stream(requestEventPlanDto.getEventTimes()).forEach(eventTime -> {
             var date = eventTime.startDateTime().toLocalDate();
             var start = eventTime.startDateTime().toLocalTime();
             var end = eventTime.endDateTime().toLocalTime();
             var dto = EventScheduleDto.builder()
-                    .eventDto(eventDto)
+                    .eventDto(EventDto.builder().eventId(eventDto.getEventId()).build())
                     .name(requestEventPlanDto.getEventName())
                     .description(requestEventPlanDto.getDescription())
                     .date(date)
