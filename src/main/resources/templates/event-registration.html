@@ -26,21 +26,10 @@
     <link th:href="@{/css/toast.min.css}" rel="stylesheet">
 
     <style>
-    /* Custom improvements */
-    .info-table td {
-      font-weight: 600;
-      width: 180px;
-      background: #f8f9fa;
-    }
-
-    .info-table td + td {
-      font-weight: normal;
-    }
-
     .schedule-table thead th {
       position: sticky;
       top: 0;
-      background: #343a40;
+      background: #1f5399;
       color: white;
     }
 
@@ -52,11 +41,7 @@
 
     .btn-submit {
       margin-top: 15px;
-    }
-
-    /* For checkbox and label alignment */
-    .form-check-label {
-      margin-left: 8px;
+      background: #1f5399;
     }
   </style>
 </head>
@@ -74,21 +59,23 @@
 
     <div class="container my-5">
         <!-- Info Table -->
-        <table class="table table-bordered info-table w-auto mx-auto mb-5 shadow-sm rounded">
+        <table class="table table-bordered schedule-table w-auto mx-auto mb-5 shadow-sm rounded">
             <tbody>
-            <tr>
-                <td>Incharge Person</td>
-                <td th:text="${planner.incharge_person}">Person Name</td>
-            </tr>
-            <tr>
-                <td>Supported Members</td>
-                <td th:text="${planner.supported_members}">Member Names</td>
-            </tr>
+                <thead>
+                    <tr>
+                        <th>Incharge Person</th>
+                        <td th:text="${planner.incharge_person}">Person Name</td>
+                    </tr>
+                    <tr>
+                        <th>Supported Members</th>
+                        <td th:text="${planner.supported_members}">Member Names</td>
+                    </tr>
+                </thead>
             </tbody>
         </table>
         <div class="d-flex justify-content-between m-3 align-items-center">
             <div>
-                <p>There are <span id="count"></span> activities.</p>
+                <p>There are <span id="count"></span> <span id="activity-text"></span>.</p>
             </div>
             <div  class="d-flex justify-content-between align-items-center">
                 <div>
@@ -107,12 +94,11 @@
                 <th scope="col" style="width: 130px;">
                     <div class="form-check">
                         <input
-                                class="form-check-input"
                                 type="checkbox"
                                 id="checkSelectAll"
                                 onclick="toggleAll(this)"
                         />
-                        <label class="form-check-label" for="checkSelectAll">Select All</label>
+                        <label for="checkSelectAll">Select All</label>
                     </div>
                 </th>
 
@@ -153,11 +139,11 @@
 
 <!-- Main JS File -->
 <script th:src="@{/assets/js/main.js}"></script>
-<script>
+
+<script th:inline="javascript">
     var message = '[[${param.message}]]';
     var messageType = '[[${param.messageType}]]';
-</script>
-<script th:inline="javascript">
+
     /*<![CDATA[*/
     const registeredScheduleIds = /*[[${registeredSchedule}]]*/ [];
     const allScheduleIds = /*[[${allScheduleIds}]]*/ [];
