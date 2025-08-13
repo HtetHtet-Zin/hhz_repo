@@ -1,4 +1,3 @@
-// animated-confirm.js
 (function () {
     // Inject CSS once
     const style = document.createElement("style");
@@ -71,7 +70,8 @@
 
     let resolver = null;
 
-    function openModal({ title, message, variant }) {
+    function openModal({ title, message, variant }, isAlert) {
+        console.log('openModel is alert', isAlert);
         titleEl.textContent = title || "Confirm";
         bodyEl.textContent = message || "Are you sure?";
         if (variant === "danger") {
@@ -81,6 +81,8 @@
             badgeEl.textContent = "?";
             badgeEl.style.background = "linear-gradient(135deg,var(--accent),#8b5cf6)";
         }
+
+        cancelBtn.hidden = isAlert;
 
         document.body.classList.add("modal-open");
         backdrop.classList.add("open");
@@ -107,6 +109,9 @@
 
     // Global function
     window.confirmAction = function (message, { title = "Confirm", variant = "default" } = {}) {
-        return openModal({ title, message, variant });
+        return openModal({ title, message, variant }, false);
+    };
+    window.alertAction = function (message, { title = "Alert", variant = "danger" } = {}) {
+        return openModal({ title, message, variant }, true);
     };
 })();
