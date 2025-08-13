@@ -415,7 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
    }
     formData.append("eventData", new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
 
-   fetch('/club/event/create', {
+   fetch('/club/event-create', {
        method: 'POST',
        body: formData
    })
