@@ -26,11 +26,12 @@ import java.util.List;
 public interface EventScheduleRepository extends JpaRepository<EventScheduleEntity, Long> {
 
     @Query(value = """
-        SELECT id, start_time, end_time, date
-        FROM tbl_event_schedule
-        WHERE event_id = :eventId
-        AND (:keyword IS NULL OR date LIKE %:keyword%)
-        """,
+            SELECT sch.id, sch.start_time, sch.end_time, sch.date, eve.name
+            FROM tbl_event_schedule sch JOIN tbl_event eve
+            ON sch.event_id = eve.event_id
+            WHERE sch.event_id = :eventId
+            AND (:keyword IS NULL OR date LIKE %:keyword%)
+            """,
             countQuery = """
         SELECT COUNT(*)
         FROM tbl_event_schedule

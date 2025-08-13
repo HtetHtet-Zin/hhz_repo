@@ -23,6 +23,8 @@ const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("search");
 const eventId = document.getElementById("eventId").value;
 const joinBtn = document.getElementById("joinBtn");
+const countElem = document.getElementById('count');
+const activityElem = document.getElementById('activity-text');
 
 function checkJoinButtonState() {
     const isSame =
@@ -44,6 +46,19 @@ searchInput.addEventListener("input", () => {
     loadData();
 });
 
+function activityCount(total) {
+    if (total === 0) {
+        countElem.textContent = "no";
+        activityElem.textContent = "activities";
+    } else if (total === 1) {
+        countElem.textContent = "1";
+        activityElem.textContent = "activity";
+    } else {
+        countElem.textContent = total;
+        activityElem.textContent = "activities";
+    }
+}
+
 function loadData() {
     fetch("/club/event-registration", {
         method: "POST",
@@ -56,14 +71,14 @@ function loadData() {
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById('count').textContent = data.page.totalElements;
+        activityCount(data.page.totalElements);
         renderTable(data);
         renderPagination(data.page);
     })
     .catch(err => console.error("Error loading event-schedule:", err));
 }
 
-let isSelectAll = false; // tracks global select all
+let isSelectAll = false;
 
 function renderTable(data) {
     tableBody.innerHTML = "";
@@ -75,7 +90,7 @@ function renderTable(data) {
                 <td>
                     <div class="form-check">
                         <input
-                            class="form-check-input schedule-checkbox"
+                            class="schedule-checkbox"
                             type="checkbox"
                             name="selectedScheduleIds"
                             value="${id}"
@@ -83,12 +98,11 @@ function renderTable(data) {
                         />
                     </div>
                 </td>
-                <td>${schedule.date} (${schedule.startTime} - ${schedule.endTime})</td>
+                <td>${schedule.name} - ${schedule.date} (${schedule.startTime} - ${schedule.endTime})</td>
             </tr>
         `;
     });
 
-    // Update individual checkbox changes
     document.querySelectorAll('input.schedule-checkbox').forEach(cb => {
         cb.addEventListener('change', e => {
             const id = Number(e.target.value);
@@ -96,7 +110,7 @@ function renderTable(data) {
                 selectedScheduleIds.add(id);
             } else {
                 selectedScheduleIds.delete(id);
-                isSelectAll = false; // uncheck Select All if any checkbox is manually unchecked
+                isSelectAll = false;
                 document.getElementById('checkSelectAll').checked = false;
             }
             checkJoinButtonState();
@@ -142,6 +156,7 @@ function changePage(page) {
 }
 
 document.getElementById("joinBtn").addEventListener("click", () => {
+
     const params = new URLSearchParams();
     selectedScheduleIds.forEach(id => params.append("registeredScheduleIds", id));
     params.append("eventId", eventId);
