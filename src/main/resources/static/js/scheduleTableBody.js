@@ -1,0 +1,168 @@
+function toggleAll(source) {
+    isSelectAll = source.checked;
+
+    selectedScheduleIds.clear();
+    if (source.checked) {
+        // Add all visible checkbox IDs to the set
+        document.querySelectorAll('input[name="selectedScheduleIds"]').forEach(cb => {
+            cb.checked = true;
+            selectedScheduleIds.add(Number(cb.value));
+        });
+    } else {
+        // Uncheck all visible checkboxes
+        document.querySelectorAll('input[name="selectedScheduleIds"]').forEach(cb => {
+            cb.checked = false;
+        });
+    }
+
+    checkJoinButtonState();
+}
+
+const tableBody = document.getElementById("scheduleTableBody");
+const pagination = document.getElementById("pagination");
+const searchInput = document.getElementById("search");
+const eventId = document.getElementById("eventId").value;
+const joinBtn = document.getElementById("joinBtn");
+
+function checkJoinButtonState() {
+    const isSame =
+        originalScheduleIds.size === selectedScheduleIds.size &&
+        [...originalScheduleIds].every(id => selectedScheduleIds.has(id));
+    joinBtn.disabled = isSame;
+}
+
+let currentPage = 0;
+let currentKeyword = "";
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadData();
+});
+
+searchInput.addEventListener("input", () => {
+    currentKeyword = searchInput.value.trim();
+    currentPage = 0;
+    loadData();
+});
+
+function loadData() {
+    fetch("/club/event-registration", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+            keyword: currentKeyword,
+            page: currentPage,
+            eventId: eventId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('count').textContent = data.page.totalElements;
+        renderTable(data);
+        renderPagination(data.page);
+    })
+    .catch(err => console.error("Error loading event-schedule:", err));
+}
+
+let isSelectAll = false; // tracks global select all
+
+function renderTable(data) {
+    tableBody.innerHTML = "";
+    data.content.forEach(schedule => {
+        const id = Number(schedule.id);
+        const isChecked = isSelectAll || selectedScheduleIds.has(id);
+        tableBody.innerHTML += `
+            <tr>
+                <td>
+                    <div class="form-check">
+                        <input
+                            class="form-check-input schedule-checkbox"
+                            type="checkbox"
+                            name="selectedScheduleIds"
+                            value="${id}"
+                            ${isChecked ? "checked" : ""}
+                        />
+                    </div>
+                </td>
+                <td>${schedule.date} (${schedule.startTime} - ${schedule.endTime})</td>
+            </tr>
+        `;
+    });
+
+    // Update individual checkbox changes
+    document.querySelectorAll('input.schedule-checkbox').forEach(cb => {
+        cb.addEventListener('change', e => {
+            const id = Number(e.target.value);
+            if (e.target.checked) {
+                selectedScheduleIds.add(id);
+            } else {
+                selectedScheduleIds.delete(id);
+                isSelectAll = false; // uncheck Select All if any checkbox is manually unchecked
+                document.getElementById('checkSelectAll').checked = false;
+            }
+            checkJoinButtonState();
+        });
+    });
+
+    checkJoinButtonState();
+}
+
+function renderPagination(page) {
+    pagination.innerHTML = "";
+
+    // Previous button
+    pagination.innerHTML += `
+        <li class="page-item ${page.number == 0 ? 'disabled' : ''}">
+            <a class="page-link"  onclick="changePage(${page.number - 1})">Previous</a>
+        </li>
+    `;
+
+    // Page numbers
+    const start = Math.max(0, Math.min(page.totalPages - 5, page.number - 2));
+    const end = Math.min(page.totalPages - 1, Math.max(4, page.number + 2));
+    for (let i = start; i <= end; i++) {
+        pagination.innerHTML += `
+            <li class="page-item ${i === page.number ? 'active' : ''}">
+                <a class="page-link" onclick="changePage(${i})">${i + 1}</a>
+            </li>
+        `;
+    }
+
+    // Next button
+    pagination.innerHTML += `
+        <li class="page-item ${page.number + 1 == page.totalPages ? 'disabled' : ''}">
+            <a class="page-link" onclick="changePage(${page.number + 1})">Next</a>
+        </li>
+    `;
+}
+
+function changePage(page) {
+    if (page < 0) return;
+    currentPage = page;
+    loadData();
+}
+
+document.getElementById("joinBtn").addEventListener("click", () => {
+    const params = new URLSearchParams();
+    selectedScheduleIds.forEach(id => params.append("registeredScheduleIds", id));
+    params.append("eventId", eventId);
+
+    fetch("/club/register-event-schedule", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+    })
+    .then(res => res.json())
+    .then(data => {
+        const redirectUrl = new URL(data.redirectUrl, window.location.origin);
+        redirectUrl.searchParams.append('message', data.message || '');
+        redirectUrl.searchParams.append('messageType', data.status || '');
+        window.location.href = redirectUrl;
+    })
+    .catch(err => {
+        const redirectUrl = new URL(`/club/event-registration/${eventId}`, window.location.origin);
+        redirectUrl.searchParams.append('message', "Error occurred, please try again.");
+        redirectUrl.searchParams.append('messageType', "error");
+        window.location.href = redirectUrl;
+    });
+});
+

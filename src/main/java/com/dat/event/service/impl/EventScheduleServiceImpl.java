@@ -6,6 +6,7 @@
  * *************************************************************/
 package com.dat.event.service.impl;
 
+import com.dat.event.common.constant.Constants;
 import com.dat.event.common.mappers.EventScheduleMapper;
 import com.dat.event.dto.EventDto;
 import com.dat.event.dto.EventScheduleDto;
@@ -14,10 +15,15 @@ import com.dat.event.repository.EventScheduleRepository;
 import com.dat.event.service.EventScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * EventScheduleServiceImpl Class.
@@ -34,7 +40,6 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     private final EventScheduleRepository eventScheduleRepository;
 
     private final EventScheduleMapper eventScheduleMapper;
-
 
     @Override
     public void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
@@ -61,6 +66,27 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                     .build();
             eventScheduleRepository.save(eventScheduleMapper.toEntity(dto));
         });
+    }
 
+    @Override
+    public Page<EventScheduleDto> getScheduleById(Long eventId, String keyword, int page) {
+        Page<Object[]> schedules = eventScheduleRepository.getScheduleByEventId(
+                eventId,
+                keyword,
+                PageRequest.of(page, Constants.PAGE_LIMIT)
+        );
+
+        return schedules.map(objects -> EventScheduleDto.builder()
+                .id(objects[0] != null ? Long.valueOf(objects[0].toString()) : null)
+                .startTime(objects[1] != null ? LocalTime.parse(objects[1].toString()) : null)
+                .endTime(objects[2] != null ? LocalTime.parse(objects[2].toString()) : null)
+                .date(objects[3] != null ? LocalDate.parse(objects[3].toString()) : null)
+                .build()
+        );
+    }
+
+    @Override
+    public List<Long> getAllScheduleIdByEvent(Long eventId) {
+        return eventScheduleRepository.getAllScheduleIdByEvent(eventId);
     }
 }

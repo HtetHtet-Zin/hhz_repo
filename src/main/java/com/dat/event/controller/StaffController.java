@@ -59,6 +59,7 @@ public class StaffController {
     @GetMapping(WebUrl.STAFF_BIRTHDAY_URL)
     public String birthdayStaff(HttpSession session, Model model){
         if (session != null && session.getAttribute("staffNo") != null) {
+            log.info("name - " + session.getAttribute("staffNo"));
             model.addAttribute("birthdayStaffList", staffService.birthdayStaffList());
             return "birthday";
         }

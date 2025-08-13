@@ -21,8 +21,9 @@
   <!-- Main CSS File -->
   <link th:href="@{/assets/css/main.css}" rel="stylesheet">
   <link th:href="@{/css/home.css}" rel="stylesheet" />
-  <link rel="stylesheet" th:href="@{/css/event.css}">
+  <link th:href="@{/css/event.css}" rel="stylesheet">
   <link th:href="@{/css/main.css}" rel="stylesheet">
+  <link th:href="@{/css/toast.min.css}" rel="stylesheet">
 
 </head>
 
@@ -44,7 +45,7 @@
     <div class="grid">
       <div class="img-container" th:each="event : ${eventList}">
         <div class="card fly-in">
-        <a th:href="@{/event-registration(title=${event.eventId})}" >
+        <a th:href="@{/event-registration/{title}(title=${event.eventId})}" >
           <img th:src="@{'/photo/eventPhoto/' + ${event.name} + '.jpg'}" alt="Event photo"/>
         </a>
           <div class="card-title"> <span th:text="${event.name}"></span>&nbsp <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'" th:if="${IsAdmin}"><i class="bi bi-pencil-square"></i></a></div>
@@ -52,13 +53,8 @@
         </div>
       </div>
     </div>
-
   </div>
-
-
 </main>
-
-
 
 <!-- Vendor JS Files -->
 <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
@@ -70,12 +66,21 @@
 <script th:src="@{/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js}"></script>
 <script th:src="@{/assets/vendor/glightbox/js/glightbox.min.js}"></script>
 <script th:src="@{/js/home.js}"></script>
-
+<!-- toast -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/toast.min.js}"></script>
+<script th:src="@{/js/toast-config.js}"></script>
+<!-- toast -->
 
 <!-- Main JS File -->
 <script th:src="@{/assets/js/main.js}"></script>
 <div th:replace="~{fragments/footer :: footer}"></div>
-  <script th:src="@{/js/main.js}"></script>
-</body>
+<script th:src="@{/js/main.js}"></script>
 
+<script>
+  var message = '[[${param.message}]]';
+  var messageType = '[[${param.messageType}]]';
+</script>
+
+</body>
 </html>

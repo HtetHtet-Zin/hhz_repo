@@ -30,19 +30,20 @@ function loadStaffData() {
         renderTable(data);
         renderPagination(data.page);
     })
-    .catch(err => console.error("Error loading staff:", err));
+    .catch(err => console.error("Error loading event:", err));
 }
 
 function renderTable(data) {
     tableBody.innerHTML = "";
-    data.content.forEach((staff, index) => {
+    data.content.forEach((event, index) => {
         tableBody.innerHTML += `
             <tr>
                 <td>${(data.page.number * data.page.size) + index + 1}</td>
-                <td>${staff.eventName}</td>
-                <td>${staff.startTime} - ${staff.endTime}</td>
-                <td>${staff.staffNo}</td>
-                <td>${staff.staffName}</td>
+                <td>${event.eventName}</td>
+                <td>${event.date}</td>
+                <td>${event.startTime} - ${event.endTime}</td>
+                <td>${event.staffNo}</td>
+                <td>${event.staffName}</td>
             </tr>
         `;
     });

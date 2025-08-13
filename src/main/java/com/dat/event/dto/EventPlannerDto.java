@@ -2,6 +2,7 @@ package com.dat.event.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Builder
@@ -13,4 +14,7 @@ public class EventPlannerDto {
     private Boolean supportedMemberFlg;
     private Boolean delFlg;
 
+    private String eventName;
+    private String incharge_person;
+    private String supported_members;
 }

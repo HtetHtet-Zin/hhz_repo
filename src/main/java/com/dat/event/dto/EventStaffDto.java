@@ -17,12 +17,14 @@ public class EventStaffDto {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    public EventStaffDto(String eventName, String staffNo, String staffName, LocalTime startTime, LocalTime endTime) {
+    private LocalDate date;
+
+    public EventStaffDto(String eventName, String staffNo, String staffName, LocalTime startTime, LocalTime endTime, LocalDate date) {
         this.eventName = eventName;
         this.staffNo = staffNo;
         this.staffName = staffName;
         this.startTime = startTime;
         this.endTime = endTime;
-
+        this.date = date;
     }
 }

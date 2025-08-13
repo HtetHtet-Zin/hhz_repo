@@ -1,12 +1,12 @@
 package com.dat.event.controller;
 
-
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.service.LdapUserService;
 import com.dat.event.service.StaffService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,13 +26,19 @@ public class LoginController {
 
     @GetMapping(WebUrl.LOGIN_URL)
     public String loginPage() {
-        return "login/login";
+        return "login/login2";
     }
 
     @PostMapping(WebUrl.LOGIN_URL)
     public String login(@RequestParam String username,
                         @RequestParam String password, HttpSession session,
                         RedirectAttributes redirectAttributes){
+
+        if (username == null || username.trim().isEmpty()
+                || password == null || password.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error_message", "Staff ID and Password are required!");
+            return "redirect:" + WebUrl.LOGIN_URL;
+        }
 
         if (staffService.existsByStaffNo(username, session)) {
             if (ldapUserService.isADUser(username, password)) {

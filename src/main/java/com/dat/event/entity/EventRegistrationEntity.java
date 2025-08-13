@@ -36,7 +36,4 @@ public class EventRegistrationEntity implements Serializable {
     @JoinColumn(name = "staff_id", referencedColumnName = "staff_id")
     private StaffEntity staff;
 
-    private boolean inChargeFlag;
-
-    private Boolean supportMemberFlag;
 }

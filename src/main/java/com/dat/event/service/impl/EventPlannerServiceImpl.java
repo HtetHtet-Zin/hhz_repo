@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,5 +44,21 @@ public class EventPlannerServiceImpl implements EventPlannerService {
             eventPlannerRepository.save(eventPlannerMapper.toEntity(dto));
         });
 
+    }
+
+    @Override
+    public EventPlannerDto getEventWithSchedule(long eventId) {
+        List<Object[]> results = eventPlannerRepository.getEventWithSchedule(eventId);
+        if (results.isEmpty()) {
+            // No data found for this eventId
+            return null;  // or throw an exception or return an empty DTO as appropriate
+        }
+        Object[] result = results.get(0);
+        return EventPlannerDto.builder()
+                .eventName(result[0] != null ? result[0].toString() : null)
+                .incharge_person(result[1] != null ? result[1].toString() : null)
+                .supported_members(result[2] != null ? result[2].toString() : null)
+                .eventId(result[3] != null ? Long.valueOf(result[3].toString()) : null)
+                .build();
     }
 }

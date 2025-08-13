@@ -26,6 +26,7 @@ import java.util.List;
 @Builder
 public class EventScheduleDto {
 
+    private Long id;
     private EventDto eventDto;
     private String name;
     private String description;

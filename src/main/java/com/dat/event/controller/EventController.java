@@ -8,6 +8,7 @@ package com.dat.event.controller;
 
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.dto.EventDto;
+import com.dat.event.dto.EventScheduleDto;
 import com.dat.event.dto.EventStaffDto;
 import com.dat.event.dto.RequestEventPlanDto;
 import com.dat.event.service.*;
@@ -20,7 +21,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -38,16 +43,18 @@ public class EventController {
 
     private final EventService eventService;
     private final EventRegistrationService eventRegistrationService;
-    private final StaffService staffService;
     private final EventScheduleService eventScheduleService;
+    private final StaffService staffService;
     private final EventPlannerService eventPlannerService;
     private final ImageStorageService imageStorageService;
 
     @GetMapping(WebUrl.EVENT_CREATE_URL)
-    public ModelAndView showCreateEventPage() {
-        var staffDtoList = staffService.findAll();
-        log.info("staff-list {}", staffDtoList);
-        return new ModelAndView("event-create-page", "staffs", staffDtoList);
+    public String showCreateEventPage(HttpSession session, Model model) {
+        if (session != null && session.getAttribute("staffNo") != null) {
+            model.addAttribute("staffs", staffService.findAll());
+            return "event-create-page";
+        }
+        return "redirect:" + WebUrl.LOGIN_URL;
     }
 
     @PostMapping(WebUrl.EVENT_CREATE_URL)
@@ -93,6 +100,54 @@ public class EventController {
     @PostMapping(WebUrl.EVENTS_URL)
     public ResponseEntity<Page<EventStaffDto>> eventList(@RequestParam(required = false, defaultValue = "") final String keyword, @RequestParam(required = false, defaultValue = "0") final int page) {
         return ResponseEntity.ok(keyword.isBlank() ? eventRegistrationService.fetchEventStaffList(null, page) : eventRegistrationService.fetchEventStaffList(keyword, page));
+    }
+
+    @GetMapping(WebUrl.EVENT_REGISTRATION_URL + "/{id}")
+    public String event_registration(@PathVariable("id") String eventId, HttpSession session,Model model) {
+        if (session != null && session.getAttribute("staffNo") != null) {
+            model.addAttribute("planner" ,eventPlannerService.getEventWithSchedule(Long.parseLong(eventId)));
+            model.addAttribute("registeredSchedule" , eventRegistrationService.getRegisteredSchedule(Long.valueOf(eventId), (Long) session.getAttribute("id")));
+            model.addAttribute("allScheduleIds" , eventScheduleService.getAllScheduleIdByEvent(Long.valueOf(eventId)));
+            return "event-registration";
+        }
+        return "redirect:" + WebUrl.LOGIN_URL;
+    }
+
+    @PostMapping(WebUrl.EVENT_REGISTRATION_URL)
+    public ResponseEntity<Page<EventScheduleDto>> eventSchedule(@RequestParam(required = false, defaultValue = "") final String keyword, @RequestParam(required = false, defaultValue = "0") final int page,
+                                                                @RequestParam final Long eventId) {
+        return ResponseEntity.ok(keyword.isBlank() ? eventScheduleService.getScheduleById(eventId, null, page) : eventScheduleService.getScheduleById(eventId, keyword, page));
+    }
+
+    @PostMapping("/register-event-schedule")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds, @RequestParam String eventId  ,HttpSession session, RedirectAttributes redirectAttributes) {
+        Map<String, String> response = new HashMap<>();
+        if (session == null) {
+            response.put("redirectUrl", "/club/login");
+            response.put("status", "error");
+            response.put("message", "Session has expired. Please log in again.");
+            return ResponseEntity.ok(response);
+        }
+        Long staffId = (Long) session.getAttribute("id");
+        List<String> conflicts = eventRegistrationService.checkDuplicateSchedule(staffId, registeredScheduleIds);
+        if (!conflicts.isEmpty()) {
+            response.put("redirectUrl", "/club/event-registration/" + eventId);
+            response.put("status", "error");
+            response.put("message", "Already Registered at this date and time - " + String.join(", ", conflicts));
+            return ResponseEntity.ok(response);
+        }
+        int success = eventRegistrationService.registerEvent(staffId, registeredScheduleIds, Long.valueOf(eventId));
+        if (success == 0) {
+            response.put("redirectUrl", "/club/event-registration/" + eventId);
+            response.put("status", "error");
+            response.put("message", "Register Fail");
+        } else {
+            response.put("redirectUrl", "/club/event");
+            response.put("status", "success");
+            response.put("message", "Register Success");
+        }
+        return ResponseEntity.ok(response);
     }
 
 

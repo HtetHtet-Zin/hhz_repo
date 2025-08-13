@@ -184,8 +184,8 @@ h6 {
   color: var(--heading-color);
 }
 
-.header .btn-getstarted,
-.header .btn-getstarted:focus {
+.header .btn-logout,
+.header .btn-logout:focus {
   color: var(--contrast-color);
   background: #7873f5;
   font-size: 14px;
@@ -195,8 +195,8 @@ h6 {
   transition: 0.3s;
 }
 
-.header .btn-getstarted:hover,
-.header .btn-getstarted:focus:hover {
+.header .btn-logout:hover,
+.header .btn-logout:focus:hover {
   color: var(--contrast-color);
   background: color-mix(in srgb, #7873f5, transparent 15%);
 }
@@ -216,7 +216,7 @@ h6 {
     order: 1;
   }
 
-  .header .btn-getstarted {
+  .header .btn-logout {
     order: 2;
     margin: 0 10px 0 0;
     padding: 6px 15px;
