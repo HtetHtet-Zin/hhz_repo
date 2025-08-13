@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                .replace(/"/g, "&quot;");
   }
 
-  function addSupportedMember(event) {
+  async function addSupportedMember(event) {
     if (event) event.preventDefault();
 
     const name = (selectedMember.value || memberSearch.value || "").trim();
@@ -86,11 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const month = (monthSelect.value || "").trim();
 
     if (!name) {
-      alert("Please choose/select a member.");
+      await alertAction("Please select a member.", { title: "Require selection!", variant: "danger"});
       return;
     }
     if (!month) {
-      alert("Please select a month.");
+      await alertAction("Please select a month.", { title: "Require selection!", variant: "danger"});
       return;
     }
 
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return cells.length >= 2 && cells[0].textContent.trim() === name && cells[1].textContent.trim() === month;
     });
     if (duplicate) {
-      alert("This member with the same month is already added.");
+      await alertAction("This member with the same month is already added.", { title: "Adding same member in a month!", variant: "danger"});
       return;
     }
 
@@ -269,7 +269,6 @@ document.addEventListener("DOMContentLoaded", () => {
       start.type = "time";
       start.id = startId;
       start.name = `startTime_${day}[]`;
-      start.value =
       start.className = "form-control form-control-sm";
       disableOrEnableInput(start, disabledAction);
 
@@ -432,10 +431,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     });
 
-    if (members.length === 0) {
-      alert("Please add at least one supported member.");
-      return;
-    }
       tableBody.querySelectorAll("tr").forEach(row => {
         const date = row.dataset.date;
          if (!date) {
@@ -455,10 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
-    if (dateTimeList.length === 0) {
-        alert("Please add at least one time slot.");
-        return;
-    }
     const jsonPayload = {
         eventName: form.eventName.value,
         description: form.eventDesc.value,
