@@ -244,6 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let latestPage = 0;
   let currentPage = 1;
+  const maximumPage = 4;
 
   function renderTable() {
     const todayIndex = getTodayIndex();
@@ -293,6 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     showPage();
+    disableOrEnableInput(nextWeekBtn, currentPage == latestPage && latestPage == maximumPage);
     disableOrEnableInput(prevWeekBtn, currentPage == 1);
   }
 
