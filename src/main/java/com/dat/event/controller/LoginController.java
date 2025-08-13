@@ -26,7 +26,7 @@ public class LoginController {
 
     @GetMapping(WebUrl.LOGIN_URL)
     public String loginPage() {
-        return "login/login2";
+        return "login/login";
     }
 
     @PostMapping(WebUrl.LOGIN_URL)
