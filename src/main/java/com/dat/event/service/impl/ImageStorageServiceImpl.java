@@ -10,6 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -20,7 +26,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         try {
             String projectRoot = System.getProperty("user.dir");
 
-            Path imageDir = Paths.get(projectRoot, "photo", "eventphoto");
+            Path imageDir = Paths.get(projectRoot, "photo", "eventPhoto");
             if (!Files.exists(imageDir)) {
                 Files.createDirectories(imageDir);
             }
@@ -35,7 +41,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
                 extension = ".jpg";
             }
 
-            String renamedFileName = eventName + extension;
+            String renamedFileName = eventName.concat(extension);
             Path filePath = imageDir.resolve(renamedFileName);
 
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -45,6 +51,26 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         } catch (IOException exception) {
             log.error("Error saving image: {}", exception.getMessage());
         }
+    }
+
+    @Override
+    public Map<String, String> findEventImage(List<String> eventNames) {
+        Path folder = Paths.get("photo/eventPhoto");
+        Map<String, String> result = new HashMap<>();
+
+        try (Stream<Path> files = Files.list(folder)) {
+            Map<String, String> allFiles = files.filter(Files::isRegularFile).collect(Collectors.toMap(f -> f.getFileName().toString().substring(0, f.getFileName().toString().lastIndexOf('.')), f -> f.getFileName().toString()));
+
+            for (String name : eventNames) {
+                result.put(name, allFiles.getOrDefault(name, "default.jpg"));
+            }
+        } catch (IOException e) {
+            for (String name : eventNames) {
+                result.put(name, "default.jpg");
+            }
+        }
+
+        return result;
     }
 
 }

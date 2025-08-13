@@ -84,7 +84,7 @@
                         </table>
                     </div>
 
-                    <div>
+                    <div class="text-end">
                         <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next</button>
                     </div>
                 </div>
@@ -155,8 +155,7 @@
                                     <option>December</option>
                                 </select>
                                 <input type="hidden" id="selectedMember"/>
-                                <button type="button" class="btn btn-success w-100" id="addMemberBtn"> Add Member
-                                </button>
+                                <button type="button" class="btn btn-success w-100" id="addMemberBtn">Add Member</button>
                             </div>
                         </div>
                     </div>
@@ -184,8 +183,10 @@
                         <tbody id="tableBody"></tbody>
                     </table>
 
-                    <button type="button" class="btn btn-secondary" onclick="goToStep(1)"> Back</button>
-                    <button type="button" class="btn btn-success" onclick="submitEvent()"> Submit Event</button>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+                        <button type="button" class="btn btn-success" onclick="submitEvent()">Submit Event</button>
+                    </div>
                 </div>
             </div>
         </form>

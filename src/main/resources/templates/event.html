@@ -46,7 +46,7 @@
       <div class="img-container" th:each="event : ${eventList}">
         <div class="card fly-in">
         <a th:href="@{/event-registration/{title}(title=${event.eventId})}" >
-          <img th:src="@{'/photo/eventPhoto/' + ${event.name} + '.jpg'}" alt="Event photo"/>
+          <img th:src="@{'/photo/eventPhoto/' + ${event.eventPhoto}}" alt="Event photo"/>
         </a>
           <div class="card-title"> <span th:text="${event.name}"></span>&nbsp <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'" th:if="${IsAdmin}"><i class="bi bi-pencil-square"></i></a></div>
 

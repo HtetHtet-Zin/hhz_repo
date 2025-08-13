@@ -85,7 +85,14 @@ public class EventController {
     @GetMapping(WebUrl.EVENT_URL)
     public String view(HttpSession session, Model model) {
         if (session != null && session.getAttribute("staffNo") != null) {
-            model.addAttribute("eventList", eventService.findAll());
+            var eventList = eventService.findAll();
+            var imageMap = imageStorageService.findEventImage(eventList.stream().map(EventDto::getName).toList());
+
+            for (EventDto event : eventList) {
+                String eventPhoto = imageMap.getOrDefault(event.getName(), "default.jpg");
+                event.setEventPhoto(eventPhoto); // Add this field to EventDto
+            }
+            model.addAttribute("eventList", eventList);
             return "event";
         }
         return "redirect:" + WebUrl.LOGIN_URL;
