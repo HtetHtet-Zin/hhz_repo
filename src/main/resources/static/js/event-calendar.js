@@ -216,29 +216,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const slot = document.createElement("div");
     slot.className = "time-slot d-flex gap-1 mb-1 align-items-center";
 
+    const startLabel = document.createElement('label');
+    const startId = uniqueSuffix();
+    startLabel.textContent = "Start time : ";
+    startLabel.htmlFor = startId;
+
     const start = document.createElement("input");
     start.type = "time";
+    start.id = startId;
     start.name = `startTime_${day}[]`;
     start.className = "form-control form-control-sm";
     disableOrEnableInput(start, disabledAction);
 
+    const endLabel = document.createElement('label');
+    const endId = uniqueSuffix();
+    endLabel.textContent = "End time : ";
+    endLabel.htmlFor = endId;
+
     const end = document.createElement("input");
     end.type = "time";
+    end.id = endId;
     end.name = `endTime_${day}[]`;
     end.className = "form-control form-control-sm";
     disableOrEnableInput(end, disabledAction);
 
     const removeBtn = document.createElement("button");
     removeBtn.type = "button";
-    removeBtn.textContent = "×";
+    removeBtn.textContent = "-";
     removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
     disableOrEnableInput(removeBtn, disabledAction);
     if (isOnly) {
       disableInput(removeBtn);
       removeBtn.title = "At least one slot required";
     }
-
-    slot.append(start, end, removeBtn);
+    slot.append(startLabel, start, endLabel, end, removeBtn);
     return slot;
   }
 
@@ -376,14 +387,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
       tableBody.querySelectorAll("tr").forEach(row => {
         const date = row.dataset.date;
-        console.log(date);
          if (!date) {
             console.error("Missing date for a time slot wrapper. Skipping.");
             return; // Skips this iteration if date is missing
           }
         row.querySelectorAll(".time-slot").forEach(slot => {
-          const startTime = slot.querySelector('input[type="time"]:first-child').value;
-          const endTime = slot.querySelector('input[type="time"]:nth-child(2)').value;
+          const timeInput = slot.querySelectorAll('input[type="time"]');
+          const startTime = timeInput[0].value;
+          const endTime = timeInput[1].value;
           if (startTime && endTime) {
             dateTimeList.push({
               startDateTime: `${date} ${startTime}`,
