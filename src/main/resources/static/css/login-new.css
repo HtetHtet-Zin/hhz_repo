@@ -48,6 +48,7 @@ body {
     margin-bottom: 20px;
     animation: fadeInUp 1s ease-in-out;
     text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    font-weight: bold;
 }
 
   /* Enhanced Input Fields */

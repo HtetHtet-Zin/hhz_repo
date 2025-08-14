@@ -35,6 +35,15 @@ function loadStaffData() {
 
 function renderTable(data) {
     tableBody.innerHTML = "";
+    if (!data.content || data.content.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center;">No staffs yet</td>
+            </tr>
+        `;
+        return;
+    }
+
     data.content.forEach((staff, index) => {
         tableBody.innerHTML += `
             <tr>
@@ -57,6 +66,9 @@ function renderTable(data) {
 
 function renderPagination(page) {
     pagination.innerHTML = "";
+    if (page.totalElements == 0) {
+        return;
+    }
 
     // Previous button
     pagination.innerHTML += `

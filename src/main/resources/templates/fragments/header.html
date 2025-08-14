@@ -4,16 +4,16 @@
 
         <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'"
            class="logo d-flex align-items-center me-auto me-xl-0">
-            <h1 class="sitename">DAT Event</h1>
+            <h1 class="sitename">DAT EVENT</h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
             <ul>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'">Home</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFFS_URL}} + '\';'" th:if="${IsAdmin}">Staff</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFF_BIRTHDAY_URL}} + '\';'">Birthday</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENTS_URL}} + '\';'">Event List</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'" th:if="${IsAdmin}">Create Event</a></li>
+                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'">HOME</a></li>
+                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFFS_URL}} + '\';'" th:if="${IsAdmin}">STAFFS</a></li>
+                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFF_BIRTHDAY_URL}} + '\';'">BIRTHDAY</a></li>
+                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENTS_URL}} + '\';'">ALL PARTICIPANTS</a></li>
+                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'" th:if="${IsAdmin}">CREATE EVENT</a></li>
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>

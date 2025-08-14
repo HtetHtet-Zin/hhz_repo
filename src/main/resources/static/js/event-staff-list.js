@@ -1,6 +1,8 @@
 const tableBody = document.getElementById("staffTableBody");
 const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("search");
+const countElem = document.getElementById('count');
+const participantElem = document.getElementById('participant-text');
 
 let currentPage = 0;
 let currentKeyword = "";
@@ -26,17 +28,40 @@ function loadStaffData() {
     })
     .then(res => res.json())
     .then(data => {
+        participantCount(data.page.totalElements);
         renderTable(data);
         renderPagination(data.page);
     })
     .catch(err => console.error("Error loading event:", err));
 }
 
+function participantCount(total) {
+    if (total === 0) {
+        countElem.textContent = "no";
+        participantElem.textContent = "participants";
+    } else if (total === 1) {
+        countElem.textContent = "1";
+        participantElem.textContent = "participant";
+    } else {
+        countElem.textContent = total;
+        participantElem.textContent = "participants";
+    }
+}
+
 function renderTable(data) {
     const count = data.page.totalElements;
-    document.getElementById('count').textContent = count;
     document.getElementById('export').disabled = !count > 0;
     tableBody.innerHTML = "";
+
+    if (!data.content || data.content.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center;">No participants yet</td>
+            </tr>
+        `;
+        return;
+    }
+
     data.content.forEach((event, index) => {
         tableBody.innerHTML += `
             <tr>
@@ -53,6 +78,9 @@ function renderTable(data) {
 
 function renderPagination(page) {
     pagination.innerHTML = "";
+    if (page.totalElements == 0) {
+        return;
+    }
 
     // Previous button
     pagination.innerHTML += `
