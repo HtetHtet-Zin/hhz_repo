@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         inchargeInput.value = element.textContent;
         inchargeInput.dataset.dataId = element.getAttribute("data-id");
         bootstrap.Modal.getInstance(document.getElementById("personModal")).hide();
+        document.getElementById("inchargePersonError").hidden = true;
     };
 
     window.selectMember = function (element) {
@@ -141,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
           countElem.textContent = `Supported Members: ${count}`;
         }
     }
+
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
         // Validate current step required inputs before proceeding
@@ -149,26 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
           "input[required], select[required], textarea[required]"
         );
         let isValid = true;
-        /*for (const input of requiredInputs) {
-            if (!input.checkValidity()) {
-                input.reportValidity();
-                return;
-            }
-            if (input.id === "inchargePerson" && !input.dataset.dataId) {
-                input.reportValidity();
-                return;
-            }
-        }*/
+
         for (const input of requiredInputs) {
             // Custom validation for inchargePerson
-            if (input.id === "inchargePerson" && !input.dataset.dataId) {
-                document.getElementById("inchargePersonError").style.display = "block";
-                isValid = false;
-            } else if (!input.checkValidity()) {
+            if (!input.checkValidity()) {
                 input.reportValidity();
                 isValid = false;
-            } else if (input.id === "inchargePerson") {
-                document.getElementById("inchargePersonError").style.display = "none";
+            } else  if (input.id === "inchargePerson" && !input.value.trim()) {
+                document.getElementById("inchargePersonError").style.display = "block";
+                isValid = false;
             }
         }
 
