@@ -45,6 +45,7 @@ h2 {
   transition: transform 0.6s ease; /* needed for smooth rotation */
   width: 200px;
   height: 160px;
+  box-shadow: 0 0 10px #8ba1a64d;
 }
 
 .card img:hover {
