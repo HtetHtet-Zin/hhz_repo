@@ -7,18 +7,14 @@
 package com.dat.event.controller;
 
 import com.dat.event.common.constant.WebUrl;
-import com.dat.event.dto.EventDto;
-import com.dat.event.dto.EventScheduleDto;
-import com.dat.event.dto.EventStaffDto;
-import com.dat.event.dto.RequestEventPlanDto;
-import com.dat.event.dto.UpdateEventPlanDto;
+import com.dat.event.common.excel.ExcelUtility;
+import com.dat.event.dto.*;
 import com.dat.event.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -218,6 +214,14 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
-
+    @PostMapping(WebUrl.EVENT_STAFF_DOWNLOAD_URL)
+    public ResponseEntity<byte[]> exportExcel(@RequestParam(required = false, defaultValue = "") final String keyword) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=event_staff_report.xlsx");
+        headers.add(HttpHeaders.CONTENT_TYPE, ExcelUtility.EXCEL_FILE_TYPE);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(eventRegistrationService.exportExcel(keyword));
+    }
 
 }

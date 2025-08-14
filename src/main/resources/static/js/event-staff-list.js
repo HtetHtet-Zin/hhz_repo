@@ -26,7 +26,6 @@ function loadStaffData() {
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById('count').textContent = data.page.totalElements;
         renderTable(data);
         renderPagination(data.page);
     })
@@ -34,6 +33,9 @@ function loadStaffData() {
 }
 
 function renderTable(data) {
+    const count = data.page.totalElements;
+    document.getElementById('count').textContent = count;
+    document.getElementById('export').disabled = !count > 0;
     tableBody.innerHTML = "";
     data.content.forEach((event, index) => {
         tableBody.innerHTML += `
@@ -82,4 +84,37 @@ function changePage(page) {
     if (page < 0) return;
     currentPage = page;
     loadStaffData();
+}
+
+function exportData(keyword){
+    fetch(`${exportUrl}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ keyword })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        if(blob.type != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"){
+            throw new Error("Does not match response file type.")
+        }
+        // Trigger the download
+        const fileUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = fileUrl;
+        a.download = 'DAT-Event-System - Staff in event list.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(fileUrl);
+    })
+    .catch(error => {
+        console.error(error);
+    });
 }

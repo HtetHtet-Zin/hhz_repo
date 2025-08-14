@@ -6,9 +6,7 @@
  * *************************************************************/
 package com.dat.event.common.constant;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * WebUrl Class.
@@ -36,12 +34,15 @@ public final class WebUrl {
     public static final String LOGOUT_URL = "/logout";
 
     public static final String EVENT_URL = "/event";
-    
+
     public static final String EVENT_CREATE_URL = "/event-create";
+
+    public static final String EVENT_STAFF_DOWNLOAD_URL = EVENT_URL + "/download";
 
     public static final String EVENT_EDIT_URL = "event-edit";
 
     public static final String EVENTS_URL = "/event-list";
+
     public static final String EVENT_REGISTRATION_URL = "/event-registration";
 
     public static final String GALLERY_URL = "/gallery";

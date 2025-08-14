@@ -1,6 +1,8 @@
 package com.dat.event.service.impl;
 
+import com.dat.event.common.CommonUtility;
 import com.dat.event.common.constant.Constants;
+import com.dat.event.common.excel.ExcelUtility;
 import com.dat.event.dto.EventStaffDto;
 import com.dat.event.entity.EventRegistrationEntity;
 import com.dat.event.entity.EventScheduleEntity;
@@ -18,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 
 @Slf4j
@@ -74,5 +78,30 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
                     LocalTime end = index[2] != null ? LocalTime.parse(index[2].toString()) : null;
                     return date + " (" + start + " - " + end + ")";
                 }).toList();
+    }
+
+    @Override
+    public byte[] exportExcel(final String keyword) {
+        log.info("Event statt excel file exporting..");
+        final AtomicInteger index = new AtomicInteger();
+        return ExcelUtility.writeExcelFile(Stream.concat(
+                //Set header
+                Stream.of(List.of("No.", "Event	Date", "Schedule Time", "Staff-ID", "Staff Name")),
+                //Set data
+                fetchEventStaffList(keyword.isBlank() ? null : keyword).stream().map(report -> {
+                    final List<Object> rowDataList = new ArrayList<>();
+                    rowDataList.add(index.incrementAndGet());
+                    rowDataList.add(CommonUtility.ifNoDataReturnDash(String.valueOf(report.getDate())));
+                    rowDataList.add(CommonUtility.ifNoDataReturnDash(report.getStartTime() + " - " + report.getEndTime()));
+                    rowDataList.add(report.getStaffNo());
+                    rowDataList.add(report.getStaffName());
+                    return rowDataList;
+                })
+        ).toList(), "Staff in the Event");
+    }
+
+    @Override
+    public List<EventStaffDto> fetchEventStaffList(final String keyword) {
+        return eventRegistrationRepository.fetchEventStaffList(keyword);
     }
 }

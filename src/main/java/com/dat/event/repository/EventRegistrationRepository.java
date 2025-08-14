@@ -27,6 +27,19 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
             "ORDER BY function('RAND')")
     Page<EventStaffDto> fetchEventStaffList(@Param("keyword") String keyword, Pageable pageable);
 
+    @Query("SELECT new com.dat.event.dto.EventStaffDto( " +
+            "e.name, s.staffNo, s.name, sch.startTime, sch.endTime, sch.date) " +
+            "FROM EventRegistrationEntity er " +
+            "JOIN er.schedule sch " +
+            "JOIN sch.event e " +
+            "JOIN er.staff s " +
+            "WHERE (:keyword IS NULL OR " +
+            "LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(s.staffNo) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "ORDER BY function('RAND')")
+    List<EventStaffDto> fetchEventStaffList(@Param("keyword") String keyword);
+
     @Query(value = "SELECT reg.schedule_id from tbl_event_registration reg JOIN tbl_event_schedule sch ON reg.schedule_id = sch.id\n" +
             "WHERE sch.event_id = :eventId AND reg.staff_id = :staffId", nativeQuery = true)
     List<Long> getRegisteredSchedule(@Param("eventId") Long eventId, @Param("staffId") Long staffId);

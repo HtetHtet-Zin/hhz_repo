@@ -17,4 +17,9 @@ public interface EventRegistrationService {
     int registerEvent(Long staffId, List<Long> registeredScheduleIds, Long eventId);
 
     List<String> checkDuplicateSchedule(Long staffId, List<Long> registeredScheduleIds);
+
+
+    byte[] exportExcel(String keyword);
+
+    List<EventStaffDto> fetchEventStaffList(String keyword);
 }
