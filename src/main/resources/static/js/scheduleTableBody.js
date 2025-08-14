@@ -126,7 +126,7 @@ function renderPagination(page) {
     // Previous button
     pagination.innerHTML += `
         <li class="page-item ${page.number == 0 ? 'disabled' : ''}">
-            <a class="page-link"  onclick="changePage(${page.number - 1})">Previous</a>
+            <a class="page-link"  onclick="changePage(${page.number - 1})"><<</a>
         </li>
     `;
 
@@ -144,7 +144,7 @@ function renderPagination(page) {
     // Next button
     pagination.innerHTML += `
         <li class="page-item ${page.number + 1 == page.totalPages ? 'disabled' : ''}">
-            <a class="page-link" onclick="changePage(${page.number + 1})">Next</a>
+            <a class="page-link" onclick="changePage(${page.number + 1})">>></a>
         </li>
     `;
 }

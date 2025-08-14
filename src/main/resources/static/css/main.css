@@ -5,3 +5,10 @@ li:hover{
 .active-link{
     color: skyblue;
 }
+
+.table-list thead th {
+    position: sticky;
+    top: 0;
+    background: #1f5399;
+    color: white;
+}
