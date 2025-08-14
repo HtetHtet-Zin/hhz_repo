@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "onclick": null,
         "showDuration": "500",
         "hideDuration": "500",
-        "timeOut": 10000,
+        "timeOut": 5000,
         "extendedTimeOut": 0,
         "showEasing": "swing",
         "hideEasing": "linear",
