@@ -148,13 +148,31 @@ document.addEventListener("DOMContentLoaded", () => {
         const requiredInputs = currentStep.querySelectorAll(
           "input[required], select[required], textarea[required]"
         );
-
-        for (const input of requiredInputs) {
+        let isValid = true;
+        /*for (const input of requiredInputs) {
             if (!input.checkValidity()) {
                 input.reportValidity();
                 return;
             }
+            if (input.id === "inchargePerson" && !input.dataset.dataId) {
+                input.reportValidity();
+                return;
+            }
+        }*/
+        for (const input of requiredInputs) {
+            // Custom validation for inchargePerson
+            if (input.id === "inchargePerson" && !input.dataset.dataId) {
+                document.getElementById("inchargePersonError").style.display = "block";
+                isValid = false;
+            } else if (!input.checkValidity()) {
+                input.reportValidity();
+                isValid = false;
+            } else if (input.id === "inchargePerson") {
+                document.getElementById("inchargePersonError").style.display = "none";
+            }
         }
+
+        if (!isValid) return;
         const eventNameValue = document.querySelector("#eventName").value.trim();
         if( step > 1 ){
             const formData = new FormData();
