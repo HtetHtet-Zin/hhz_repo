@@ -87,12 +87,12 @@ function changePage(page) {
 }
 
 function exportData(keyword){
+    console.log('keyword', keyword);
+    const formData = new FormData();
+    formData.append('keyword', keyword);
     fetch(`${exportUrl}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ keyword })
+        body: formData
     })
     .then(response => {
         if (!response.ok) {

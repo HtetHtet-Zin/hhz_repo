@@ -88,7 +88,7 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
                 //Set header
                 Stream.of(List.of("No.", "Event	Date", "Schedule Time", "Staff-ID", "Staff Name")),
                 //Set data
-                fetchEventStaffList(keyword.isBlank() ? null : keyword).stream().map(report -> {
+                fetchEventStaffList(keyword.isBlank() ? null : keyword.trim()).stream().map(report -> {
                     final List<Object> rowDataList = new ArrayList<>();
                     rowDataList.add(index.incrementAndGet());
                     rowDataList.add(CommonUtility.ifNoDataReturnDash(String.valueOf(report.getDate())));

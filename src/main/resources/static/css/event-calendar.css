@@ -11,7 +11,6 @@ table {
 
 th, td {
   border: 1px solid #dee2e6;
-  text-align: left;
   padding: 8px;
   height: 60px;
   transition: background 0.2s;
@@ -31,24 +30,6 @@ input[type="time"] {
 .wizard-step.active {
   display: block;
 }
-/*
-.wizard-nav {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #ddd;
-}
-.wizard-step-link {
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #555;
-    border-bottom: 3px solid transparent;
-}
-.wizard-step-link.active {
-    color: #007bff;
-    border-bottom: 3px solid #007bff;
-}*/
 
 .wizard-nav {
     display: flex;
@@ -57,7 +38,6 @@ input[type="time"] {
 
 .wizard-step-link {
     width: 600px;
-    text-align: left;
     padding: 10px;
     cursor: pointer;
     border-bottom: 2px solid transparent;

@@ -35,7 +35,7 @@
         .modal-body{color:var(--muted);margin-top:10px;line-height:1.5}
         .controls{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
         .btn{border:none;padding:8px 14px ;border-radius:10px;cursor:pointer;font-weight:600;transition:transform .18s ease}
-        .btn:hover{transform:translateY(-3px) scale(1.02)}
+        .btn:hover{/*transform:translateY(-3px) scale(1.02)*/}
         .btn.cancel{background:linear-gradient(180deg,rgba(255,255,255),transparent);border:1px solid var(--accent);color:var(--accent)}
         .btn.confirm{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
         body.modal-open{overflow:hidden}

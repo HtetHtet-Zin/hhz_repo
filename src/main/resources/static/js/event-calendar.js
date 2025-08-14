@@ -72,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                    .replace(/"/g, "&quot;");
     }
 
+    let index = 0;
     async function addSupportedMember(event) {
         if (event) event.preventDefault();
         const name = (selectedMember.value || memberSearch.value || "").trim();
@@ -98,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
+          <td>${++index}.</td>
           <td>${escapeHtml(name)}</td>
           <td>${escapeHtml(month)}</td>
           <td style="display: none;">${escapeHtml(staffNo)}</td>

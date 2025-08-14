@@ -10,6 +10,8 @@
     <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
     <link th:href="@{/css/footer.css}" rel="stylesheet"/>
     <link th:href="@{/css/toast.min.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
 </head>
 <body class="registration">
 
@@ -37,34 +39,57 @@
                 <div class="wizard-step active" id="step1">
                     <div class="mb-3">
                         <label for="eventName" class="form-label">Event Name <span class="text-danger">*</span></label>
-                        <input type="text" id="eventName" name="eventName" class="form-control" placeholder="Enter Event Name" required/>
+                        <input class="form-control" id="eventName" name="eventName" placeholder="Enter Event Name"
+                               required type="text"/>
                     </div>
 
                     <div class="mb-3">
-                        <label for="eventPhoto" class="form-label">Event Photo <span class="text-danger">*</span></label>
-                        <input type="file" id="eventPhoto" name="eventPhoto" class="form-control" accept="image/*" required/>
+                        <div class="col d-flex align-items-center">
+                            <label class="btn form-label m-0"
+                                   for="eventPhoto"
+                                   style="background-color: var(--accent-2); border-radius: var(--bs-border-radius) 0 0 var(--bs-border-radius); color: white; width: 200px;">
+                                <span>
+                                    Choose Photo
+                                    <i class="bi ms-1 bi-upload"></i>
+                                <span class="text-danger">*</span>
+                                </span>
+                            </label>
+                            <span class="btn cancel flex-grow-1" id="fileName"
+                                  style="border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0; margin-left: 5px;">
+                                No photo selected.
+                            </span>
+                        </div>
+                        <input accept="image/*" class="form-control" hidden id="eventPhoto" name="eventPhoto"
+                               onchange="
+                               const file = this.files[0];
+                               if (file) {
+                                    document.getElementById('fileName').textContent = file.name;
+                               }" required type="file"/>
                     </div>
-
                     <div class="mb-3">
                         <label for="eventDesc" class="form-label">Description</label>
-                        <textarea id="eventDesc" name="eventDesc" class="form-control" rows="3" placeholder="Optional description"></textarea>
+                        <textarea class="form-control" id="eventDesc" name="eventDesc"
+                                  placeholder="Optional description"
+                                  rows="3"></textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label for="inchargePerson" class="form-label">Incharge Person <span class="text-danger">*</span></label>
+                        <label class="form-label" for="inchargePerson">Incharge Person <span
+                                class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="text" data-id="" id="inchargePerson" name="inchargePerson" class="form-control" placeholder="Select person"
-                                   onclick="document.getElementById('inchargePersonBtn').click();" readonly required/>
-                            <button type="button" class="btn btn-outline-secondary" id="inchargePersonBtn" data-bs-toggle="modal" data-bs-target="#personModal">
-                                <i class="bi bi-plus-lg"></i>
-                            </button>
+                            <input class="form-control" data-bs-target="#personModal" data-bs-toggle="modal" data-id=""
+                                   id="inchargePerson"
+                                   name="inchargePerson"
+                                   placeholder="Select person" readonly required type="text"/>
                         </div>
-                        <div id="inchargePersonError" class="text-danger mt-1" style="display:none;">Please select an incharge person.</div>
+                        <div class="text-danger mt-1" id="inchargePersonError" style="display:none;">Please select an
+                            incharge person.
+                        </div>
                     </div>
 
-
                     <div class="mb-3">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#memberModal">Add Supported Member
+                        <button class="btn confirm" data-bs-target="#memberModal" data-bs-toggle="modal"
+                                type="button">Add Supported Member
                         </button>
                     </div>
 
@@ -72,9 +97,10 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th>Member</th>
-                                <th>Month</th>
-                                <th>Action</th>
+                                <th class="align-middle">No.</th>
+                                <th class="align-middle">Member</th>
+                                <th class="align-middle">Month</th>
+                                <th class="align-middle">Action</th>
                             </tr>
                             </thead>
                             <tbody id="supportedList"></tbody>
@@ -82,7 +108,8 @@
                     </div>
 
                     <div class="text-end">
-                        <button type="button" class="btn btn-primary" style="width: 125px;" onclick="goToStep(2)">Next</button>
+                        <button class="btn confirm" onclick="goToStep(2)" style="width: 125px;" type="button">Next
+                        </button>
                     </div>
                 </div>
 
@@ -93,7 +120,8 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="personModalLabel">Select Incharge Person</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                        type="button"></button>
                             </div>
                             <div class="modal-body">
                                 <label for="personSearch"></label><input type="text" id="personSearch"
@@ -151,7 +179,8 @@
                                     <option>December</option>
                                 </select>
                                 <input type="hidden" id="selectedMember"/>
-                                <button type="button" class="btn btn-success w-100" id="addMemberBtn">Add Member</button>
+                                <button class="btn confirm w-100" id="addMemberBtn" type="button">Add Member
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -160,10 +189,10 @@
                 <!-- Step 2: Select Time Slots -->
                 <div class="wizard-step" id="step2">
                     <div class="d-flex justify-content-between mb-2">
-                        <button class="btn btn-outline-primary border border-primary" type="button" id="prevWeekBtn"> ←
+                        <button class="btn cancel" id="prevWeekBtn" type="button"> ←
                             Previous Week
                         </button>
-                        <button class="btn btn-outline-primary border border-primary" type="button" id="nextWeekBtn">
+                        <button class="btn cancel" id="nextWeekBtn" type="button">
                             Next Week →
                         </button>
                     </div>
@@ -172,15 +201,19 @@
                         <tr id="headerRow">
                             <th>Day</th>
                             <th colspan="2" class="col">Time Slots (hh:mm A)</th>
-                            <th>Action</th>
+                            <th>Delete</th>
                         </tr>
                         </thead>
                         <tbody id="tableBody"></tbody>
                     </table>
 
                     <div class="d-flex justify-content-between mt-3">
-                        <button type="button" class="btn btn-secondary" style="width: 125px;" onclick="goToStep(1)">Back</button>
-                        <button type="button" class="btn btn-success" style="width: 125px;" onclick="submitEvent()">Submit Event</button>
+                        <button class="btn cancel" onclick="goToStep(1)" style="width: 125px;" type="button">
+                            Back
+                        </button>
+                        <button class="btn confirm" onclick="submitEvent()" style="width: 125px;" type="button">
+                            Submit Event
+                        </button>
                     </div>
                 </div>
             </div>
@@ -200,6 +233,7 @@
 <script>
     var message = '[[${param.message}]]';
     var messageType = '[[${param.messageType}]]';
+
 </script>
 
 </body>
