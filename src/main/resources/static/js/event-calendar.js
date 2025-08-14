@@ -405,9 +405,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const members = Array.from(supportedList.querySelectorAll("tr")).map((row) => {
             const tds = row.querySelectorAll("td");
                 return {
-                    name: tds[0].textContent.trim(),
-                    month: tds[1].textContent.trim(),
-                    memberId: tds[2].textContent.trim(),
+                    name: tds[1].textContent.trim(),
+                    month: tds[2].textContent.trim(),
+                    memberId: tds[3].textContent.trim(),
                 };
         });
 
