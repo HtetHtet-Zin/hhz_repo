@@ -111,8 +111,9 @@ public class EventController {
     }
 
     @GetMapping(WebUrl.EVENT_EDIT_URL+"/{id}")
-    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId, Model model, HttpSession session) {
-        if (session == null || session.getAttribute("staffNo") != null) {
+    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId, HttpSession session) {
+        if (session == null || session.getAttribute("staffNo") == null) {
+            System.out.println(session == null || session.getAttribute("staffNo") != null);
             return new ModelAndView("redirect:" + WebUrl.LOGIN_URL);
         }
         Boolean isAdmin = (Boolean) session.getAttribute("adminFlag");
