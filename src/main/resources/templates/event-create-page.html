@@ -10,26 +10,6 @@
     <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
     <link th:href="@{/css/footer.css}" rel="stylesheet"/>
     <link th:href="@{/css/toast.min.css}" rel="stylesheet"/>
-    <style>
-        /* Wizard step navigation */
-        .wizard-nav {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-        }
-        .wizard-step-link {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #555;
-            border-bottom: 3px solid transparent;
-        }
-        .wizard-step-link.active {
-            color: #007bff;
-            border-bottom: 3px solid #007bff;
-        }
-    </style>
 </head>
 <body class="registration">
 
@@ -47,8 +27,8 @@
 
     <div class="container my-5">
         <div class="wizard-nav">
-            <div id="navStep1" class="wizard-step-link active" onclick="goToStep(1)">Event Registration</div>
-            <div id="navStep2" class="wizard-step-link" onclick="goToStep(2)">Registration Weekly Time Slot Planner</div>
+            <div id="navStep1" class="wizard-step-link active" onclick="goToStep(1)">Event Details</div>
+            <div id="navStep2" class="wizard-step-link" onclick="goToStep(2)">Event Schedules</div>
         </div>
 
         <form id="eventForm" th:action="@{/event-create}" method="POST" enctype="multipart/form-data" novalidate>

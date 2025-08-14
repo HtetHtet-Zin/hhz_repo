@@ -1,5 +1,5 @@
 .container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: auto;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -11,7 +11,7 @@ table {
 
 th, td {
   border: 1px solid #dee2e6;
-  text-align: center;
+  text-align: left;
   padding: 8px;
   height: 60px;
   transition: background 0.2s;
@@ -31,7 +31,44 @@ input[type="time"] {
 .wizard-step.active {
   display: block;
 }
+/*
+.wizard-nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+}
+.wizard-step-link {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #555;
+    border-bottom: 3px solid transparent;
+}
+.wizard-step-link.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}*/
 
+.wizard-nav {
+    display: flex;
+    gap: 10px; /* optional spacing between steps */
+}
+
+.wizard-step-link {
+    width: 600px;
+    text-align: left;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.wizard-step-link.active {
+    border-bottom: 2px solid #0d6efd; /* Bootstrap primary color underline */
+}
 
 th.time-slot {
   background-color: #f8f9fa;
