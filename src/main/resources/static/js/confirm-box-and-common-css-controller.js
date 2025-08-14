@@ -9,6 +9,7 @@
           --accent-2: #1f899d;
           --danger: #ef4444;
           --muted: #94a3b8;
+          --global-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .modal-backdrop{
           position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;
@@ -36,8 +37,10 @@
         .controls{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
         .btn{border:none;padding:8px 14px ;border-radius:10px;cursor:pointer;font-weight:600;transition:transform .18s ease}
         .btn:hover{/*transform:translateY(-3px) scale(1.02)*/}
-        .btn.cancel{background:linear-gradient(180deg,rgba(255,255,255),transparent);border:1px solid var(--accent);color:var(--accent)}
+        .btn.cancel{background:linear-gradient(180deg, white, transparent);border:1px solid var(--accent);color:var(--accent)}
         .btn.confirm{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+        .btn.logout{border-radius: 50px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+        .global-font{font-family: var(--global-font);}
         body.modal-open{overflow:hidden}
     `;
     document.head.appendChild(style);

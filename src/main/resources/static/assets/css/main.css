@@ -65,7 +65,7 @@
 body {
   color: var(--default-color);
   background-color: var(--background-color);
-  font-family: var(--default-font);
+  font-family: var(--global-font);
    display: flex;
    flex-direction: column;
     min-height: 100vh;
@@ -89,7 +89,7 @@ h4,
 h5,
 h6 {
   color: var(--heading-color);
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
 }
 
 /* PHP Email Form Messages
@@ -258,7 +258,7 @@ h6 {
   .navmenu a:focus {
     padding: 18px 15px;
     font-size: 16px;
-    font-family: var(--nav-font);
+    font-family: var(--global-font);
     font-weight: 400;
     display: flex;
     align-items: center;
@@ -377,7 +377,7 @@ h6 {
   .navmenu a:focus {
     color: var(--nav-dropdown-color);
     padding: 10px 20px;
-    font-family: var(--nav-font);
+    font-family: var(--global-font);
     font-size: 17px;
     font-weight: 500;
     display: flex;
@@ -604,7 +604,7 @@ h6 {
   color: var(--heading-color);
   font-size: 24px;
   font-weight: 600;
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
 }
 
 .footer .footer-contact p {
@@ -791,7 +791,7 @@ section,
   display: inline-block;
   text-transform: uppercase;
   border-radius: 50px;
-  font-family: var(--default-font);
+  font-family: var(--global-font);
 }
 
 .section-title div {
@@ -799,7 +799,7 @@ section,
   margin: 10px 0 0 0;
   font-size: 32px;
   font-weight: 700;
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
 }
 
 .section-title div .description-title {
@@ -1030,7 +1030,7 @@ section,
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--accent-color);
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
 }
 
 .why-us .stat-item .stat-label {
@@ -2995,7 +2995,7 @@ section,
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 8px;
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
 }
 
 .travel-destinations .isotope-container .destination-tile .tile-image .overlay-content .destination-info p {
@@ -3063,7 +3063,7 @@ section,
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 16px;
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
 }
 
 @media (max-width: 768px) {
@@ -5707,7 +5707,7 @@ section,
 
 .blog-hero .post-title {
   margin: 0;
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
 }
 
 .blog-hero .post-title a {
@@ -6074,7 +6074,7 @@ section,
   left: 1rem;
   font-size: 5rem;
   color: color-mix(in srgb, var(--accent-color), transparent 85%);
-  font-family: serif;
+  font-family: var(--global-font);
   line-height: 1;
 }
 
@@ -6516,7 +6516,7 @@ section,
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--heading-color);
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
 }
 
 .blog-author .author-stats .stat-item .stat-label {
@@ -6595,7 +6595,7 @@ section,
   color: var(--heading-color);
   font-size: 32px;
   font-weight: 700;
-  font-family: var(--heading-font);
+  font-family: var(--global-font);
   margin: 0;
 }
 
