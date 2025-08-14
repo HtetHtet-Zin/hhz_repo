@@ -83,28 +83,36 @@ let isSelectAll = false;
 function renderTable(data) {
     const count = data.page.totalElements;
     tableBody.innerHTML = "";
-    data.content.forEach((schedule, index) => {
-        const id = Number(schedule.id);
-        const isChecked = isSelectAll || selectedScheduleIds.has(id);
-        tableBody.innerHTML += `
+    if (!data.content || data.content.length === 0) {
+        tableBody.innerHTML = `
             <tr>
-                <td>
-                    <div>
-                        <input
-                            class="schedule-checkbox"
-                            type="checkbox"
-                            name="selectedScheduleIds"
-                            value="${id}"
-                            ${isChecked ? "checked" : ""}
-                        />
-                    </div>
-                </td>
-                <td>${(data.page.number * data.page.size) + index + 1}</td>
-                <td>${schedule.name} - ${schedule.date} (${schedule.startTime} - ${schedule.endTime})</td>
-                <td>${schedule.participantCount == 0 ? 'No Participant' : (schedule.participantCount == 1 ? '1 participant' : schedule.participantCount + ' participants')}</td>
+                <td colspan="4" style="text-align:center;">No schedules yet</td>
             </tr>
         `;
-    });
+    } else {
+        data.content.forEach((schedule, index) => {
+            const id = Number(schedule.id);
+            const isChecked = isSelectAll || selectedScheduleIds.has(id);
+            tableBody.innerHTML += `
+                <tr>
+                    <td>
+                        <div>
+                            <input
+                                class="schedule-checkbox"
+                                type="checkbox"
+                                name="selectedScheduleIds"
+                                value="${id}"
+                                ${isChecked ? "checked" : ""}
+                            />
+                        </div>
+                    </td>
+                    <td>${(data.page.number * data.page.size) + index + 1}</td>
+                    <td>${schedule.name} - ${schedule.date} (${schedule.startTime} - ${schedule.endTime})</td>
+                    <td>${schedule.participantCount == 0 ? 'No Participant' : (schedule.participantCount == 1 ? '1 participant' : schedule.participantCount + ' participants')}</td>
+                </tr>
+            `;
+        });
+    }
 
     document.querySelectorAll('input.schedule-checkbox').forEach(cb => {
         cb.addEventListener('change', e => {
@@ -125,6 +133,9 @@ function renderTable(data) {
 
 function renderPagination(page) {
     pagination.innerHTML = "";
+    if (page.totalElements == 0) {
+        return;
+    }
 
     // Previous button
     pagination.innerHTML += `

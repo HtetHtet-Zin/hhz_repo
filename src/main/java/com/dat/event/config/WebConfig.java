@@ -5,9 +5,11 @@
  * History  :	
  * *************************************************************/
 package com.dat.event.config;
+import com.dat.event.common.constant.WebUrl;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.file.Paths;
@@ -32,5 +34,10 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/photo/eventPhoto/**")
                 .addResourceLocations("file:" + Paths.get("photo/eventPhoto").toAbsolutePath()+"/");
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/", WebUrl.LOGIN_URL);
     }
 }
