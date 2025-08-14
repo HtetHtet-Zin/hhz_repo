@@ -57,6 +57,21 @@ public class EventController {
         return "redirect:" + WebUrl.LOGIN_URL;
     }
 
+    @PostMapping(WebUrl.EVENT_CHECK_URL)
+    public ResponseEntity<Map<String, Object>> checkEvent(@RequestParam("eventName") String eventName){
+        Map<String, Object> response = new HashMap<>();
+        EventDto eventDto = eventService.findByEventName(eventName);
+        log.info("EventDto {}", eventDto);
+        if (eventDto != null) {
+            response.put("redirectUrl", "/club" + WebUrl.EVENT_CREATE_URL);
+            response.put("status", "error");
+            response.put("message", "Can't create the same event");
+            return ResponseEntity.ok(response);
+        }
+        response.put("status", "success");
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping(WebUrl.EVENT_CREATE_URL)
     public ResponseEntity<Map<String, String>> createEvent(
             HttpSession session,
@@ -94,6 +109,7 @@ public class EventController {
         System.out.println("Event created successfully");
         return ResponseEntity.ok(response);
     }
+
     @GetMapping(WebUrl.EVENT_EDIT_URL+"/{id}")
     public ModelAndView showEditEventPage(@PathVariable("id") Long eventId) {
         var staffDtoList = staffService.findAll();

@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     // Cache DOM elements
     const inchargeInput = document.getElementById("inchargePerson");
     const personList = document.getElementById("personList");
@@ -13,13 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextWeekBtn = document.getElementById("nextWeekBtn");
     const prevWeekBtn = document.getElementById("prevWeekBtn")
 
-
     // --- Person Modal Search Filter ---
     personSearch.addEventListener("input", () => {
         const filter = personSearch.value.toLowerCase();
         Array.from(personList.children).forEach(li => {
-          const text = li.textContent.toLowerCase();
-          li.style.display = text.includes(filter) ? "" : "none";
+            const text = li.textContent.toLowerCase();
+            li.style.display = text.includes(filter) ? "" : "none";
         });
     });
 
@@ -28,8 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const filter = memberSearch.value.toLowerCase();
         selectedMember.value = ""; // reset on typing new search
         Array.from(memberList.children).forEach(li => {
-          const text = li.textContent.toLowerCase();
-          li.style.display = text.includes(filter) ? "" : "none";
+            const text = li.textContent.toLowerCase();
+            li.style.display = text.includes(filter) ? "" : "none";
         });
         // Ensure member list visible while typing
         memberList.style.display = "";
@@ -145,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
-    // Validate current step required inputs before proceeding
+        // Validate current step required inputs before proceeding
         const currentStep = document.querySelector(".wizard-step.active");
         const requiredInputs = currentStep.querySelectorAll(
           "input[required], select[required], textarea[required]"
@@ -153,12 +151,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         for (const input of requiredInputs) {
             if (!input.checkValidity()) {
-            input.reportValidity();
-            return;
+                input.reportValidity();
+                return;
             }
         }
-        document.querySelectorAll(".wizard-step").forEach((el) => el.classList.remove("active"));
-        document.getElementById(`step${step}`).classList.add("active");
+        const eventNameValue = document.querySelector("#eventName").value.trim();
+        if( step > 1 ){
+            const formData = new FormData();
+            formData.append("eventName", eventNameValue);
+
+            fetch('/club/event-check', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res =>  res.json())
+            .then(async (data) => {
+                if( data.status === "error"){
+                    await alertAction("Please enter different event name.", { title: "Duplicated Event!", variant: "danger"});
+                } else {
+                    document.querySelectorAll(".wizard-step").forEach((el) => el.classList.remove("active"));
+                    document.getElementById(`step${step}`).classList.add("active");
+                }
+
+            })
+            .catch(error => console.error("Error:", error));
+        } else {
+            document.querySelectorAll(".wizard-step").forEach((el) => el.classList.remove("active"));
+            document.getElementById(`step${step}`).classList.add("active");
+        }
+
     }
 
     // ==== Time Slot Planner (Step 2) ====
@@ -191,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const now = new Date();
         const diffDays = Math.floor((now - weekStart) / (1000 * 60 * 60 * 24));
         if (diffDays >= 0 && diffDays < 7) {
-          return diffDays;
+            return diffDays;
         }
         return -1;
     }
@@ -231,8 +252,8 @@ document.addEventListener("DOMContentLoaded", () => {
         removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
         disableOrEnableInput(removeBtn, disabledAction);
         if (isOnly) {
-          disableInput(removeBtn);
-          removeBtn.title = "At least one slot required";
+            disableInput(removeBtn);
+            removeBtn.title = "At least one slot required";
         }
         slot.append(startLabel, start, endLabel, end, removeBtn);
         return slot;
@@ -243,53 +264,53 @@ document.addEventListener("DOMContentLoaded", () => {
     const maximumPage = 4;
 
     function renderTable() {
-    const todayIndex = getTodayIndex();
-    // tableBody.innerHTML = "";
+        const todayIndex = getTodayIndex();
+        // tableBody.innerHTML = "";
 
-    if(/*canCreateNewPage*/ latestPage < currentPage){
-        latestPage++;
-        daysOfWeek.forEach((day, i) => {
-            const date = new Date(weekStart);
-            const disabledAction = i < todayIndex;
-            date.setDate(weekStart.getDate() + i);
+        if(/*canCreateNewPage*/ latestPage < currentPage){
+            latestPage++;
+            daysOfWeek.forEach((day, i) => {
+                const date = new Date(weekStart);
+                const disabledAction = i < todayIndex;
+                date.setDate(weekStart.getDate() + i);
 
-            const isoDate = date.toISOString().split('T')[0];
-            const row = document.createElement("tr");
-            row.classList.add('page');
-            row.classList.add('page-' + currentPage);
-            row.dataset.day = day;
-            row.dataset.date = isoDate;
+                const isoDate = date.toISOString().split('T')[0];
+                const row = document.createElement("tr");
+                row.classList.add('page');
+                row.classList.add('page-' + currentPage);
+                row.dataset.day = day;
+                row.dataset.date = isoDate;
 
-            const dayCell = document.createElement("td");
-            dayCell.innerHTML = `<strong>${day}</strong><br><small>${formatDate(date)}</small>`;
-            if (i === todayIndex) {
-            dayCell.style.backgroundColor = "#d1e7dd";
-            dayCell.style.fontWeight = "bold";
-            }
+                const dayCell = document.createElement("td");
+                dayCell.innerHTML = `<strong>${day}</strong><br><small>${formatDate(date)}</small>`;
+                if (i === todayIndex) {
+                dayCell.style.backgroundColor = "#d1e7dd";
+                dayCell.style.fontWeight = "bold";
+                }
 
-            const slotWrapper = document.createElement("td");
-            slotWrapper.colSpan = 2;
-            slotWrapper.className = "slot-wrapper";
-            slotWrapper.dataset.day = day;
-            slotWrapper.classList.add('group-' + currentPage);
+                const slotWrapper = document.createElement("td");
+                slotWrapper.colSpan = 2;
+                slotWrapper.className = "slot-wrapper";
+                slotWrapper.dataset.day = day;
+                slotWrapper.classList.add('group-' + currentPage);
 
-            // Add initial slot input
-            slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
+                // Add initial slot input
+                slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
 
-            const addBtnCell = document.createElement("td");
-            const addBtn = document.createElement("button");
-            addBtn.type = "button";
-            addBtn.className = "btn btn-sm btn-success addSlotBtn";
-            addBtn.textContent = "+";
-            addBtn.dataset.day = day;
-            disableOrEnableInput(addBtn, disabledAction);
-            addBtnCell.appendChild(addBtn);
+                const addBtnCell = document.createElement("td");
+                const addBtn = document.createElement("button");
+                addBtn.type = "button";
+                addBtn.className = "btn btn-sm btn-success addSlotBtn";
+                addBtn.textContent = "+";
+                addBtn.dataset.day = day;
+                disableOrEnableInput(addBtn, disabledAction);
+                addBtnCell.appendChild(addBtn);
 
-            row.append(dayCell, slotWrapper, addBtnCell);
-            tableBody.appendChild(row);
-        });
-    }
-    showPage();
+                row.append(dayCell, slotWrapper, addBtnCell);
+                tableBody.appendChild(row);
+            });
+        }
+        showPage();
         disableOrEnableInput(nextWeekBtn, currentPage == latestPage && latestPage == maximumPage);
         disableOrEnableInput(prevWeekBtn, currentPage == 1);
     }
@@ -306,36 +327,36 @@ document.addEventListener("DOMContentLoaded", () => {
     // Event delegation for add/remove time slots
     tableBody.addEventListener("click", (e) => {
     if (e.target.classList.contains("addSlotBtn")) {
-      const day = e.target.dataset.day;
-      const wrapper = document.querySelector(`.group-${currentPage}.slot-wrapper[data-day="${day}"]`);
-      const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
-      if(wrapper.children.length > 1) {
-        disableInput(addBtn);
-      }
-      if (wrapper) {
-        wrapper.appendChild(createSlotInput(day, false));
-        if (wrapper.children.length > 1) {
-            wrapper.querySelectorAll(".removeSlotBtn").forEach((btn) => {
-            enableInput(btn);
-            btn.onclick = function (event) {
-                if(wrapper.children.length < 4){
-                    enableInput(addBtn);
-                }
-            }
-          });
+        const day = e.target.dataset.day;
+        const wrapper = document.querySelector(`.group-${currentPage}.slot-wrapper[data-day="${day}"]`);
+        const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
+        if(wrapper.children.length > 1) {
+            disableInput(addBtn);
         }
-      }
+        if (wrapper) {
+            wrapper.appendChild(createSlotInput(day, false));
+            if (wrapper.children.length > 1) {
+                wrapper.querySelectorAll(".removeSlotBtn").forEach((btn) => {
+                    enableInput(btn);
+                    btn.onclick = function (event) {
+                        if(wrapper.children.length < 4){
+                            enableInput(addBtn);
+                        }
+                    }
+                });
+            }
+        }
     }
     if (e.target.classList.contains("removeSlotBtn")) {
-      const slotDiv = e.target.closest(".time-slot");
-      const wrapper = slotDiv.parentElement;
-      if (wrapper.children.length > 1) {
-        slotDiv.remove();
-        if (wrapper.children.length === 1) {
-          disableInput(wrapper.querySelector(".removeSlotBtn"));
+        const slotDiv = e.target.closest(".time-slot");
+        const wrapper = slotDiv.parentElement;
+        if (wrapper.children.length > 1) {
+            slotDiv.remove();
+                if (wrapper.children.length === 1) {
+                    disableInput(wrapper.querySelector(".removeSlotBtn"));
+                }
+            }
         }
-      }
-    }
     });
 
     nextWeekBtn.addEventListener("click", () => {
@@ -367,22 +388,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         tableBody.querySelectorAll("tr").forEach(row => {
-        const date = row.dataset.date;
-        if (!date) {
-            console.error("Missing date for a time slot wrapper. Skipping.");
-            return; // Skips this iteration if date is missing
-        }
-        row.querySelectorAll(".time-slot").forEach(slot => {
-            const timeInput = slot.querySelectorAll('input[type="time"]');
-            const startTime = timeInput[0].value;
-            const endTime = timeInput[1].value;
+            const date = row.dataset.date;
+            if (!date) {
+                console.error("Missing date for a time slot wrapper. Skipping.");
+                return; // Skips this iteration if date is missing
+            }
+            row.querySelectorAll(".time-slot").forEach(slot => {
+                const timeInput = slot.querySelectorAll('input[type="time"]');
+                const startTime = timeInput[0].value;
+                const endTime = timeInput[1].value;
                 if (startTime && endTime) {
                     dateTimeList.push({
-                    startDateTime: `${date} ${startTime}`,
-                    endDateTime: `${date} ${endTime}`
-                });
-          }
-        });
+                        startDateTime: `${date} ${startTime}`,
+                        endDateTime: `${date} ${endTime}`
+                    });
+                }
+            });
         });
 
         const jsonPayload = {
@@ -396,13 +417,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData();
         const fileInput = document.getElementById("eventPhoto");
         if (fileInput.files.length > 0) {
-           formData.append("eventPhoto", fileInput.files[0]);
+            formData.append("eventPhoto", fileInput.files[0]);
         }
         formData.append("eventData", new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
 
         fetch('/club/event-create', {
-           method: 'POST',
-           body: formData
+            method: 'POST',
+            body: formData
         })
         .then(response =>  response.json())
         .then(data => {
