@@ -155,7 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
         let isValid = true;
 
         for (const input of requiredInputs) {
-            // Custom validation for inchargePerson
             if (!input.checkValidity()) {
                 input.reportValidity();
                 isValid = false;

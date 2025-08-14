@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   // Cache DOM elements
   const inchargeInput = document.getElementById("inchargePerson");
   const personList = document.getElementById("personList");
@@ -12,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const supportedList = document.getElementById("supportedList");
   const nextWeekBtn = document.getElementById("nextWeekBtn");
   const prevWeekBtn = document.getElementById("prevWeekBtn")
-
 
   // --- Person Modal Search Filter ---
   personSearch.addEventListener("input", () => {
@@ -35,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     memberList.style.display = "";
   });
 
-
   // --- Modal Show Event Handlers ---
   document.getElementById("personModal").addEventListener("show.bs.modal", () => {
     personSearch.value = "";
@@ -57,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     inchargeInput.value = element.textContent;
     inchargeInput.dataset.dataId = element.getAttribute("data-id");
     bootstrap.Modal.getInstance(document.getElementById("personModal")).hide();
+        document.getElementById("inchargePersonError").hidden = true;
   };
 
   window.selectMember = function (element) {
@@ -64,10 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedMember.dataset.id = element.getAttribute('data-id');
     memberSearch.value = element.textContent;
     document.getElementById('memberList').style.display = 'none';
-    // Do NOT clear the member list; keep it visible for multiple adds
-    // memberList.innerHTML = "";  <-- Removed this line
-    // Instead, optionally hide the list visually if desired:
-    // memberList.style.display = "none";
   };
 
   // --- Add supported member to table ---
@@ -78,13 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
                .replace(/"/g, "&quot;");
   }
 
+    let index = 0;
   async function addSupportedMember(event) {
     if (event) event.preventDefault();
-
     const name = (selectedMember.value || memberSearch.value || "").trim();
     const staffNo = selectedMember.getAttribute('data-id');
     const month = (monthSelect.value || "").trim();
-
     if (!name) {
       await alertAction("Please select a member.", { title: "Require selection!", variant: "danger"});
       return;
@@ -93,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
       await alertAction("Please select a month.", { title: "Require selection!", variant: "danger"});
       return;
     }
-
     // Check for duplicates (name + month)
     const rows = Array.from(supportedList.querySelectorAll("tr"));
     const duplicate = rows.some(row => {
@@ -107,10 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td data-name="supName">${escapeHtml(name)}</td>
-      <td data-name="supMonth">${escapeHtml(month)}</td>
-      <td style="display: none;" data-name="supStaff">${escapeHtml(staffNo)}</td>
-      <td style="display: none;"  data-name="supPlanner"></td>
+          <td>${++index}.</td>
+          <td>${escapeHtml(name)}</td>
+          <td>${escapeHtml(month)}</td>
+          <td style="display: none;">${escapeHtml(staffNo)}</td>
       <td>
         <button type="button" class="btn btn-sm btn-danger remove-supported" aria-label="Remove supported member">
           <i class="bi bi-trash"></i>
@@ -153,24 +145,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-
   // ==== Wizard Step Navigation ====
-
   function goToStep(step) {
     // Validate current step required inputs before proceeding
     const currentStep = document.querySelector(".wizard-step.active");
     const requiredInputs = currentStep.querySelectorAll(
       "input[required], select[required], textarea[required]"
     );
+        let isValid = true;
 
     for (const input of requiredInputs) {
       if (!input.checkValidity()) {
         input.reportValidity();
-        return;
+                isValid = false;
+            } else  if (input.id === "inchargePerson" && !input.value.trim()) {
+                document.getElementById("inchargePersonError").style.display = "block";
+                isValid = false;
       }
     }
-    switchStep(step);
-  }
+
+        if (!isValid) return;
+        const eventNameValue = document.querySelector("#eventName").value.trim();
+      switchStep(step);
+
+    }
   function switchStep(step) {
       // Hide all steps and remove active class
       document.querySelectorAll(".wizard-step").forEach(el => el.classList.remove("active"));
@@ -188,7 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==== Time Slot Planner (Step 2) ====
-
   const daysOfWeek = [
     "Sunday",
     "Monday",
@@ -329,7 +326,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if(/*canCreateNewPage*/ latestPage < currentPage){
      latestPage++;
      daysOfWeek.forEach((day, i) => {
-
           const date = new Date(weekStart);
           const disabledAction = i < todayIndex;
           date.setDate(weekStart.getDate() + i);
@@ -376,7 +372,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           row.append(dayCell, slotWrapper, addBtnCell);
           tableBody.appendChild(row);
-
         });
     }
     showPage();
