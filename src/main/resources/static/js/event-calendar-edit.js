@@ -169,28 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
     }
-     const eventNameValue = document.querySelector("#eventName").value.trim();
-        if( step > 1 ){
-            const formData = new FormData();
-            formData.append("eventName", eventNameValue);
-
-            fetch('/club/event-check', {
-                method: 'POST',
-                body: formData
-            })
-            .then(res =>  res.json())
-            .then(async (data) => {
-                if( data.status === "error"){
-                    await alertAction("Please enter different event name.", { title: "Duplicated Event!", variant: "danger"});
-                } else {
-                     switchStep(step);
-                }
-
-            })
-            .catch(error => console.error("Error:", error));
-        } else {
-           switchStep(step);
-        }
+    switchStep(step);
   }
   function switchStep(step) {
       // Hide all steps and remove active class
