@@ -1,8 +1,8 @@
 package com.dat.event.service.impl;
 
 import com.dat.event.common.mappers.EventPlannerMapper;
-import com.dat.event.common.mappers.StaffMapper;
 import com.dat.event.dto.*;
+import com.dat.event.entity.EventEntity;
 import com.dat.event.entity.EventPlannerEntity;
 import com.dat.event.repository.EventPlannerRepository;
 import com.dat.event.repository.EventRepository;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.List;
 
 @Slf4j
@@ -56,6 +55,8 @@ public class EventPlannerServiceImpl implements EventPlannerService {
 
     @Override
     public EventPlannerDto getEventWithSchedule(long eventId) {
+        eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Event ID"));
         List<Object[]> results = eventPlannerRepository.getEventWithSchedule(eventId);
         if (results.isEmpty()) {
             // No data found for this eventId

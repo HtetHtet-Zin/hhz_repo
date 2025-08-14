@@ -152,6 +152,8 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     @Transactional
     @Override
     public void deleteSchedule(Long eventId) {
+        eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid event ID"));
         List<Long> scheduleIds = eventScheduleRepository.getEventScheduleIds(eventId);
         eventRegistrationRepository.deleteRegistration(scheduleIds);
         eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
