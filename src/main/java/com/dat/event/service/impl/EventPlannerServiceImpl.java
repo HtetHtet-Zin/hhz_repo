@@ -13,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.List;
 
@@ -38,6 +36,8 @@ public class EventPlannerServiceImpl implements EventPlannerService {
                 .eventId(eventId)
                 .staffId(requestEventPlanDto.getInChargePerson())
                 .supportedMemberFlg(false)
+                 .delFlg(false)
+               .supportedMonth(null)
                 .build()));
 
         Arrays.stream(requestEventPlanDto.getSupportedMembers()).forEach(supportedMember -> {
@@ -99,11 +99,10 @@ public class EventPlannerServiceImpl implements EventPlannerService {
 
     private void updateSupportedMember(List<updateSupportedMember> updateSupportedMembersList,EventDto eventDto){
 
-        List<Long> savedPlannerIdList = new ArrayList<>();
+        Set<Long> savedPlannerIdList = new HashSet<>();
         updateSupportedMembersList.forEach(supportedMember -> {
             EventPlannerEntity entity;
-            savedPlannerIdList.add(supportedMember.getPlannerId());
-            if (supportedMember.getPlannerId() != null) {
+            if (supportedMember.getPlannerId() != null ) {
                 // Update mode
                 entity = eventPlannerRepository.findById(supportedMember.getPlannerId())
                         .orElseThrow(() -> new EntityNotFoundException("Planner not found"));
@@ -118,7 +117,7 @@ public class EventPlannerServiceImpl implements EventPlannerService {
             entity.setSupportedMemberFlg(true);
             entity.setDelFlg(false);
 
-            eventPlannerRepository.save(entity);
+            savedPlannerIdList.add(eventPlannerRepository.save(entity).getId()) ;
         });
 
      eventPlannerRepository.getEventPlannerIds(eventDto.getEventId()).stream()

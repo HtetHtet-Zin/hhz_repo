@@ -2,9 +2,12 @@ package com.dat.event.service.impl;
 
 import com.dat.event.service.ImageStorageService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,14 +35,14 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             }
 
             String originalFilename = file.getOriginalFilename();
-            String extension = "";
+            String extension = ".jpg";
 
-            if (originalFilename != null && originalFilename.contains(".")) {
-                extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-            } else {
-                log.warn("No file extension found. Defaulting to .jpg");
-                extension = ".jpg";
-            }
+//            if (originalFilename != null && originalFilename.contains(".")) {
+//                extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+//            } else {
+//                log.warn("No file extension found. Defaulting to .jpg");
+//                extension = ".jpg";
+//            }
 
             String renamedFileName = eventName.concat(extension);
             Path filePath = imageDir.resolve(renamedFileName);
@@ -72,5 +75,25 @@ public class ImageStorageServiceImpl implements ImageStorageService {
 
         return result;
     }
+
+    @Override
+    public void updateImage(String oldEventName, String newEventName) {
+        try {
+            String projectRoot = System.getProperty("user.dir");
+
+            Path of = Path.of(projectRoot, "photo", "eventPhoto");
+            Path oldName = of.resolve(oldEventName+".jpg");
+
+
+            Path newName = of.resolve(newEventName+".jpg");
+
+            Files.copy(oldName, newName, StandardCopyOption.REPLACE_EXISTING);
+
+
+        } catch (IOException exception) {
+            log.error("Error saving image: {}", exception.getMessage());
+        }
+    }
+
 
 }

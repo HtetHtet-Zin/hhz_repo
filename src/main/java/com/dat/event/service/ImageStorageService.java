@@ -9,4 +9,6 @@ public interface ImageStorageService {
     void saveImage(MultipartFile file, String eventName);
 
     Map<String, String> findEventImage(List<String> eventNames);
+
+    void updateImage(String oldEventName, String newEventName);
 }

@@ -107,7 +107,6 @@ public class EventScheduleServiceImpl implements EventScheduleService {
         List<Long> saveScheduleList = new ArrayList<>();
         requestEventPlanDto.getEventTimes().forEach(eventTime ->{
             EventScheduleEntity entity;
-            saveScheduleList.add(eventTime.getEventTimeId());
             if (eventTime.getEventTimeId() != null) {
                 // Update mode
                 entity = eventScheduleRepository.findById(eventTime.getEventTimeId())
@@ -126,7 +125,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
             entity.setCreatedBy(staffNo);
             entity.setUpdatedAt(LocalDateTime.now());
             entity.setUpdatedBy(staffNo);
-            eventScheduleRepository.save(entity);
+            saveScheduleList.add(eventScheduleRepository.save(entity).getId());
 
         });
         eventScheduleRepository.getEventScheduleIds(eventDto.getEventId()).stream()

@@ -148,6 +148,8 @@ public class EventController {
             eventPlannerService.updateEventPlanner(updateDto, requestEventPlanDto, loginStaffNo);
             if (eventPhotoFile != null && !eventPhotoFile.isEmpty()) {
                 imageStorageService.saveImage(eventPhotoFile, updateDto.getName());
+            }else{
+                imageStorageService.updateImage(eventDto.getName(),requestEventPlanDto.getEventName());
             }
 
         }

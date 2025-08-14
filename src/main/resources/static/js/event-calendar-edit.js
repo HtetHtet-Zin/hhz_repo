@@ -107,9 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${escapeHtml(name)}</td>
-      <td>${escapeHtml(month)}</td>
-      <td style="display: none;">${escapeHtml(staffNo)}</td>
+      <td data-name="supName">${escapeHtml(name)}</td>
+      <td data-name="supMonth">${escapeHtml(month)}</td>
+      <td style="display: none;" data-name="supStaff">${escapeHtml(staffNo)}</td>
+      <td style="display: none;"  data-name="supPlanner"></td>
       <td>
         <button type="button" class="btn btn-sm btn-danger remove-supported" aria-label="Remove supported member">
           <i class="bi bi-trash"></i>
@@ -458,7 +459,7 @@ function formatDateTime(dateStr, timeStr) {
          const supName =   row.querySelector('[data-name = "supName"]').textContent;
           const supMonth =   row.querySelector('[data-name = "supMonth"]').textContent;
           const supStaff =   row.querySelector('[data-name = "supStaff"]').textContent;
-          const supPlanner =   row.querySelector('[data-name = "supPlanner"]').textContent;
+        const supPlanner = row.querySelector('[data-name="supPlanner"]')?.textContent || '';
         const supportedMembers ={
                 plannerId : supPlanner,
                 memberId :supStaff,
