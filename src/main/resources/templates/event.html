@@ -37,7 +37,6 @@
 
     <div class="container position-relative">
       <h1>Welcome From DAT Event World</h1>
-      <p>Have a nice Day!!!</p>
     </div>
   </div>
 
@@ -54,7 +53,7 @@
               <i class="bi bi-pencil-square"></i>
             </a>
             <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId}} + '\')'" th:if="${IsAdmin}">
-              <i class="bi bi-eraser-fill"></i>
+              <i style="color: #d02d2d;" class="bi bi-x-square-fill"></i>
             </a>
           </div>
         </div>
