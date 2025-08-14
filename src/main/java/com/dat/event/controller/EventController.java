@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,27 +59,41 @@ public class EventController {
     }
 
     @PostMapping(WebUrl.EVENT_CREATE_URL)
-    public ResponseEntity<?> createEvent(
+    public ResponseEntity<Map<String, String>> createEvent(
             HttpSession session,
             @RequestPart("eventData") RequestEventPlanDto requestEventPlanDto,
             @RequestPart("eventPhoto") MultipartFile eventPhotoFile) {
         // step-1 create event, (name,description,createAt,createBy)
         // step-2 create schedule, (eventId,date,startTime,endTime,createAt,createBy,updateAt,updateBy)
         // step-3 create eventPlanner, (staffId,eventId,supportedMemberFlg,delFlg)
-
-        log.info("RequestEventPlanner {}", requestEventPlanDto);
-        log.info("eventPhoto {}", eventPhotoFile);
+        Map<String, String> response = new HashMap<>();
         String loginStaffNo = session != null && session.getAttribute("staffNo") != null ? session.getAttribute("staffNo").toString() : null;
-        log.info("loginStaffNo {}", loginStaffNo);
-        EventDto eventDto = eventService.findByEventName(requestEventPlanDto.getEventName());
-        if (eventDto == null && loginStaffNo != null) {
-            EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
-            eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
-            eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
-            imageStorageService.saveImage(eventPhotoFile,savedDto.getName());
+        if (loginStaffNo == null) {
+            response.put("redirectUrl", WebUrl.LOGIN_URL);
+            response.put("status", "error");
+            response.put("message", "Session has expired. Please log in again.");
+            return ResponseEntity.ok(response);
         }
 
-        return ResponseEntity.ok(requestEventPlanDto);
+        EventDto eventDto = eventService.findByEventName(requestEventPlanDto.getEventName());
+        if (eventDto != null) {
+            response.put("redirectUrl", "/club" + WebUrl.EVENT_CREATE_URL);
+            response.put("status", "error");
+            response.put("message", "Can't create the same event");
+            System.out.println("Can't create the same event");
+            return ResponseEntity.ok(response);
+        }
+
+        EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
+        eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
+        eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
+        imageStorageService.saveImage(eventPhotoFile, savedDto.getName());
+
+        response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
+        response.put("status", "success");
+        response.put("message", "Event created successfully");
+        System.out.println("Event created successfully");
+        return ResponseEntity.ok(response);
     }
 
 
@@ -87,11 +102,10 @@ public class EventController {
         if (session != null && session.getAttribute("staffNo") != null) {
             var eventList = eventService.findAll();
             var imageMap = imageStorageService.findEventImage(eventList.stream().map(EventDto::getName).toList());
-
-            for (EventDto event : eventList) {
+            eventList.forEach(event -> {
                 String eventPhoto = imageMap.getOrDefault(event.getName(), "default.jpg");
-                event.setEventPhoto(eventPhoto); // Add this field to EventDto
-            }
+                event.setEventPhoto(eventPhoto);
+            });
             model.addAttribute("eventList", eventList);
             return "event";
         }
@@ -110,11 +124,11 @@ public class EventController {
     }
 
     @GetMapping(WebUrl.EVENT_REGISTRATION_URL + "/{id}")
-    public String event_registration(@PathVariable("id") String eventId, HttpSession session,Model model) {
+    public String event_registration(@PathVariable("id") String eventId, HttpSession session, Model model) {
         if (session != null && session.getAttribute("staffNo") != null) {
-            model.addAttribute("planner" ,eventPlannerService.getEventWithSchedule(Long.parseLong(eventId)));
-            model.addAttribute("registeredSchedule" , eventRegistrationService.getRegisteredSchedule(Long.valueOf(eventId), (Long) session.getAttribute("id")));
-            model.addAttribute("allScheduleIds" , eventScheduleService.getAllScheduleIdByEvent(Long.valueOf(eventId)));
+            model.addAttribute("planner", eventPlannerService.getEventWithSchedule(Long.parseLong(eventId)));
+            model.addAttribute("registeredSchedule", eventRegistrationService.getRegisteredSchedule(Long.valueOf(eventId), (Long) session.getAttribute("id")));
+            model.addAttribute("allScheduleIds", eventScheduleService.getAllScheduleIdByEvent(Long.valueOf(eventId)));
             return "event-registration";
         }
         return "redirect:" + WebUrl.LOGIN_URL;
@@ -128,10 +142,10 @@ public class EventController {
 
     @PostMapping("/register-event-schedule")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds, @RequestParam String eventId  ,HttpSession session, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds, @RequestParam String eventId, HttpSession session, RedirectAttributes redirectAttributes) {
         Map<String, String> response = new HashMap<>();
         if (session == null) {
-            response.put("redirectUrl", "/club/login");
+            response.put("redirectUrl", WebUrl.LOGIN_URL);
             response.put("status", "error");
             response.put("message", "Session has expired. Please log in again.");
             return ResponseEntity.ok(response);
@@ -139,18 +153,18 @@ public class EventController {
         Long staffId = (Long) session.getAttribute("id");
         List<String> conflicts = eventRegistrationService.checkDuplicateSchedule(staffId, registeredScheduleIds);
         if (!conflicts.isEmpty()) {
-            response.put("redirectUrl", "/club/event-registration/" + eventId);
+            response.put("redirectUrl", "/club" + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
             response.put("status", "error");
             response.put("message", "Already Registered at this date and time - " + String.join(", ", conflicts));
             return ResponseEntity.ok(response);
         }
         int success = eventRegistrationService.registerEvent(staffId, registeredScheduleIds, Long.valueOf(eventId));
         if (success == 0) {
-            response.put("redirectUrl", "/club/event-registration/" + eventId);
+            response.put("redirectUrl", "/club" + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
             response.put("status", "error");
             response.put("message", "Fail to Join");
         } else {
-            response.put("redirectUrl", "/club/event");
+            response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
             response.put("status", "success");
             response.put("message", "Successfully Join");
         }

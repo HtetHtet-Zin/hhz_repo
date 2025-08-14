@@ -9,6 +9,7 @@
     <link th:href="@{/css/event-calendar.css}" rel="stylesheet"/>
     <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
     <link th:href="@{/css/footer.css}" rel="stylesheet"/>
+    <link th:href="@{/css/toast.min.css}" rel="stylesheet"/>
 
 </head>
 <body class="registration">
@@ -30,44 +31,36 @@
             <div id="wizard">
                 <!-- Step 1: Event Details -->
                 <div class="wizard-step active" id="step1">
-                    <h5>Step 1: Enter Event Details</h5>
+                    <h5>Event Registration</h5>
 
                     <div class="mb-3">
                         <label for="eventName" class="form-label">Event Name <span class="text-danger">*</span></label>
-                        <input type="text" id="eventName" name="eventName" class="form-control"
-                               placeholder="Enter Event Name" required/>
+                        <input type="text" id="eventName" name="eventName" class="form-control" placeholder="Enter Event Name" required/>
                     </div>
 
                     <div class="mb-3">
-                        <label for="eventPhoto" class="form-label">Event Photo <span
-                                class="text-danger">*</span></label>
-                        <input type="file" id="eventPhoto" name="eventPhoto" class="form-control" accept="image/*"
-                               required/>
+                        <label for="eventPhoto" class="form-label">Event Photo <span class="text-danger">*</span></label>
+                        <input type="file" id="eventPhoto" name="eventPhoto" class="form-control" accept="image/*" required/>
                     </div>
 
                     <div class="mb-3">
                         <label for="eventDesc" class="form-label">Description</label>
-                        <textarea id="eventDesc" name="eventDesc" class="form-control" rows="3"
-                                  placeholder="Optional description"></textarea>
+                        <textarea id="eventDesc" name="eventDesc" class="form-control" rows="3" placeholder="Optional description"></textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label for="inchargePerson" class="form-label">Incharge Person <span
-                                class="text-danger">*</span></label>
+                        <label for="inchargePerson" class="form-label">Incharge Person <span  class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="text" data-id="" id="inchargePerson" name="inchargePerson" class="form-control"
-                                   placeholder="Select person"
+                            <input type="text" data-id="" id="inchargePerson" name="inchargePerson" class="form-control" placeholder="Select person"
                                    onclick="document.getElementById('inchargePersonBtn').click();" readonly required/>
-                            <button type="button" class="btn btn-outline-secondary" id="inchargePersonBtn"
-                                    data-bs-toggle="modal" data-bs-target="#personModal">
+                            <button type="button" class="btn btn-outline-secondary" id="inchargePersonBtn" data-bs-toggle="modal" data-bs-target="#personModal">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#memberModal">Add Supported Member
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#memberModal">Add Supported Member
                         </button>
                     </div>
 
@@ -96,8 +89,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="personModalLabel">Select Incharge Person</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <label for="personSearch"></label><input type="text" id="personSearch"
@@ -163,7 +155,7 @@
 
                 <!-- Step 2: Select Time Slots -->
                 <div class="wizard-step" id="step2">
-                    <h5>Step 2: Weekly Time Slot Planner</h5>
+                    <h5>Registration Weekly Time Slot Planner</h5>
                     <div class="d-flex justify-content-between mb-2">
                         <button class="btn btn-outline-primary border border-primary" type="button" id="prevWeekBtn"> ←
                             Previous Week
@@ -198,5 +190,14 @@
 <script th:src="@{/js/commonUtility.js}"></script>
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/toast.min.js}"></script>
+<script th:src="@{/js/toast-config.js}"></script>
+
+<script>
+    var message = '[[${param.message}]]';
+    var messageType = '[[${param.messageType}]]';
+</script>
+
 </body>
 </html>
