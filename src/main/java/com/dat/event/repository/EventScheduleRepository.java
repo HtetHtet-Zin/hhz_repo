@@ -44,4 +44,11 @@ public interface EventScheduleRepository extends JpaRepository<EventScheduleEnti
     List<Long> getAllScheduleIdByEvent(@Param("eventId") Long eventId);
 
 
+
+    List<EventScheduleEntity> findByEvent_EventIdAndDelFlagFalse(@Param("eventId") Long eventId);
+
+    @Query(value = "SELECT id FROM tbl_event_schedule WHERE event_id = :eventId",nativeQuery = true)
+    List<Long>  getEventScheduleIds(@Param("eventId") Long eventId);
+
+
 }

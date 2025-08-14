@@ -11,8 +11,10 @@ import com.dat.event.dto.EventDto;
 import com.dat.event.entity.EventEntity;
 import com.dat.event.repository.EventRepository;
 import com.dat.event.service.EventService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,6 +45,34 @@ public class EventServiceImpl implements EventService {
                 .createdBy(staffNo)
                 .delFlag(false)
                 .build())));
+    }
+
+    @Override
+    public EventDto update(Long eventId,String eventName, String description, MultipartFile file, String staffNo) {
+        return eventMapper.toDTO(repository.save(eventMapper.toEntity(EventDto.builder()
+                                                                              .eventId(eventId)
+                                                                              .name(eventName)
+                                                                              .description(description)
+                                                                              .createdAt(LocalDateTime.now())
+                                                                              .createdBy(staffNo)
+                                                                              .delFlag(false)
+                                                                              .build())));
+    }
+
+    @Override
+    public EventDto getEvent(long eventId) {
+        return eventMapper.toDTO(repository.findById(eventId).orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + eventId)));
+    }
+
+    @Override
+    public boolean delete(Long eventId) {
+        try {
+            repository.deleteById(eventId);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            log.info("error");
+            return false;
+        }
     }
 
     @Override

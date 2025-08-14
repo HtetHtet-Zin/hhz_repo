@@ -12,6 +12,10 @@ import com.dat.event.dto.RequestEventPlanDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import com.dat.event.dto.UpdateEventPlanDto;
+import org.hibernate.sql.Update;
+
+import java.util.List;
 
 /**
  * EventScheduleService Class.
@@ -26,4 +30,9 @@ public interface EventScheduleService {
     Page<EventScheduleDto> getScheduleById(Long eventId, String keyword, int page);
 
     List<Long> getAllScheduleIdByEvent(Long eventId);
+
+    void updateEventSchedule(EventDto eventDto, UpdateEventPlanDto requestEventPlanDto, String staffNo);
+
+    List<EventScheduleDto> getEventSchedule(Long eventId);
+
 }

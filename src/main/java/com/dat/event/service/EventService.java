@@ -22,6 +22,12 @@ public interface EventService {
 
     EventDto save(String eventName, String description, MultipartFile file, String staffNo);
 
+    EventDto update(Long eventId,String eventName, String description, MultipartFile file, String staffNo);
+
+    EventDto getEvent(long eventId);
+
+    boolean delete(Long eventId);
+
     List<EventDto> findAll();
 
     EventDto findById(Long id);

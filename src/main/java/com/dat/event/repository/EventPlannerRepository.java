@@ -1,5 +1,6 @@
 package com.dat.event.repository;
 
+import com.dat.event.dto.PlannerDto;
 import com.dat.event.entity.EventPlannerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,39 @@ public interface EventPlannerRepository extends JpaRepository<EventPlannerEntity
     )
     List<Object[]> getEventWithSchedule(@Param("eventId") long eventId);
 
+
+    @Query("""
+    SELECT new com.dat.event.dto.PlannerDto(
+        ep.id,
+        ep.event.eventId,
+        ep.staff.staffId,
+        ep.staff.staffNo,
+        ep.staff.name,
+        ep.supportedMonth
+    )
+    FROM EventPlannerEntity ep
+    WHERE ep.supportedMemberFlg = false
+      AND ep.event.eventId = :eventId
+      AND ep.delFlg = false
+""")
+    PlannerDto getInChargePerson(@Param("eventId") Long eventId);
+
+    @Query("""
+    SELECT new com.dat.event.dto.PlannerDto(
+        ep.id,
+        ep.event.eventId,
+         ep.staff.staffId,
+        ep.staff.staffNo,
+        ep.staff.name,
+        ep.supportedMonth
+    )
+    FROM EventPlannerEntity ep
+    WHERE ep.supportedMemberFlg = true
+      AND ep.event.eventId = :eventId
+      AND ep.delFlg = false
+""")
+    List<PlannerDto> getSupportedMember(@Param("eventId") Long eventId);
+
+    @Query(value = "SELECT id FROM tbl_event_planner WHERE event_id = :eventId AND supported_member_flg ",nativeQuery = true)
+    List<Long>  getEventPlannerIds(@Param("eventId") Long eventId);
 }

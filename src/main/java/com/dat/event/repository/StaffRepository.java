@@ -26,4 +26,6 @@ public interface StaffRepository extends JpaRepository<StaffEntity, Long> {
     @Query(value = "SELECT * FROM tbl_staff WHERE MONTH(dob) = :month",nativeQuery = true)
     List<StaffEntity> birthdayStaff(@Param("month") int month);
 
+    @Query(value = "SELECT * FROM tbl_staff WHERE staff_id = :id",nativeQuery = true)
+    StaffEntity findByStaff(@Param("id")Long id);
 }

@@ -217,6 +217,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const slot = document.createElement("div");
     slot.className = "time-slot d-flex gap-1 mb-1 align-items-center";
 
+        const hidden = document.createElement("input");
+       hidden.type = "hidden";
+       hidden.id = uniqueSuffix();
+       hidden.name=  `hidden_${day}[]`
+       hidden.value =member.id;
+       hidden.dataset.id = "hidden";
+       hidden.className = "form-control form-control-sm";
+       disableOrEnableInput(hidden, disabledAction);
+
     const startLabel = document.createElement('label');
     const startId = uniqueSuffix();
     startLabel.textContent = "Start time : ";
@@ -252,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
       disableInput(removeBtn);
       removeBtn.title = "At least one slot required";
     }
-    slot.append(startLabel, start, endLabel, end, removeBtn);
+    slot.append(hidden,startLabel, start, endLabel, end, removeBtn);
     return slot;
   }
 
@@ -308,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(/*canCreateNewPage*/ latestPage < currentPage){
      latestPage++;
      daysOfWeek.forEach((day, i) => {
-     eventScheduleList.forEach(member => {
+
           const date = new Date(weekStart);
           const disabledAction = i < todayIndex;
           date.setDate(weekStart.getDate() + i);
@@ -332,14 +341,18 @@ document.addEventListener("DOMContentLoaded", () => {
           slotWrapper.className = "slot-wrapper";
           slotWrapper.dataset.day = day;
           slotWrapper.classList.add('group-' + currentPage);
-
+          let addEmptyRow = true;
+        eventScheduleList.forEach(member => {
           // Add initial slot input
           if(isoDate == member.date){
+            addEmptyRow = false;
             slotWrapper.appendChild(createSlotInput1(day, disabledAction,member, true));
-            }else{
-            slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
             }
+         });
 
+         if(addEmptyRow){
+              slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
+         }
           const addBtnCell = document.createElement("td");
           const addBtn = document.createElement("button");
           addBtn.type = "button";
@@ -351,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           row.append(dayCell, slotWrapper, addBtnCell);
           tableBody.appendChild(row);
-          });
+
         });
     }
     showPage();
@@ -417,19 +430,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial render
   renderTable();
+const supportedMembersList = [];
+function formatDateTime(dateStr, timeStr) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const [hour, minute] = timeStr.split(':').map(Number);
+
+  const dateObj = new Date(year, month - 1, day, hour, minute);
+  const yyyy = dateObj.getFullYear();
+  const MM = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const dd = String(dateObj.getDate()).padStart(2, '0');
+  const HH = String(dateObj.getHours()).padStart(2, '0');
+  const mm = String(dateObj.getMinutes()).padStart(2, '0');
+  const ss = String(dateObj.getSeconds()).padStart(2, '0');
+
+  return `${yyyy}-${MM}-${dd} ${HH}:${mm}:${ss}`;
+}
 
   // Submit form handler (example, enhance as needed)
   function submitEvent() {
     const dateTimeList = [];
     const form = document.getElementById("eventForm");
-    const members = Array.from(supportedList.querySelectorAll("tr")).map((row) => {
-    const tds = row.querySelectorAll("td");
-      return {
-        name: tds[0].textContent.trim(),
-        month: tds[1].textContent.trim(),
-        memberId: tds[2].textContent.trim(),
+
+
+     document.querySelectorAll("#supportedList tr").forEach(row => {
+     console.log(1);
+
+         const supName =   row.querySelector('[data-name = "supName"]').textContent;
+          const supMonth =   row.querySelector('[data-name = "supMonth"]').textContent;
+          const supStaff =   row.querySelector('[data-name = "supStaff"]').textContent;
+          const supPlanner =   row.querySelector('[data-name = "supPlanner"]').textContent;
+        const supportedMembers ={
+                plannerId : supPlanner,
+                memberId :supStaff,
+                name : supName,
+                month : supMonth
         };
-    });
+        supportedMembersList.push(supportedMembers);
+
+     });
 
       tableBody.querySelectorAll("tr").forEach(row => {
         const date = row.dataset.date;
@@ -439,22 +477,27 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         row.querySelectorAll(".time-slot").forEach(slot => {
           const timeInput = slot.querySelectorAll('input[type="time"]');
-          const startTime = timeInput[0].value;
-          const endTime = timeInput[1].value;
+          const hiddenInput = slot.querySelectorAll('[data-id = "hidden"]');
+          const startTime = timeInput[0]?.value;
+          const endTime = timeInput[1]?.value;
+         const eventTimeId =  Number(hiddenInput[0]?.value);
           if (startTime && endTime) {
             dateTimeList.push({
-              startDateTime: `${date} ${startTime}`,
-              endDateTime: `${date} ${endTime}`
+              startDateTime: formatDateTime(date, startTime),
+                endDateTime: formatDateTime(date, endTime),
+              eventTimeId: eventTimeId
             });
           }
         });
       });
 
     const jsonPayload = {
+        eventId:form.eventId.value,
         eventName: form.eventName.value,
         description: form.eventDesc.value,
+        inChargePersonPlannerId:form.inChargePersonPlannerId.value,
         inChargePerson: form.inchargePerson.dataset.dataId,
-        supportedMembers: members,
+        supportedMembers: supportedMembersList,
         eventTimes: dateTimeList
       };
 
@@ -465,7 +508,7 @@ document.addEventListener("DOMContentLoaded", () => {
    }
     formData.append("eventData", new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
 
-   fetch('/club/event/create', {
+   fetch('/club/event-edit', {
        method: 'POST',
        body: formData
    })

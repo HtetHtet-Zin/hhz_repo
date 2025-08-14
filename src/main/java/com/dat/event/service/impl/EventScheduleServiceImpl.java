@@ -11,8 +11,13 @@ import com.dat.event.common.mappers.EventScheduleMapper;
 import com.dat.event.dto.EventDto;
 import com.dat.event.dto.EventScheduleDto;
 import com.dat.event.dto.RequestEventPlanDto;
+import com.dat.event.dto.UpdateEventPlanDto;
+import com.dat.event.entity.EventPlannerEntity;
+import com.dat.event.entity.EventScheduleEntity;
+import com.dat.event.repository.EventRepository;
 import com.dat.event.repository.EventScheduleRepository;
 import com.dat.event.service.EventScheduleService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,6 +46,9 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     private final EventScheduleRepository eventScheduleRepository;
 
     private final EventScheduleMapper eventScheduleMapper;
+
+    private final EventRepository eventRepository;
+
 
     @Override
     public void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
@@ -90,4 +99,52 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     public List<Long> getAllScheduleIdByEvent(Long eventId) {
         return eventScheduleRepository.getAllScheduleIdByEvent(eventId);
     }
+
+    @Override
+    public void updateEventSchedule(EventDto eventDto, UpdateEventPlanDto requestEventPlanDto, String staffNo) {
+        log.info("Event ID {}",eventDto.getEventId());
+        log.info("Request DTO {}",requestEventPlanDto);
+        List<Long> saveScheduleList = new ArrayList<>();
+        requestEventPlanDto.getEventTimes().forEach(eventTime ->{
+            EventScheduleEntity entity;
+            saveScheduleList.add(eventTime.getEventTimeId());
+            if (eventTime.getEventTimeId() != null) {
+                // Update mode
+                entity = eventScheduleRepository.findById(eventTime.getEventTimeId())
+                        .orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
+            } else {
+                // Insert mode
+                entity = new EventScheduleEntity();
+            }
+
+            entity.setDate( eventTime.getStartDateTime().toLocalDate());
+            entity.setEvent(eventRepository.getReferenceById(eventDto.getEventId()));
+            entity.setStartTime(eventTime.getStartDateTime().toLocalTime());
+            entity.setEndTime(eventTime.getEndDateTime().toLocalTime());
+            entity.setDelFlag(false);
+            entity.setCreatedAt(LocalDateTime.now());
+            entity.setCreatedBy(staffNo);
+            entity.setUpdatedAt(LocalDateTime.now());
+            entity.setUpdatedBy(staffNo);
+            eventScheduleRepository.save(entity);
+
+        });
+        eventScheduleRepository.getEventScheduleIds(eventDto.getEventId()).stream()
+                .filter(scheduleId -> !saveScheduleList.contains(scheduleId))
+                .forEach( scheduleId ->{
+                var    entity = eventScheduleRepository.findById(scheduleId)
+                            .orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
+                    entity.setDelFlag(true);
+                    eventScheduleRepository.save(entity);
+                          }
+                );
+
+    }
+
+    @Override
+    public List<EventScheduleDto> getEventSchedule(Long eventId) {
+        return eventScheduleMapper.toDtoList(eventScheduleRepository.findByEvent_EventIdAndDelFlagFalse(eventId));
+    }
+
+
 }
