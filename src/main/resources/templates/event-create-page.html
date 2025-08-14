@@ -10,7 +10,26 @@
     <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
     <link th:href="@{/css/footer.css}" rel="stylesheet"/>
     <link th:href="@{/css/toast.min.css}" rel="stylesheet"/>
-
+    <style>
+        /* Wizard step navigation */
+        .wizard-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .wizard-step-link {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+        .wizard-step-link.active {
+            color: #007bff;
+            border-bottom: 3px solid #007bff;
+        }
+    </style>
 </head>
 <body class="registration">
 
@@ -27,12 +46,15 @@
     </div>
 
     <div class="container my-5">
+        <div class="wizard-nav">
+            <div id="navStep1" class="wizard-step-link active" onclick="goToStep(1)">Event Registration</div>
+            <div id="navStep2" class="wizard-step-link" onclick="goToStep(2)">Registration Weekly Time Slot Planner</div>
+        </div>
+
         <form id="eventForm" th:action="@{/event-create}" method="POST" enctype="multipart/form-data" novalidate>
             <div id="wizard">
                 <!-- Step 1: Event Details -->
                 <div class="wizard-step active" id="step1">
-                    <h5>Event Registration</h5>
-
                     <div class="mb-3">
                         <label for="eventName" class="form-label">Event Name <span class="text-danger">*</span></label>
                         <input type="text" id="eventName" name="eventName" class="form-control" placeholder="Enter Event Name" required/>
@@ -155,7 +177,6 @@
 
                 <!-- Step 2: Select Time Slots -->
                 <div class="wizard-step" id="step2">
-                    <h5>Registration Weekly Time Slot Planner</h5>
                     <div class="d-flex justify-content-between mb-2">
                         <button class="btn btn-outline-primary border border-primary" type="button" id="prevWeekBtn"> ←
                             Previous Week

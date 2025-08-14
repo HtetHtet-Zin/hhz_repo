@@ -169,17 +169,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 if( data.status === "error"){
                     await alertAction("Please enter different event name.", { title: "Duplicated Event!", variant: "danger"});
                 } else {
-                    document.querySelectorAll(".wizard-step").forEach((el) => el.classList.remove("active"));
-                    document.getElementById(`step${step}`).classList.add("active");
+                     switchStep(step);
                 }
 
             })
             .catch(error => console.error("Error:", error));
         } else {
-            document.querySelectorAll(".wizard-step").forEach((el) => el.classList.remove("active"));
-            document.getElementById(`step${step}`).classList.add("active");
+           switchStep(step);
         }
 
+    }
+    function switchStep(step) {
+        // Hide all steps and remove active class
+        document.querySelectorAll(".wizard-step").forEach(el => el.classList.remove("active"));
+        document.querySelectorAll(".wizard-step").forEach(el => el.classList.add("d-none"));
+
+        // Show selected step
+        const selectedStep = document.getElementById(`step${step}`);
+        selectedStep.classList.add("active");
+        selectedStep.classList.remove("d-none");
+
+        // Update navigation underline
+        document.querySelectorAll(".wizard-step-link").forEach(el => el.classList.remove("active"));
+        const navStep = document.getElementById(`navStep${step}`);
+        if (navStep) navStep.classList.add("active");
     }
 
     // ==== Time Slot Planner (Step 2) ====
