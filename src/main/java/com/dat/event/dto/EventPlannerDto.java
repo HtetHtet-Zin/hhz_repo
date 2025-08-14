@@ -8,12 +8,12 @@ import lombok.RequiredArgsConstructor;
 @Builder
 public class EventPlannerDto {
 
+    private Long eventPlannerId;
     private Long staffId;
     private Long eventId;
     private String supportedMonth;
     private Boolean supportedMemberFlg;
     private Boolean delFlg;
-
     private String eventName;
     private String incharge_person;
     private String supported_members;

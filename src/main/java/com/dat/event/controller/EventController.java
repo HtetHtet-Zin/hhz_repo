@@ -11,10 +11,12 @@ import com.dat.event.dto.EventDto;
 import com.dat.event.dto.EventScheduleDto;
 import com.dat.event.dto.EventStaffDto;
 import com.dat.event.dto.RequestEventPlanDto;
+import com.dat.event.dto.UpdateEventPlanDto;
 import com.dat.event.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
@@ -94,6 +97,50 @@ public class EventController {
         response.put("message", "Event created successfully");
         System.out.println("Event created successfully");
         return ResponseEntity.ok(response);
+    }
+    @GetMapping(WebUrl.EVENT_EDIT_URL+"/{id}")
+    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId) {
+        var staffDtoList = staffService.findAll();
+        var eventDto = eventService.getEvent(eventId);
+        var eventScheduleDtoList =  eventScheduleService.getEventSchedule(eventId);
+        var inChargePerson = eventPlannerService.getInChargePerson(eventId);
+        var supportedMemberList = eventPlannerService.getSupportedMember(eventId);
+        log.info("ssup {}", eventScheduleDtoList);
+       // log.info("staff-list {}", staffDtoList);
+        return new ModelAndView("event-edit-page")
+                .addObject( "staffs", staffDtoList)
+                .addObject( "eventId", eventDto.getEventId())
+                .addObject("eventName",eventDto.getName())
+                .addObject("description",eventDto.getDescription())
+                .addObject("eventScheduleList",eventScheduleDtoList)
+                .addObject("inChargePerson",inChargePerson.getName())
+                .addObject("inChargePersonId",inChargePerson.getStaffId())
+                .addObject("inChargePersonPlanId",inChargePerson.getPlannerId())
+                .addObject("supportedMemberList",supportedMemberList);
+    }
+
+    @PostMapping(WebUrl.EVENT_EDIT_URL)
+    public ResponseEntity<?> editEvent(
+            HttpSession session,
+            @RequestPart("eventData") UpdateEventPlanDto requestEventPlanDto,
+            @RequestPart(value = "eventPhoto",required = false) MultipartFile eventPhotoFile) {
+
+        log.info("RequestEventPlanner {}", requestEventPlanDto);
+        log.info("eventPhoto {}", eventPhotoFile);
+        String loginStaffNo = session != null && session.getAttribute("staffNo") != null ? session.getAttribute("staffNo").toString() : null;
+        log.info("loginStaffNo {}", loginStaffNo);
+        EventDto eventDto = eventService.findById(requestEventPlanDto.getEventId());
+        if (eventDto != null && loginStaffNo != null) {
+            EventDto updateDto = eventService.update(eventDto.getEventId(), requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
+            eventScheduleService.updateEventSchedule(updateDto, requestEventPlanDto, loginStaffNo);
+            eventPlannerService.updateEventPlanner(updateDto, requestEventPlanDto, loginStaffNo);
+            if (eventPhotoFile != null && !eventPhotoFile.isEmpty()) {
+                imageStorageService.saveImage(eventPhotoFile, updateDto.getName());
+            }
+
+        }
+
+        return ResponseEntity.ok(requestEventPlanDto);
     }
 
 
@@ -170,6 +217,7 @@ public class EventController {
         }
         return ResponseEntity.ok(response);
     }
+
 
 
 }

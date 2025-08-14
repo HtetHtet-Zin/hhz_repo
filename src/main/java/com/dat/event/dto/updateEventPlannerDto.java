@@ -6,29 +6,23 @@
  * *************************************************************/
 package com.dat.event.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 /**
- * StaffDto Class.
+ * updateEventPlannerDto Class.
  * <p>
  * </p>
  *
- * @author Zwel Naing Oo
+ * @author
  */
 @Data
-public class StaffDto {
-
+@Builder
+public class updateEventPlannerDto {
+    private Long id;
     private Long staffId;
-    private String staffNo;
-    private String name;
-    private String email;
-    private String mobile;
-    private LocalDate dob;
-    private Boolean adminFlag;
-
+    private EventDto eventId;
+    private String supportedMonth;
+    private Boolean supportedMemberFlg;
+    private Boolean delFlg;
 }
