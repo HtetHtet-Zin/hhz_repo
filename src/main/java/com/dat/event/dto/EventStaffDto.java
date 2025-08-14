@@ -1,6 +1,7 @@
 package com.dat.event.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +15,9 @@ public class EventStaffDto {
     private String eventName;
     private String staffNo;
     private String staffName;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     private LocalDate date;

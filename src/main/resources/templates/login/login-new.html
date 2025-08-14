@@ -13,11 +13,13 @@
 <body>
 
 <div class="login-container">
-    <h1>Welcome To</h1>
-    <h3>DAT Event Club</h3>
+    <div>
+        <h1>Welcome To</h1>
+        <h3>DAT Event Club</h3>
+        <span th:text="${error_message ?: ''}" class="error-message" id="error-message"></span>
+    </div>
     <form th:action="@{/login}" method="post">
         <input type="text" name="username" placeholder="Staff ID" autocomplete="off" required />
-
         <input type="password" name="password" placeholder="Password" autocomplete="new-password" required />
         <button type="submit" class="login-btn">Login</button>
     </form>
@@ -25,6 +27,14 @@
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-
+<script>
+    function clearError(errorId) {
+        const errorMessage = document.getElementById(errorId).innerText;
+        if (errorMessage !== "") {
+            document.getElementById(errorId).innerText = "";
+            document.getElementById(errorId).style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>

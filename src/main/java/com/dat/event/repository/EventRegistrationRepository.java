@@ -24,7 +24,7 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
             "LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(s.staffNo) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "ORDER BY function('RAND')")
+            "ORDER BY e.createdAt ASC, sch.id ASC")
     Page<EventStaffDto> fetchEventStaffList(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT new com.dat.event.dto.EventStaffDto( " +
@@ -37,7 +37,7 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
             "LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(s.staffNo) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "ORDER BY function('RAND')")
+            "ORDER BY e.createdAt ASC, sch.id ASC")
     List<EventStaffDto> fetchEventStaffList(@Param("keyword") String keyword);
 
     @Query(value = "SELECT reg.schedule_id from tbl_event_registration reg JOIN tbl_event_schedule sch ON reg.schedule_id = sch.id\n" +

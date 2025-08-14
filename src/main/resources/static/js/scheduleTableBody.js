@@ -81,14 +81,15 @@ function loadData() {
 let isSelectAll = false;
 
 function renderTable(data) {
+    const count = data.page.totalElements;
     tableBody.innerHTML = "";
-    data.content.forEach(schedule => {
+    data.content.forEach((schedule, index) => {
         const id = Number(schedule.id);
         const isChecked = isSelectAll || selectedScheduleIds.has(id);
         tableBody.innerHTML += `
             <tr>
                 <td>
-                    <div class="form-check">
+                    <div>
                         <input
                             class="schedule-checkbox"
                             type="checkbox"
@@ -98,7 +99,9 @@ function renderTable(data) {
                         />
                     </div>
                 </td>
+                <td>${(data.page.number * data.page.size) + index + 1}</td>
                 <td>${schedule.name} - ${schedule.date} (${schedule.startTime} - ${schedule.endTime})</td>
+                <td>${schedule.participantCount == 0 ? 'No Participant' : (schedule.participantCount == 1 ? '1 participant' : schedule.participantCount + ' participants')}</td>
             </tr>
         `;
     });

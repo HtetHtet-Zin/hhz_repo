@@ -75,9 +75,8 @@ function clearError(errorId) {
     const errorMessage = document.getElementById(errorId).innerText;
     if (errorMessage !== "") {
         document.getElementById(errorId).innerText = "";
-        document.getElementById(errorId).style.display = "none";
+        document.getElementById(errorId).style.display = "block";
     }
-
 }
 
 

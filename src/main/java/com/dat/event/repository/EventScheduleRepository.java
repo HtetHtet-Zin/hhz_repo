@@ -26,11 +26,15 @@ import java.util.List;
 public interface EventScheduleRepository extends JpaRepository<EventScheduleEntity, Long> {
 
     @Query(value = """
-            SELECT sch.id, sch.start_time, sch.end_time, sch.date, eve.name
+            SELECT sch.id, sch.start_time, sch.end_time, sch.date, eve.name, COUNT(reg.id)
             FROM tbl_event_schedule sch JOIN tbl_event eve
-            ON sch.event_id = eve.event_id
+                ON sch.event_id = eve.event_id
+            LEFT JOIN tbl_event_registration reg
+                  ON reg.schedule_id = sch.id
             WHERE sch.event_id = :eventId
             AND (:keyword IS NULL OR date LIKE %:keyword%)
+            GROUP BY sch.id, sch.start_time, sch.end_time, sch.date, eve.name
+            ORDER BY sch.date ASC, sch.start_time ASC, sch.end_time ASC
             """,
             countQuery = """
         SELECT COUNT(*)
@@ -42,8 +46,6 @@ public interface EventScheduleRepository extends JpaRepository<EventScheduleEnti
 
     @Query(value = "SELECT id FROM tbl_event_schedule WHERE event_id = :eventId", nativeQuery = true)
     List<Long> getAllScheduleIdByEvent(@Param("eventId") Long eventId);
-
-
 
     List<EventScheduleEntity> findByEvent_EventIdAndDelFlagFalse(@Param("eventId") Long eventId);
 

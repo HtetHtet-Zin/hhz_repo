@@ -26,22 +26,22 @@
     <link th:href="@{/css/toast.min.css}" rel="stylesheet">
 
     <style>
-    .schedule-table thead th {
-      position: sticky;
-      top: 0;
-      background: #1f5399;
-      color: white;
-    }
+        .schedule-table thead th {
+            position: sticky;
+            top: 0;
+            background: #1f5399;
+            color: white;
+        }
 
-    .schedule-table td,
-    .schedule-table th {
-      vertical-align: middle;
-      text-align : center;
-    }
+        .schedule-table td,
+        .schedule-table th {
+            vertical-align: middle;
+            text-align : center;
+        }
 
-    .btn-submit {
-      background: #1f5399;
-    }
+        .btn-submit {
+            background: #1f5399;
+        }
   </style>
 </head>
 
@@ -62,48 +62,56 @@
             <tbody>
                 <thead>
                     <tr>
-                        <th style="width: 200px;">Incharge Person</th>
-                        <td th:text="${planner.incharge_person}" style="text-align: left;">Person Name</td>
+                        <th scope="col" style="width: 200px; text-align: left;">Incharge Person</th>
+                        <td th:text="${planner.incharge_person}" style="text-align: left;"></td>
                     </tr>
                     <tr>
-                        <th style="width: 200px;">Supported Members</th>
-                        <td th:text="${planner.supported_members}" style="text-align: left;">Member Names</td>
+                        <th scope="col" style="width: 200px; text-align: left;">Supported Members</th>
+                        <td th:text="${planner.supported_members}" style="text-align: left;"></td>
                     </tr>
                 </thead>
             </tbody>
         </table>
 
         <div class="d-flex justify-content-between align-items-center m-3">
-            <!-- Left side: text + button -->
-            <div class="d-flex align-items-center gap-2">
+            <!-- Left side: text + button : class="d-flex align-items-center gap-2" -->
+            <div>
                 <p class="mb-0">There are <span id="count"></span> <span id="activity-text"></span>.</p>
-                <button type="button" class="btn btn-primary btn-submit btn-sm shadow-sm px-4" id="joinBtn">Join</button>
             </div>
-
-            <!-- Right side: search box -->
-            <div class="d-flex align-items-center gap-2">
-                <label for="search" class="mb-0">Search:</label>
-                <input class="form-control" name="keyword" id="search" placeholder="Search ..." style="width: 200px;">
+            <!-- Right side: search box : class="d-flex align-items-center gap-2" -->
+            <div class="d-flex justify-content-between align-items-center">
+                <!--<div>
+                    <label for="search" class="me-2">Search:</label>
+                </div>-->
+                <div>
+                    <input class="form-control" name="keyword" id="search" placeholder="Search ...">
+                </div>
+                <div>
+                    <button type="button" class="btn confirm ms-2" id="joinBtn">Participate</button>
+                </div>
             </div>
         </div>
-
 
         <table class="table table-hover table-bordered schedule-table shadow-sm rounded">
             <input type="hidden" th:value="${planner.eventId}" name="eventId" id="eventId">
             <thead>
             <tr>
                 <th scope="col" style="width: 200px;">
-                    <div class="form-check">
+                    <div>
+                        <label for="checkSelectAll">Participate All</label>
+                    </div>
+                    <div>
                         <input
                                 type="checkbox"
                                 id="checkSelectAll"
                                 onclick="toggleAll(this)"
                         />
-                        <label for="checkSelectAll">Select All</label>
+
                     </div>
                 </th>
-
+                <th scope="col">No. </th>
                 <th scope="col">Schedule</th>
+                <th scope="col">Participants</th>
             </tr>
             </thead>
             <tbody id="scheduleTableBody">

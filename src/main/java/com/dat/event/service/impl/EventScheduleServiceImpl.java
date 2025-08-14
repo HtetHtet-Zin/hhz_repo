@@ -91,6 +91,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                 .endTime(objects[2] != null ? LocalTime.parse(objects[2].toString()) : null)
                 .date(objects[3] != null ? LocalDate.parse(objects[3].toString()) : null)
                 .name(objects[4] != null ? objects[4].toString() : null)
+                .participantCount(objects[5] != null ? Integer.valueOf(objects[5].toString()) : null)
                 .build()
         );
     }
