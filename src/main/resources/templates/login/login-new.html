@@ -8,33 +8,34 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/login-new.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link th:href="@{/css/toast.min.css}" rel="stylesheet">
 </head>
 
 <body>
 
-<div class="login-container">
-    <div>
-        <h1>Welcome To</h1>
-        <h3>DAT Event Club</h3>
-        <span th:text="${error_message ?: ''}" class="error-message" id="error-message"></span>
+    <div class="login-container">
+        <div>
+            <h1>Welcome To</h1>
+            <h3>DAT Event Club</h3>
+            <!--<span th:text="${error_message ?: ''}" class="error-message" id="error-message"></span>-->
+        </div>
+        <form th:action="@{/login}" method="post">
+            <input type="text" name="username" placeholder="Staff ID" autocomplete="off" required />
+            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required />
+            <button type="submit" class="login-btn">Login</button>
+        </form>
     </div>
-    <form th:action="@{/login}" method="post">
-        <input type="text" name="username" placeholder="Staff ID" autocomplete="off" required />
-        <input type="password" name="password" placeholder="Password" autocomplete="new-password" required />
-        <button type="submit" class="login-btn">Login</button>
-    </form>
-</div>
 
-<div th:replace="~{fragments/footer :: footer}"></div>
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<script>
-    function clearError(errorId) {
-        const errorMessage = document.getElementById(errorId).innerText;
-        if (errorMessage !== "") {
-            document.getElementById(errorId).innerText = "";
-            document.getElementById(errorId).style.display = "none";
-        }
-    }
-</script>
+    <!-- toast -->
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/toast.min.js}"></script>
+    <script th:src="@{/js/toast-config.js}"></script>
+    <!-- toast -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        var redirectMessage = '[[${message}]]';
+        var redirectMessageType = '[[${messageType}]]';
+    </script>
 </body>
 </html>

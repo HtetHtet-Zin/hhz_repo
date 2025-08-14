@@ -44,12 +44,10 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
             "WHERE sch.event_id = :eventId AND reg.staff_id = :staffId", nativeQuery = true)
     List<Long> getRegisteredSchedule(@Param("eventId") Long eventId, @Param("staffId") Long staffId);
 
-    @Transactional
     @Modifying
     @Query(value = "DELETE reg FROM tbl_event_registration reg JOIN tbl_event_schedule sch ON reg.schedule_id = sch.id " +
             "WHERE sch.event_id = :eventId AND reg.staff_id = :staffId", nativeQuery = true)
     void deleteSchedule(@Param("eventId") Long eventId, @Param("staffId") Long staffId);
-
 
     @Query(value = "SELECT DISTINCT " +
             "       existing_sch.date, " +
@@ -67,6 +65,8 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
             "   AND new_sch.id IN (:registeredSchedule)", nativeQuery = true)
     List<Object[]> checkDuplicateSchedules(@Param("staffId") Long staffId, @Param("registeredSchedule") List<Long> registeredSchedule);
 
-
+    @Modifying
+    @Query(value = "DELETE FROM tbl_event_registration WHERE schedule_id IN (:scheduleIds)", nativeQuery = true)
+    void deleteRegistration(@Param("scheduleIds") List<Long> scheduleIds);
 
 }

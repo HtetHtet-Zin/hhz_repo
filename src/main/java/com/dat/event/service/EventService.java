@@ -34,4 +34,6 @@ public interface EventService {
 
     EventDto findByEventName(String eventName);
 
+    void deleteEvent(Long eventId);
+
 }

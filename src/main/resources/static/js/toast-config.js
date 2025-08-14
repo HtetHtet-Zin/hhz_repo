@@ -10,6 +10,19 @@ document.addEventListener("DOMContentLoaded", function() {
              history.replaceState(null, '', newUrl);
         }
     } catch (error) {}
+
+    try {
+        if (redirectMessage && redirectMessageType) {
+             if (redirectMessageType === 'success') {
+                toastr.success(redirectMessage);
+             } else if (redirectMessageType === 'error') {
+                toastr.error(redirectMessage);
+             }
+             const newUrl = window.location.origin + window.location.pathname;
+             history.replaceState(null, '', newUrl);
+        }
+    } catch (error) {}
+
 });
 
    toastr.options = {
@@ -22,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "onclick": null,
         "showDuration": "500",
         "hideDuration": "500",
-        "timeOut": 5000,
+        "timeOut": 10000,
         "extendedTimeOut": 0,
         "showEasing": "swing",
         "hideEasing": "linear",

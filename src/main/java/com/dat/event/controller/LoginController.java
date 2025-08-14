@@ -36,24 +36,30 @@ public class LoginController {
 
         if (username == null || username.trim().isEmpty()
                 || password == null || password.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error_message", "Staff ID and Password are required!");
+            redirectAttributes.addFlashAttribute("message", "Staff ID and Password are required!");
+            redirectAttributes.addFlashAttribute("messageType", "error");
             return "redirect:" + WebUrl.LOGIN_URL;
         }
 
         if (staffService.existsByStaffNo(username, session)) {
             if (ldapUserService.isADUser(username, password)) {
+                redirectAttributes.addFlashAttribute("message", "Login!");
+                redirectAttributes.addFlashAttribute("messageType", "success");
                 return "redirect:" + WebUrl.EVENT_URL;
             }
         }
-        redirectAttributes.addFlashAttribute("error_message", "Incorrect Staff ID or Password!!!");
+        redirectAttributes.addFlashAttribute("message", "Incorrect Staff ID or Password!!!");
+        redirectAttributes.addFlashAttribute("messageType", "error");
         return "redirect:" + WebUrl.LOGIN_URL;
     }
 
     @GetMapping(WebUrl.LOGOUT_URL)
-    public String logoutPage(HttpSession session) {
+    public String logoutPage(HttpSession session, RedirectAttributes redirectAttributes) {
         if (session != null && session.getAttribute("staffNo") != null) {
             session.invalidate();
         }
+        redirectAttributes.addFlashAttribute("message", "Logout!!");
+        redirectAttributes.addFlashAttribute("messageType", "success");
         return "redirect:" + WebUrl.LOGIN_URL;
     }
 

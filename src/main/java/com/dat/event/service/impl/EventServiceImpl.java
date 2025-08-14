@@ -9,13 +9,20 @@ package com.dat.event.service.impl;
 import com.dat.event.common.mappers.EventMapper;
 import com.dat.event.dto.EventDto;
 import com.dat.event.entity.EventEntity;
+import com.dat.event.entity.EventRegistrationEntity;
+import com.dat.event.entity.EventScheduleEntity;
+import com.dat.event.repository.EventPlannerRepository;
+import com.dat.event.repository.EventRegistrationRepository;
 import com.dat.event.repository.EventRepository;
+import com.dat.event.repository.EventScheduleRepository;
+import com.dat.event.service.EventScheduleService;
 import com.dat.event.service.EventService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -35,6 +42,9 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository repository;
     private final EventMapper eventMapper;
+    private final EventPlannerRepository eventPlannerRepository;
+    private final EventScheduleRepository eventScheduleRepository;
+    private final EventRegistrationRepository eventRegistrationRepository;
 
     @Override
     public EventDto save(String eventName, String description, MultipartFile file, String staffNo) {
@@ -90,4 +100,9 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toDTO(repository.findByName(eventName));
     }
 
+    @Transactional
+    @Override
+    public void deleteEvent(Long eventId) {
+        repository.deleteById(eventId);
+    }
 }

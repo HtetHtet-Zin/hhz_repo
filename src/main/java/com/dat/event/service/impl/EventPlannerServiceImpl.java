@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -136,5 +137,12 @@ public class EventPlannerServiceImpl implements EventPlannerService {
     @Override
     public List<PlannerDto> getSupportedMember(long eventId) {
         return eventPlannerRepository.getSupportedMember(eventId);
+    }
+
+    @Transactional
+    @Override
+    public void deletePlanner(long eventId) {
+        System.out.println("delete planner - "+ eventId);
+        eventPlannerRepository.deletePlanner(eventId);
     }
 }

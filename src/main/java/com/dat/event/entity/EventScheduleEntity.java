@@ -47,8 +47,7 @@ public class EventScheduleEntity implements Serializable {
     private LocalDateTime updatedAt;
     private String updatedBy;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "schedule")
     private List<EventRegistrationEntity> eventRegistrationEntityList = new ArrayList<>();
-
 
 }

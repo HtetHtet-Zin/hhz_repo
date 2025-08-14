@@ -14,6 +14,7 @@ import com.dat.event.dto.RequestEventPlanDto;
 import com.dat.event.dto.UpdateEventPlanDto;
 import com.dat.event.entity.EventPlannerEntity;
 import com.dat.event.entity.EventScheduleEntity;
+import com.dat.event.repository.EventRegistrationRepository;
 import com.dat.event.repository.EventRepository;
 import com.dat.event.repository.EventScheduleRepository;
 import com.dat.event.service.EventScheduleService;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,6 +51,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
 
     private final EventRepository eventRepository;
 
+    private final EventRegistrationRepository eventRegistrationRepository;
 
     @Override
     public void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
@@ -146,5 +149,11 @@ public class EventScheduleServiceImpl implements EventScheduleService {
         return eventScheduleMapper.toDtoList(eventScheduleRepository.findByEvent_EventIdAndDelFlagFalse(eventId));
     }
 
-
+    @Transactional
+    @Override
+    public void deleteSchedule(Long eventId) {
+        List<Long> scheduleIds = eventScheduleRepository.getEventScheduleIds(eventId);
+        eventRegistrationRepository.deleteRegistration(scheduleIds);
+        eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
+    }
 }

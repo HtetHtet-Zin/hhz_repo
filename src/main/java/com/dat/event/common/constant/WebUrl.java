@@ -36,6 +36,7 @@ public final class WebUrl {
     public static final String EVENT_URL = "/event";
 
     public static final String EVENT_CREATE_URL = "/event-create";
+    public static final String EVENT_DELETE_URL = "/event-delete";
 
     public static final String EVENT_STAFF_DOWNLOAD_URL = EVENT_URL + "/download";
 

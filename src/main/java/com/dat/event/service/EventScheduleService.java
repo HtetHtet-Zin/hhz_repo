@@ -35,4 +35,6 @@ public interface EventScheduleService {
 
     List<EventScheduleDto> getEventSchedule(Long eventId);
 
+    void deleteSchedule(Long eventId);
+
 }

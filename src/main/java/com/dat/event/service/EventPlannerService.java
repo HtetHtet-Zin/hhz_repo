@@ -18,4 +18,6 @@ public interface EventPlannerService {
     PlannerDto getInChargePerson(long eventId);
 
     List<PlannerDto> getSupportedMember(long eventId);
+
+    void deletePlanner(long eventId);
 }

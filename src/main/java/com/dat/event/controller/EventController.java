@@ -111,7 +111,14 @@ public class EventController {
     }
 
     @GetMapping(WebUrl.EVENT_EDIT_URL+"/{id}")
-    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId) {
+    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId, Model model, HttpSession session) {
+        if (session == null || session.getAttribute("staffNo") != null) {
+            return new ModelAndView("redirect:" + WebUrl.LOGIN_URL);
+        }
+        Boolean isAdmin = (Boolean) session.getAttribute("adminFlag");
+        if (!Boolean.TRUE.equals(isAdmin)) {
+            return new ModelAndView("redirect:" + WebUrl.EVENT_URL);
+        }
         var staffDtoList = staffService.findAll();
         var eventDto = eventService.getEvent(eventId);
         var eventScheduleDtoList =  eventScheduleService.getEventSchedule(eventId);
@@ -151,9 +158,7 @@ public class EventController {
             }else{
                 imageStorageService.updateImage(eventDto.getName(),requestEventPlanDto.getEventName());
             }
-
         }
-
         return ResponseEntity.ok(requestEventPlanDto);
     }
 
@@ -240,6 +245,25 @@ public class EventController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(eventRegistrationService.exportExcel(keyword));
+    }
+
+    @GetMapping(WebUrl.EVENT_DELETE_URL + "/{id}")
+    public String deleteEvent(@PathVariable ("id") String eventId, RedirectAttributes redirectAttributes, HttpSession session) {
+        if (session == null || session.getAttribute("staffNo") == null) {
+            return "redirect:" + WebUrl.LOGIN_URL;
+        }
+        Boolean isAdmin = (Boolean) session.getAttribute("adminFlag");
+        if (!Boolean.TRUE.equals(isAdmin)) {
+            return "redirect:" + WebUrl.EVENT_URL;
+        }
+
+        eventScheduleService.deleteSchedule(Long.valueOf(eventId));
+        eventPlannerService.deletePlanner(Long.parseLong(eventId));
+        eventService.deleteEvent(Long.valueOf(eventId));
+        log.info("Delete Event - " + eventId + " - By " + session.getAttribute("staffNo").toString());
+        redirectAttributes.addFlashAttribute("message", "Delete Success");
+        redirectAttributes.addFlashAttribute("messageType", "success");
+        return "redirect:" + WebUrl.EVENT_URL;
     }
 
 }
