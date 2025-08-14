@@ -109,38 +109,40 @@ public class EventScheduleServiceImpl implements EventScheduleService {
         log.info("Event ID {}",eventDto.getEventId());
         log.info("Request DTO {}",requestEventPlanDto);
         List<Long> saveScheduleList = new ArrayList<>();
-        requestEventPlanDto.getEventTimes().forEach(eventTime ->{
-            EventScheduleEntity entity;
-            if (eventTime.getEventTimeId() != null) {
-                // Update mode
-                entity = eventScheduleRepository.findById(eventTime.getEventTimeId())
-                        .orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
-            } else {
-                // Insert mode
-                entity = new EventScheduleEntity();
-            }
-
-            entity.setDate( eventTime.getStartDateTime().toLocalDate());
-            entity.setEvent(eventRepository.getReferenceById(eventDto.getEventId()));
-            entity.setStartTime(eventTime.getStartDateTime().toLocalTime());
-            entity.setEndTime(eventTime.getEndDateTime().toLocalTime());
-            entity.setDelFlag(false);
-            entity.setCreatedAt(LocalDateTime.now());
-            entity.setCreatedBy(staffNo);
-            entity.setUpdatedAt(LocalDateTime.now());
-            entity.setUpdatedBy(staffNo);
-            saveScheduleList.add(eventScheduleRepository.save(entity).getId());
-
-        });
-        eventScheduleRepository.getEventScheduleIds(eventDto.getEventId()).stream()
-                .filter(scheduleId -> !saveScheduleList.contains(scheduleId))
-                .forEach( scheduleId ->{
-                var    entity = eventScheduleRepository.findById(scheduleId)
+        if(requestEventPlanDto.getEventTimes() != null) {
+            requestEventPlanDto.getEventTimes().forEach(eventTime -> {
+                EventScheduleEntity entity;
+                if (eventTime.getEventTimeId() != null) {
+                    // Update mode
+                    entity = eventScheduleRepository.findById(eventTime.getEventTimeId())
                             .orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
-                    entity.setDelFlag(true);
-                    eventScheduleRepository.save(entity);
-                          }
-                );
+                } else {
+                    // Insert mode
+                    entity = new EventScheduleEntity();
+                }
+
+                entity.setDate(eventTime.getStartDateTime().toLocalDate());
+                entity.setEvent(eventRepository.getReferenceById(eventDto.getEventId()));
+                entity.setStartTime(eventTime.getStartDateTime().toLocalTime());
+                entity.setEndTime(eventTime.getEndDateTime().toLocalTime());
+                entity.setDelFlag(false);
+                entity.setCreatedAt(LocalDateTime.now());
+                entity.setCreatedBy(staffNo);
+                entity.setUpdatedAt(LocalDateTime.now());
+                entity.setUpdatedBy(staffNo);
+                saveScheduleList.add(eventScheduleRepository.save(entity).getId());
+
+            });
+            eventScheduleRepository.getEventScheduleIds(eventDto.getEventId()).stream()
+                    .filter(scheduleId -> !saveScheduleList.contains(scheduleId))
+                    .forEach(scheduleId -> {
+                                 var entity = eventScheduleRepository.findById(scheduleId)
+                                         .orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
+                                 entity.setDelFlag(true);
+                                 eventScheduleRepository.save(entity);
+                             }
+                    );
+        }
 
     }
 

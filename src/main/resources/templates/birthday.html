@@ -95,8 +95,8 @@
               <div class="gallery-item">
                 <div class="gallery-img">
                   <a class="glightbox" data-gallery="images-gallery"
-                     th:href="@{'/photo/birthdayPhoto/' + ${birthday.staffNo} + '.jpg'}">
-                    <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffNo} + '.jpg'}" class="img-fluid" alt="">
+                     th:href="@{'/photo/birthdayPhoto/' + ${birthday.staffPhoto} + '.jpg'}">
+                    <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffPhoto} + '.jpg'}" class="img-fluid" alt="">
                     <div class="gallery-overlay">
                       <i class="bi bi-plus-circle"></i>
                     </div>
@@ -122,7 +122,7 @@
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="birthday : ${birthdayStaffList}">
             <div class="gallery-card text-center">
               <div class="gallery-image">
-                <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffNo} + '.jpg'}" class="img-fluid" alt="">
+                <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffPhoto} + '.jpg'}" class="img-fluid" alt="">
               </div>
 
               <div class="mt-2">

@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * StaffController Class.
  * <p>
@@ -57,10 +61,22 @@ public class StaffController {
     }
 
     @GetMapping(WebUrl.STAFF_BIRTHDAY_URL)
-    public String birthdayStaff(HttpSession session, Model model){
+    public String birthdayStaff(HttpSession session, Model model) {
         if (session != null && session.getAttribute("staffNo") != null) {
             log.info("name - " + session.getAttribute("staffNo"));
-            model.addAttribute("birthdayStaffList", staffService.birthdayStaffList());
+            var staffNoList = staffService.birthdayStaffList();
+            String projectRoot = System.getProperty("user.dir");
+            Path imageDir = Paths.get(projectRoot, "photo", "birthdayPhoto");
+            staffNoList.forEach(staffDto -> {
+                Path photoPath = imageDir.resolve(staffDto.getStaffNo() + ".jpg");
+                if (!Files.exists(photoPath)) {
+                    staffDto.setStaffPhoto("default");
+                }else {
+                    staffDto.setStaffPhoto(staffDto.getStaffNo());
+                }
+            });
+
+            model.addAttribute("birthdayStaffList", staffNoList);
             return "birthday";
         }
         return "redirect:" + WebUrl.LOGIN_URL;

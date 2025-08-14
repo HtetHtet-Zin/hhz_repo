@@ -24,6 +24,7 @@ import java.time.LocalDate;
 public class StaffDto {
 
     private Long staffId;
+    private String staffPhoto;
     private String staffNo;
     private String name;
     private String email;

@@ -75,7 +75,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="supportedList">
-                                <tr th:each="supportedMember : ${supportedMemberList}">
+                                <tr th:each="supportedMember : ${supportedMemberList ?: {}}">
                                     <td th:text="${supportedMember.name}" data-name="supName"></td>
                                     <td th:text="${supportedMember.supportedMonth}" data-name="supMonth"></td>
                                     <td style="display: none;" th:text="${supportedMember.staffId}" data-name="supStaff"></td>
