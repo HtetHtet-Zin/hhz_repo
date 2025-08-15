@@ -174,3 +174,7 @@ th.time-slot {
 input[type="time"] {
     width: 150px; /* wider to show full time with AM/PM */
 }
+
+.add-btn-td {
+    vertical-align: text-top;
+}

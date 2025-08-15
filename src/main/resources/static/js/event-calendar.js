@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 row.dataset.date = isoDate;
 
                 const dayCell = document.createElement("td");
-                dayCell.innerHTML = `<strong>${day}</strong><br><small>${formatDate(date)}</small>`;
+                dayCell.innerHTML = `<strong style="margin-right: 10px;">${day}</strong><small>(${formatDate(date)})</small>`;
                 if (i === todayIndex) {
                 dayCell.style.backgroundColor = "#d1e7dd";
                 dayCell.style.fontWeight = "bold";
@@ -326,6 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const addBtnCell = document.createElement("td");
                 const addBtn = document.createElement("button");
                 addBtn.type = "button";
+                addBtnCell.className = "add-btn-td";
                 addBtn.className = "btn btn-sm btn-success addSlotBtn";
                 addBtn.textContent = "+";
                 addBtn.dataset.day = day;
