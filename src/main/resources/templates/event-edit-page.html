@@ -34,8 +34,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="photoLabel">Event Photo<span
-                                    class="text-danger">*</span></label>
+                            <label class="form-label" for="photoLabel">Event Photo</label>
                             <div class="col d-flex align-items-center">
                                 <label class="btn confirm form-label m-0" for="eventPhoto"
                                        id="photoLabel"
@@ -45,12 +44,12 @@
                                     <i class="bi ms-1 bi-upload"></i>
                                 </span>
                                 </label>
-                                <span class="btn cancel flex-grow-1" id="fileName"
+                                <span class="btn cancel flex-grow-1" id="fileName" th:text="${eventName+'.jpg'}"
                                       style="border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0; margin-left: 5px;">
                                 No photo selected.
                             </span>
                             </div>
-                            <input accept="image/*" class="form-control" hidden id="eventPhoto" name="eventPhoto"
+                            <input accept="image/*" class="form-control"  hidden id="eventPhoto" name="eventPhoto"
                                    onchange="
                                const file = this.files[0];
                                if (file) {
