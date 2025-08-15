@@ -1,3 +1,14 @@
+const tableBody = document.getElementById("scheduleTableBody");
+const pagination = document.getElementById("pagination");
+const searchInput = document.getElementById("search");
+const eventId = document.getElementById("eventId").value;
+const joinBtn = document.getElementById("joinBtn");
+const selectAllCheckbox = document.getElementById("checkSelectAll");
+const countElem = document.getElementById('count');
+const activityElem = document.getElementById('activity-text');
+let currentPage = 0;
+let currentKeyword = "";
+
 function toggleAll(source) {
     isSelectAll = source.checked;
 
@@ -18,23 +29,12 @@ function toggleAll(source) {
     checkJoinButtonState();
 }
 
-const tableBody = document.getElementById("scheduleTableBody");
-const pagination = document.getElementById("pagination");
-const searchInput = document.getElementById("search");
-const eventId = document.getElementById("eventId").value;
-const joinBtn = document.getElementById("joinBtn");
-const countElem = document.getElementById('count');
-const activityElem = document.getElementById('activity-text');
-
 function checkJoinButtonState() {
     const isSame =
         originalScheduleIds.size === selectedScheduleIds.size &&
         [...originalScheduleIds].every(id => selectedScheduleIds.has(id));
     joinBtn.disabled = isSame;
 }
-
-let currentPage = 0;
-let currentKeyword = "";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -89,8 +89,13 @@ function renderTable(data) {
                 <td colspan="4" style="text-align:center;">No schedules yet</td>
             </tr>
         `;
+        selectAllCheckbox.disabled = true;
+        joinBtn.disabled = true;
         return;
     }
+
+    selectAllCheckbox.disabled = false;
+
     data.content.forEach((schedule, index) => {
         const id = Number(schedule.id);
         const isChecked = isSelectAll || selectedScheduleIds.has(id);
@@ -122,7 +127,7 @@ function renderTable(data) {
             } else {
                 selectedScheduleIds.delete(id);
                 isSelectAll = false;
-                document.getElementById('checkSelectAll').checked = false;
+                selectAllCheckbox.checked = false;
             }
             checkJoinButtonState();
         });
