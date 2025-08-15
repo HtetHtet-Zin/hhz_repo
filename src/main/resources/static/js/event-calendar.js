@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const rows = Array.from(supportedList.querySelectorAll("tr"));
         const duplicate = rows.some(row => {
           const cells = row.querySelectorAll("td");
-          return cells.length >= 2 && cells[0].textContent.trim() === name && cells[1].textContent.trim() === month;
+          return cells.length >= 3 && cells[1].textContent.trim() === name && cells[2].textContent.trim() === month;
         });
         if (duplicate) {
           await alertAction("This member with the same month is already added.", { title: "Adding same member in a month!", variant: "danger"});
