@@ -1,27 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Event Planner</title>
-    <link th:href="@{/images/DAT Logo.png}" rel="icon">
-    <link th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet"/>
-    <link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
-    <link th:href="@{/css/event-calendar.css}" rel="stylesheet"/>
-    <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
-    <link th:href="@{/css/footer.css}" rel="stylesheet"/>
-
-</head>
+<head th:replace="~{event-create-page :: head}"></head>
 <body class="registration">
-
     <div th:replace="~{fragments/header :: header}"></div>
-
     <main class="main" style="padding-bottom: 50px;">
-
         <!-- Page Title -->
         <div class="page-title dark-background" data-aos="fade"
-             style="background-image: url(/images/DSC_0694.JPG);">
+             style="background-image: url(../images/event_list.png);">
             <div class="position-relative">
-                <h1>Event Registration</h1>
+                <h1>Event Edition</h1>
             </div>
         </div>
 
@@ -34,158 +21,113 @@
                     <span class="step-number">2</span> Event Schedules
                 </div>
             </div>
-            <form id="eventForm" th:action="@{/event-create}" method="POST" enctype="multipart/form-data" novalidate>
+            <form id="eventForm" novalidate>
                 <div id="wizard">
                     <!-- Step 1: Event Details -->
                     <div class="wizard-step active" id="step1">
-                        <input type="hidden"  id="eventId" name="eventId" th:value="${eventId}">
+                        <input type="hidden" id="eventId" name="eventId" th:value="${eventId}">
                         <div class="mb-3">
-                            <label for="eventName" class="form-label">Event Name <span class="text-danger">*</span></label>
-                            <input type="text"  id="eventName" th:value="${eventName}" name="eventName"  class="form-control"  placeholder="Enter Event Name"  required  ></input>
+                            <label for="eventName" class="form-label">Event Name <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" id="eventName" th:value="${eventName}" name="eventName"
+                                   class="form-control" placeholder="Enter Event Name" required></input>
                         </div>
 
                         <div class="mb-3">
-                            <label for="eventPhoto" class="form-label">Event Photo</label>
-                            <input type="file"  id="eventPhoto"  name="eventPhoto"  class="form-control" accept="image/*" />
+                            <label class="form-label" for="photoLabel">Event Photo<span
+                                    class="text-danger">*</span></label>
+                            <div class="col d-flex align-items-center">
+                                <label class="btn confirm form-label m-0" for="eventPhoto"
+                                       id="photoLabel"
+                                       style="background-color: var(--accent-2); border-radius: var(--bs-border-radius) 0 0 var(--bs-border-radius); color: white; width: 200px;">
+                                <span>
+                                    Choose Photo
+                                    <i class="bi ms-1 bi-upload"></i>
+                                </span>
+                                </label>
+                                <span class="btn cancel flex-grow-1" id="fileName"
+                                      style="border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0; margin-left: 5px;">
+                                No photo selected.
+                            </span>
+                            </div>
+                            <input accept="image/*" class="form-control" hidden id="eventPhoto" name="eventPhoto"
+                                   onchange="
+                               const file = this.files[0];
+                               if (file) {
+                                    document.getElementById('fileName').textContent = file.name;
+                               }" type="file"/>
                         </div>
 
                         <div class="mb-3">
                             <label for="eventDesc" class="form-label">Description</label>
-                            <textarea id="eventDesc" th:text="${description}"  name="eventDesc" class="form-control"  rows="3" placeholder="Optional description"  ></textarea>
+                            <textarea id="eventDesc" th:text="${description}" name="eventDesc" class="form-control"
+                                      rows="3" placeholder="Optional description"></textarea>
                         </div>
 
-                <div class="mb-3">
-                    <label for="inchargePerson" class="form-label" >Incharge Person <span class="text-danger" >*</span></label>
-                    <div class="input-group">
-                        <input type="hidden" id="inChargePersonPlannerId" name="inChargePersonPlannerId" th:value="${inChargePersonPlanId}">
-                        <input type="text" th:data-data-id="${inChargePersonId}" id="inchargePerson" th:value="${inChargePerson}"  name="inchargePerson" class="form-control" placeholder="Select person" onclick="document.getElementById('inchargePersonBtn').click();"  readonly required ></input>
-                        <button type="button" class="btn btn-outline-secondary" id="inchargePersonBtn" data-bs-toggle="modal"  data-bs-target="#personModal"  >
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
-                    </div>
-                </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="inchargePerson">Incharge Person <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input id="inChargePersonPlannerId" name="inChargePersonPlannerId"
+                                       th:value="${inChargePersonPlanId}" type="hidden">
+                                <input class="form-control" data-bs-target="#personModal" data-bs-toggle="modal"
+                                       id="inchargePerson" name="inchargePerson"
+                                       onclick="document.getElementById('inchargePersonBtn').click();"
+                                       placeholder="Select person" readonly required
+                                       th:data-data-id="${inChargePersonId}" th:value="${inChargePerson}" type="text">
+                            </div>
+                        </div>
 
                         <div class="mb-3">
-                            <button type="button"  class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#memberModal" >Add Supported Member </button>
+                            <button class="btn confirm" data-bs-target="#memberModal" data-bs-toggle="modal"
+                                    type="button">Add Supported Member
+                            </button>
                         </div>
 
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th>Member</th>
-                                    <th>Month</th>
-                                    <th>Action</th>
+                                    <th class="align-middle">No.</th>
+                                    <th class="align-middle">Member</th>
+                                    <th class="align-middle">Month</th>
+                                    <th class="align-middle">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody id="supportedList">
-                                <tr th:each="supportedMember : ${supportedMemberList ?: {}}">
+                                <tr th:each="supportedMember, iterStat : ${supportedMemberList ?: {}}">
+                                    <td th:text="${iterStat.index + 1}"></td>
                                     <td th:text="${supportedMember.name}" data-name="supName"></td>
                                     <td th:text="${supportedMember.supportedMonth}" data-name="supMonth"></td>
-                                    <td style="display: none;" th:text="${supportedMember.staffId}" data-name="supStaff"></td>
-                                    <td style="display: none;" th:text="${supportedMember.plannerId}" data-name="supPlanner"></td>
-                                    <td><button type="button" class="btn btn-sm btn-danger remove-supported" aria-label="Remove supported member">
-                                        <i class="bi bi-trash"></i>
-                                    </button></td>
+                                    <td style="display: none;" th:text="${supportedMember.staffId}"
+                                        data-name="supStaff"></td>
+                                    <td style="display: none;" th:text="${supportedMember.plannerId}"
+                                        data-name="supPlanner"></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger remove-supported"
+                                                aria-label="Remove supported member">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <div class="text-end">
-                            <button type="button" class="btn btn-primary" style="width: 125px;" onclick="goToStep(2)">Next</button>
+                            <button class="btn confirm" onclick="goToStep(2)" style="width: 125px;" type="button">Next
+                            </button>
                         </div>
                     </div>
 
-            <!-- Incharge Person Modal -->
-            <div class="modal fade"  id="personModal" tabindex="-1"  aria-labelledby="personModalLabel" aria-hidden="true"  >
-                <div class="modal-dialog modal-dialog-scrollable modal-md">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="personModalLabel">Select Incharge Person</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  ></button>
-                        </div>
-                        <div class="modal-body">
-                            <label for="personSearch"></label><input type="text" id="personSearch" class="form-control mb-3" placeholder="Search by name..." autocomplete="off" />
-                            <ul id="personList" class="list-group">
-                                <li  th:each="staff : ${staffs}" class="list-group-item list-group-item-action"
-                                    th:text="${staff.name}"  th:data-id="${staff.staffId}" style="cursor:pointer" onclick="selectIncharge(this)">
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <!-- Incharge Person Modal -->
+                    <div th:replace="~{event-create-page :: incharge-person-modal}"></div>
 
-            <!-- Support Member Modal -->
-            <div class="modal fade" id="memberModal" tabindex="-1"  aria-labelledby="memberModalLabel"  aria-hidden="true" >
-                <div class="modal-dialog modal-dialog-scrollable modal-md">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="memberModalLabel">Add Support Member</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"  ></button>
-                        </div>
-                        <div class="modal-body">
-                            <label for="memberSearch"></label><input type="text" id="memberSearch" class="form-control mb-3" placeholder="Search member..." autocomplete="off" />
-                            <ul id="memberList" class="list-group mb-3">
-                                <li th:each="member : ${staffs}"
-                                    class="list-group-item list-group-item-action"
-                                    th:text="${member.name}"
-                                    th:data-id="${member.staffId}"
-                                    style="cursor:pointer"
-                                    onclick="selectMember(this)">
-                                </li>
-                            </ul>
-                            <label for="monthSelect" class="form-label">Month</label>
-                            <select id="monthSelect" name="monthSelect" class="form-select mb-3" required>
-                                <option value="" selected>--Select Month--</option>
-                                <option>January</option>
-                                <option>February</option>
-                                <option>March</option>
-                                <option>April</option>
-                                <option>May</option>
-                                <option>June</option>
-                                <option>July</option>
-                                <option>August</option>
-                                <option>September</option>
-                                <option>October</option>
-                                <option>November</option>
-                                <option>December</option>
-                            </select>
-                            <input type="hidden" id="selectedMember"/>
-                            <button type="button"  class="btn btn-success w-100" id="addMemberBtn"> Add Member </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <!-- Support Member Modal -->
+                    <div th:replace="~{event-create-page :: support-member-modal}"></div>
 
                     <!-- Step 2: Select Time Slots -->
-                    <div class="wizard-step" id="step2">
-                        <div class="d-flex justify-content-between mb-2">
-                            <button class="btn btn-outline-primary border border-primary" type="button" id="prevWeekBtn" > ← Previous Week </button>
-                            <button class="btn btn-outline-primary border border-primary" type="button" id="nextWeekBtn" > Next Week → </button>
-                        </div>
-                        <table class="table table-bordered" id="timeSlotTable">
-                            <thead>
-                            <tr id="headerRow">
-                                <th>Day</th>
-                                <th colspan="2">Time Slots</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody id="tableBody">
-<!--                            <tr th:each="eventSchedule : ${eventScheduleList}" th:data-date="${eventSchedule.date}">-->
-<!--                                <td></td>-->
-<!--                                <td></td>-->
-<!--                                <td></td>-->
-<!--                            </tr>-->
-                            </tbody>
-                        </table>
-                        <div class="d-flex justify-content-between mt-3">
-                            <button type="button" class="btn btn-secondary" style="width: 125px;" onclick="goToStep(1)">Back</button>
-                            <button type="button" class="btn btn-success" style="width: 125px;" onclick="submitEvent()">Submit Event</button>
-                        </div>
-                    </div>
+                    <div th:replace="~{event-create-page :: time-slot-select}"></div>
                 </div>
             </form>
         </div>

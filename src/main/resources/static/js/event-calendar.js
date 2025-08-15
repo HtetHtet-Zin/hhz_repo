@@ -72,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
                    .replace(/"/g, "&quot;");
     }
 
-    let index = 0;
     async function addSupportedMember(event) {
         if (event) event.preventDefault();
         const name = (selectedMember.value || memberSearch.value || "").trim();
@@ -99,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${++index}.</td>
+          <td></td>
           <td>${escapeHtml(name)}</td>
           <td>${escapeHtml(month)}</td>
           <td style="display: none;">${escapeHtml(staffNo)}</td>
@@ -138,12 +137,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function updateSupportedCount() {
-        const count = supportedList.querySelectorAll("tr").length;
+        const trList = supportedList.querySelectorAll("tr");
+        const count = trList.length;
         const countElem = document.getElementById("supportedCount"); // Add this element in your HTML if you want
+        trList.forEach((tr, index) => {
+            tr.firstElementChild.textContent = index + 1;
+        });
         if (countElem) {
           countElem.textContent = `Supported Members: ${count}`;
         }
-    }
+      }
 
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
