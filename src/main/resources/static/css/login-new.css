@@ -26,12 +26,12 @@ body {
     animation: fadeIn 0.8s ease-in-out;
 }
 
-/* Main Heading - Welcome Back */
+/* Main Heading - Welcome Back linear-gradient(90deg, #007aff, #00c6ff) */
 .login-container h1 {
     font-size: 2rem;
     margin-bottom: 10px;
     font-weight: bold;
-    background: linear-gradient(90deg, #007aff, #00c6ff);
+    background: #1f5399;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-align: center;
