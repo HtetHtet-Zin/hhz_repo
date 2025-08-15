@@ -18,7 +18,7 @@ searchInput.addEventListener("input", () => {
 });
 
 function loadStaffData() {
-    fetch("/club/event-list", {
+    fetch("/club/participant-list", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({

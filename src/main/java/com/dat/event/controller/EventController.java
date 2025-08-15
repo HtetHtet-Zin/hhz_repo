@@ -180,7 +180,7 @@ public class EventController {
 
     @GetMapping(WebUrl.EVENTS_URL)
     public String eventList(HttpSession session) {
-        if (session != null && session.getAttribute("staffNo") != null) return "event-list";
+        if (session != null && session.getAttribute("staffNo") != null) return "participant-list";
         return "redirect:" + WebUrl.LOGIN_URL;
     }
 
