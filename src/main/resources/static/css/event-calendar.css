@@ -129,8 +129,7 @@ input[type="time"] {
 }
 
 .wizard-step-link:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
+    border-radius: 10px;
 }
 
 .wizard-step-link:last-child {
