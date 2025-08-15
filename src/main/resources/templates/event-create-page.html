@@ -29,9 +29,14 @@
 
     <div class="container my-5">
         <div class="wizard-nav">
-            <div id="navStep1" class="wizard-step-link active" onclick="goToStep(1)">Event Details</div>
-            <div id="navStep2" class="wizard-step-link" onclick="goToStep(2)">Event Schedules</div>
+            <div id="navStep1" class="wizard-step-link active" onclick="goToStep(1)">
+                <span class="step-number">1</span> Event Details
+            </div>
+            <div id="navStep2" class="wizard-step-link" onclick="goToStep(2)">
+                <span class="step-number">2</span> Event Schedules
+            </div>
         </div>
+
 
         <form id="eventForm" th:action="@{/event-create}" method="POST" enctype="multipart/form-data" novalidate>
             <div id="wizard">
@@ -39,8 +44,7 @@
                 <div class="wizard-step active" id="step1">
                     <div class="mb-3">
                         <label for="eventName" class="form-label">Event Name <span class="text-danger">*</span></label>
-                        <input class="form-control" id="eventName" name="eventName" placeholder="Enter Event Name"
-                               required type="text"/>
+                        <input class="form-control" id="eventName" name="eventName" placeholder="Enter Event Name" required type="text"/>
                     </div>
 
                     <div class="mb-3">

@@ -31,9 +31,9 @@ input[type="time"] {
   display: block;
 }
 
-.wizard-nav {
+/*.wizard-nav {
     display: flex;
-    gap: 10px; /* optional spacing between steps */
+    gap: 10px; *//* optional spacing between steps *//*
 }
 
 .wizard-step-link {
@@ -47,7 +47,123 @@ input[type="time"] {
 }
 
 .wizard-step-link.active {
-    border-bottom: 2px solid #0d6efd; /* Bootstrap primary color underline */
+    border-bottom: 2px solid #0d6efd; *//* Bootstrap primary color underline *//*
+}*/
+
+/*
+.wizard-nav {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.wizard-step-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    background: #f1f5f9;
+    color: #333;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.wizard-step-link .step-number {
+    background: #cbd5e1;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.wizard-step-link:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+}
+
+.wizard-step-link.active {
+    background: #1f899d;
+    color: white;
+}
+
+.wizard-step-link.active .step-number {
+    background: #fff;
+    color: #0d6efd;
+}
+*/
+.wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: 0; /* Ensure no outside gaps */
+    border-radius: 10px;
+}
+
+.wizard-step-link {
+    flex: 1; /* Equal width for all steps */
+    text-align: center;
+    padding: 15px 0;
+    cursor: pointer;
+    font-weight: 600;
+    color: #555;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border-radius: 0; /* No gap between steps */
+}
+
+.wizard-step-link:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.wizard-step-link:last-child {
+   border-radius: 10px;
+}
+
+.wizard-step-link .step-number {
+    background: #cbd5e1;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.wizard-step-link:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+}
+
+.wizard-step-link.active {
+    background: #1f899d;
+    color: white;
+}
+
+.wizard-step-link.active .step-number {
+    background: white;
+    color: #0d6efd;
 }
 
 th.time-slot {
