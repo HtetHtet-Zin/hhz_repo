@@ -18,11 +18,11 @@
     <link th:href="@{/assets/vendor/glightbox/css/glightbox.min.css}" rel="stylesheet">
 
     <!-- Main CSS File -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/assets/css/main.css}" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/pagination.css}" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 
 </head>
 
@@ -37,7 +37,6 @@
              style="background-image: url(./images/staff_list.png);">
             <div class="container position-relative">
                 <h1>Staff List</h1>
-
             </div>
         </div>
 
@@ -60,7 +59,6 @@
             <!-- Table -->
             <table class="table table-bordered table-list custom-bordered-table">
                 <thead>
-                <tr>
                     <th>No. </th>
                     <th>Staff-ID</th>
                     <th>Staff Name</th>
@@ -68,7 +66,6 @@
                     <th>Mobile</th>
                     <th>Date of Birth</th>
                     <th>Admin</th>
-                </tr>
                 </thead>
                 <tbody id="staffTableBody"></tbody>
             </table>
