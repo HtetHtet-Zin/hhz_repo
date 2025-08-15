@@ -156,7 +156,9 @@ public class EventController {
             if (eventPhotoFile != null && !eventPhotoFile.isEmpty()) {
                 imageStorageService.saveImage(eventPhotoFile, updateDto.getName());
             }else{
-                imageStorageService.updateImage(eventDto.getName(),requestEventPlanDto.getEventName());
+                if(eventDto.getName() != requestEventPlanDto.getEventName()) {
+                    imageStorageService.updateImage(eventDto.getName(), requestEventPlanDto.getEventName());
+                }
             }
         }
         return ResponseEntity.ok(requestEventPlanDto);

@@ -178,3 +178,13 @@ input[type="time"] {
 .add-btn-td {
     vertical-align: text-top;
 }
+@-moz-document url-prefix() {
+    input[type="time"] {
+        background: url('../icon/clock.svg') no-repeat right 10px center;
+        background-size: 16px;
+        padding-right: 30px;
+        -moz-appearance: textfield; /* Remove native styling */
+    }
+}
+
+
