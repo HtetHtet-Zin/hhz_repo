@@ -36,18 +36,15 @@ body {
     -webkit-text-fill-color: transparent;
     text-align: center;
     letter-spacing: 1px;
-    animation: glowPulse 2s ease-in-out infinite;
 }
 
 /* Subheading - DAT Event Club */
 .login-container h3 {
     font-size: 1.1rem;
     text-align: center;
-    color: linear-gradient(90deg, #007aff, #00c6ff);
+    color: #1f5399;
     letter-spacing: 0.5px;
     margin-bottom: 20px;
-    animation: fadeInUp 1s ease-in-out;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
     font-weight: bold;
 }
 

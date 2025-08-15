@@ -1,9 +1,7 @@
 package com.dat.event.config;
 
 import jakarta.annotation.PreDestroy;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionEvent;
-import jakarta.servlet.http.HttpSessionListener;
+import jakarta.servlet.http.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

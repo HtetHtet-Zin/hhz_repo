@@ -3,6 +3,8 @@ package com.dat.event.controller;
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.service.LdapUserService;
 import com.dat.event.service.StaffService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -54,10 +56,17 @@ public class LoginController {
     }
 
     @GetMapping(WebUrl.LOGOUT_URL)
-    public String logoutPage(HttpSession session, RedirectAttributes redirectAttributes) {
+    public String logoutPage(HttpSession session, HttpServletResponse response, RedirectAttributes redirectAttributes) {
         if (session != null && session.getAttribute("staffNo") != null) {
             session.invalidate();
         }
+
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+
         redirectAttributes.addFlashAttribute("message", "Logout!!");
         redirectAttributes.addFlashAttribute("messageType", "success");
         return "redirect:" + WebUrl.LOGIN_URL;
