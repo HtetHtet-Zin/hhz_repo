@@ -12,7 +12,6 @@ table {
 th, td {
   border: 1px solid #dee2e6;
   padding: 8px;
-  height: 60px;
   transition: background 0.2s;
 }
 button {
@@ -31,77 +30,6 @@ input[type="time"] {
   display: block;
 }
 
-/*.wizard-nav {
-    display: flex;
-    gap: 10px; *//* optional spacing between steps *//*
-}
-
-.wizard-step-link {
-    width: 600px;
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: border-color 0.3s;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.wizard-step-link.active {
-    border-bottom: 2px solid #0d6efd; *//* Bootstrap primary color underline *//*
-}*/
-
-/*
-.wizard-nav {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-bottom: 20px;
-    font-family: Arial, sans-serif;
-}
-
-.wizard-step-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    background: #f1f5f9;
-    color: #333;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.wizard-step-link .step-number {
-    background: #cbd5e1;
-    color: #fff;
-    font-size: 14px;
-    font-weight: bold;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.3s ease;
-}
-
-.wizard-step-link:hover {
-    background: #e2e8f0;
-    transform: translateY(-2px);
-}
-
-.wizard-step-link.active {
-    background: #1f899d;
-    color: white;
-}
-
-.wizard-step-link.active .step-number {
-    background: #fff;
-    color: #0d6efd;
-}
-*/
 .wizard-nav {
     display: flex;
     justify-content: space-between;

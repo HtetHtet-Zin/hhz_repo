@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const count = trList.length;
         const countElem = document.getElementById("supportedCount"); // Add this element in your HTML if you want
         trList.forEach((tr, index) => {
-            tr.firstElementChild.textContent = index + 1;
+            tr.firstElementChild.textContent = (index + 1) + ".";
         });
         if (countElem) {
           countElem.textContent = `Supported Members: ${count}`;
