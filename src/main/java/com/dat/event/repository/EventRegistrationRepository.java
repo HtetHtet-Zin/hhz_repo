@@ -49,20 +49,28 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
             "WHERE sch.event_id = :eventId AND reg.staff_id = :staffId", nativeQuery = true)
     void deleteSchedule(@Param("eventId") Long eventId, @Param("staffId") Long staffId);
 
-    @Query(value = "SELECT DISTINCT " +
-            "       existing_sch.date, " +
-            "       existing_sch.start_time, " +
-            "       existing_sch.end_time " +
-            "FROM tbl_event_schedule new_sch " +
-            "JOIN tbl_event_schedule existing_sch " +
-            "   ON new_sch.date = existing_sch.date " +
-            "   AND new_sch.start_time < existing_sch.end_time " +
-            "   AND new_sch.end_time > existing_sch.start_time " +
-            "   AND existing_sch.id <> new_sch.id " +
+    @Query(value = "SELECT sch1.id, sch1.date, sch1.start_time, sch1.end_time " +
+            "FROM tbl_event_schedule sch1 JOIN tbl_event_schedule sch2 " +
+            "ON sch1.date = sch2.date " +
+            "AND sch1.start_time < sch2.end_time " +
+            "AND sch1.end_time > sch2.start_time " +
+            "AND sch1.id <> sch2.id " +
+            "WHERE sch1.id IN (:registeredSchedule) " +
+            "AND sch2.id IN (:registeredSchedule) " +
+
+            "UNION " +
+
+            "SELECT existing_sch.id, existing_sch.date, existing_sch.start_time, existing_sch.end_time " +
+            "FROM tbl_event_schedule new_sch JOIN tbl_event_schedule existing_sch " +
+            "ON new_sch.date = existing_sch.date " +
+            "AND new_sch.start_time < existing_sch.end_time " +
+            "AND new_sch.end_time > existing_sch.start_time " +
+            "AND existing_sch.id <> new_sch.id " +
             "JOIN tbl_event_registration reg " +
-            "   ON reg.schedule_id = existing_sch.id " +
+            "ON reg.schedule_id = existing_sch.id " +
             "WHERE reg.staff_id = :staffId " +
-            "   AND new_sch.id IN (:registeredSchedule)", nativeQuery = true)
+            "AND new_sch.id IN (:registeredSchedule) ORDER BY id ASC",
+            nativeQuery = true)
     List<Object[]> checkDuplicateSchedules(@Param("staffId") Long staffId, @Param("registeredSchedule") List<Long> registeredSchedule);
 
     @Modifying

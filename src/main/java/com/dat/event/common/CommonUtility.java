@@ -9,6 +9,7 @@ package com.dat.event.common;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Map;
 
@@ -40,4 +41,7 @@ public final class CommonUtility {
                 (input instanceof final MultipartFile multipartFile && multipartFile.isEmpty()) ||
                 (input.getClass().isArray() && Array.getLength(input) == 0);
     }
+
+    public static DateTimeFormatter formatTo12Hrs = DateTimeFormatter.ofPattern("hh:mm a");
+
 }

@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
     try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        const messageType = urlParams.get('messageType');
+
         if (message && messageType) {
              if (messageType === 'success') {
                 toastr.success(message);

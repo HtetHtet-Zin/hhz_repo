@@ -54,7 +54,7 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     @Transactional
     public int registerEvent(Long staffId, List<Long> registeredScheduleIds, Long eventId) {
         int count = 0;
-        eventRegistrationRepository.deleteSchedule(eventId,staffId);
+        eventRegistrationRepository.deleteSchedule(eventId, staffId);
         StaffEntity staff = staffRepository.findById(staffId).orElseThrow(() -> new IllegalArgumentException("Invalid Staff ID"));
         if (registeredScheduleIds == null) return 1;
         for (Long scheduleId : registeredScheduleIds) {
@@ -73,9 +73,10 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     public List<String> checkDuplicateSchedule(Long staffId, List<Long> registeredScheduleIds) {
         return eventRegistrationRepository.checkDuplicateSchedules(staffId, registeredScheduleIds).stream()
                 .map(index -> {
-                    LocalDate date = index[0] != null ? LocalDate.parse(index[0].toString()) : null;
-                    LocalTime start = index[1] != null ? LocalTime.parse(index[1].toString()) : null;
-                    LocalTime end = index[2] != null ? LocalTime.parse(index[2].toString()) : null;
+                    LocalDate date = index[1] != null ? LocalDate.parse(index[1].toString()) : null;
+                    String start = index[2] != null ? LocalTime.parse(index[2].toString()).format(CommonUtility.formatTo12Hrs) : null;
+                    String end = index[3] != null ? LocalTime.parse(index[3].toString()).format(CommonUtility.formatTo12Hrs) : null;
+                    log.info("Duplicate in - " + date + " (" + start + " - " + end + ")");
                     return date + " (" + start + " - " + end + ")";
                 }).toList();
     }

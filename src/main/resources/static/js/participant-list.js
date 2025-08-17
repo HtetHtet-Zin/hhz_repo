@@ -56,7 +56,7 @@ function renderTable(data) {
     if (!data.content || data.content.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align:center;">No participants yet</td>
+                <td colspan="5" style="text-align:center;">No participants yet</td>
             </tr>
         `;
         return;
@@ -67,14 +67,14 @@ function renderTable(data) {
             <tr>
                 <td>${(data.page.number * data.page.size) + index + 1}</td>
                 <td>${event.eventName}</td>
-                <td>${event.date}</td>
-                <td>${event.startTime} - ${event.endTime}</td>
+                <td>${event.date} (${event.startTime} - ${event.endTime})</td>
                 <td>${event.staffNo}</td>
                 <td>${event.staffName}</td>
             </tr>
         `;
     });
 }
+
 
 function renderPagination(page) {
     pagination.innerHTML = "";

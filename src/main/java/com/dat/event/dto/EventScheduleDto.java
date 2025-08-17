@@ -42,4 +42,7 @@ public class EventScheduleDto {
     private LocalDateTime updateAt;
     private Boolean delFlg;
     private Integer participantCount;
+
+    private String fromTime;
+    private String toTime;
 }

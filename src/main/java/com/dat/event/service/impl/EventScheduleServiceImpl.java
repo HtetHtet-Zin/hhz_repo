@@ -6,13 +6,13 @@
  * *************************************************************/
 package com.dat.event.service.impl;
 
+import com.dat.event.common.CommonUtility;
 import com.dat.event.common.constant.Constants;
 import com.dat.event.common.mappers.EventScheduleMapper;
 import com.dat.event.dto.EventDto;
 import com.dat.event.dto.EventScheduleDto;
 import com.dat.event.dto.RequestEventPlanDto;
 import com.dat.event.dto.UpdateEventPlanDto;
-import com.dat.event.entity.EventPlannerEntity;
 import com.dat.event.entity.EventScheduleEntity;
 import com.dat.event.repository.EventRegistrationRepository;
 import com.dat.event.repository.EventRepository;
@@ -91,8 +91,12 @@ public class EventScheduleServiceImpl implements EventScheduleService {
 
         return schedules.map(objects -> EventScheduleDto.builder()
                 .id(objects[0] != null ? Long.valueOf(objects[0].toString()) : null)
-                .startTime(objects[1] != null ? LocalTime.parse(objects[1].toString()) : null)
-                .endTime(objects[2] != null ? LocalTime.parse(objects[2].toString()) : null)
+                .fromTime(objects[1] != null
+                        ? LocalTime.parse(objects[1].toString()).format(CommonUtility.formatTo12Hrs)
+                        : null)
+                .toTime(objects[2] != null
+                        ? LocalTime.parse(objects[2].toString()).format(CommonUtility.formatTo12Hrs)
+                        : null)
                 .date(objects[3] != null ? LocalDate.parse(objects[3].toString()) : null)
                 .name(objects[4] != null ? objects[4].toString() : null)
                 .participantCount(objects[5] != null ? Integer.valueOf(objects[5].toString()) : null)

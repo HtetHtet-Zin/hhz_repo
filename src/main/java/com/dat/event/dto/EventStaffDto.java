@@ -15,11 +15,10 @@ public class EventStaffDto {
     private String eventName;
     private String staffNo;
     private String staffName;
-    @JsonFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm a")
     private LocalTime startTime;
-    @JsonFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm a")
     private LocalTime endTime;
-
     private LocalDate date;
 
     public EventStaffDto(String eventName, String staffNo, String staffName, LocalTime startTime, LocalTime endTime, LocalDate date) {
