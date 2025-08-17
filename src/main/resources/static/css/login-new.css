@@ -48,6 +48,13 @@ body {
     font-weight: bold;
 }
 
+.login-container div img.logo {
+    display: block;
+    margin: 0 auto; /* center horizontally */
+    height: 100px;  /* adjust size */
+    width: auto;
+}
+
   /* Enhanced Input Fields */
 input[type="text"],
 input[type="password"] {

@@ -1,16 +1,28 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Cache DOM elements
-    const inchargeInput = document.getElementById("inchargePerson");
-    const personList = document.getElementById("personList");
-    const personSearch = document.getElementById("personSearch");
+// Cache DOM elements
+const inchargeInput = document.getElementById("inchargePerson");
+const personList = document.getElementById("personList");
+const personSearch = document.getElementById("personSearch");
 
-    const memberList = document.getElementById("memberList");
-    const memberSearch = document.getElementById("memberSearch");
-    const selectedMember = document.getElementById("selectedMember");
-    const monthSelect = document.getElementById("monthSelect");
-    const supportedList = document.getElementById("supportedList");
-    const nextWeekBtn = document.getElementById("nextWeekBtn");
-    const prevWeekBtn = document.getElementById("prevWeekBtn")
+const memberList = document.getElementById("memberList");
+const memberSearch = document.getElementById("memberSearch");
+const selectedMember = document.getElementById("selectedMember");
+const monthSelect = document.getElementById("monthSelect");
+const supportedList = document.getElementById("supportedList");
+const nextWeekBtn = document.getElementById("nextWeekBtn");
+const prevWeekBtn = document.getElementById("prevWeekBtn");
+
+
+
+function setNoSupportedMember() {
+    supportedList.innerHTML = `
+          <tr>
+              <td colspan="4" style="text-align:center;">No supported members</td>
+          </tr>
+      `;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    setNoSupportedMember();
 
     // --- Person Modal Search Filter ---
     personSearch.addEventListener("input", () => {
@@ -96,6 +108,11 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
+        const noMemberRow = supportedList.querySelector("tr td[colspan='4']");
+            if (noMemberRow) {
+                noMemberRow.parentElement.remove();
+            }
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td></td>
@@ -139,6 +156,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateSupportedCount() {
         const trList = supportedList.querySelectorAll("tr");
         const count = trList.length;
+        if (count == 0 ) {
+            setNoSupportedMember();
+        }
         const countElem = document.getElementById("supportedCount"); // Add this element in your HTML if you want
         trList.forEach((tr, index) => {
             tr.firstElementChild.textContent = (index + 1) + ".";
@@ -146,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (countElem) {
           countElem.textContent = `Supported Members: ${count}`;
         }
-      }
+    }
 
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
@@ -218,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Friday",
         "Saturday",
     ];
+
     const tableBody = document.getElementById("tableBody");
 
     // Start of this week (Sunday)
@@ -461,8 +482,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => console.error("Error:", error));
     }
     // Expose functions globally
-        window.goToStep = goToStep;
-        window.submitEvent = submitEvent;
-        window.selectIncharge = window.selectIncharge;
-        window.selectMember = window.selectMember;
+    window.goToStep = goToStep;
+    window.submitEvent = submitEvent;
+    window.selectIncharge = window.selectIncharge;
+    window.selectMember = window.selectMember;
+
 });

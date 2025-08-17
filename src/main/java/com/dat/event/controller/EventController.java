@@ -230,11 +230,11 @@ public class EventController {
         if (success == 0) {
             response.put("redirectUrl", "/club" + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
             response.put("status", "error");
-            response.put("message", "Fail to Join");
+            response.put("message", "Fail to Participate.");
         } else {
             response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
             response.put("status", "success");
-            response.put("message", "Successfully Join");
+            response.put("message", "Successfully Participate.");
         }
         return ResponseEntity.ok(response);
     }
