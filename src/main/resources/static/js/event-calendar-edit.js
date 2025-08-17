@@ -312,7 +312,6 @@ document.addEventListener("DOMContentLoaded", () => {
       removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
       disableOrEnableInput(removeBtn, disabledAction);
       if (isOnly) {
-        disableInput(removeBtn);
         removeBtn.title = "At least one slot required";
       }
       slot.append(startLabel, start, endLabel, end, removeBtn);
@@ -416,14 +415,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (e.target.classList.contains("removeSlotBtn")) {
-      const slotDiv = e.target.closest(".time-slot");
-      const wrapper = slotDiv.parentElement;
-      if (wrapper.children.length > 1) {
-        slotDiv.remove();
-        if (wrapper.children.length === 1) {
-          disableInput(wrapper.querySelector(".removeSlotBtn"));
+        const slotDiv = e.target.closest(".time-slot");
+        const wrapper = slotDiv.parentElement;
+        if (wrapper.children.length > 1) {
+            slotDiv.remove();
+        } else {
+            const inputs = slotDiv.querySelectorAll("input[type='time']");
+            inputs.forEach(inp => inp.value = ""); // clear times
         }
-      }
     }
   });
 

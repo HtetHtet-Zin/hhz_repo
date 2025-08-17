@@ -278,8 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
         removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
         disableOrEnableInput(removeBtn, disabledAction);
         if (isOnly) {
-            disableInput(removeBtn);
-            removeBtn.title = "At least one slot required";
+            removeBtn.title = "Required at least one time slot.";
         }
         slot.append(startLabel, start, endLabel, end, removeBtn);
         return slot;
@@ -353,35 +352,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Event delegation for add/remove time slots
     tableBody.addEventListener("click", (e) => {
-    if (e.target.classList.contains("addSlotBtn")) {
-        const day = e.target.dataset.day;
-        const wrapper = document.querySelector(`.group-${currentPage}.slot-wrapper[data-day="${day}"]`);
-        const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
-        if(wrapper.children.length > 1) {
-            disableInput(addBtn);
-        }
-        if (wrapper) {
-            wrapper.appendChild(createSlotInput(day, false));
-            if (wrapper.children.length > 1) {
-                wrapper.querySelectorAll(".removeSlotBtn").forEach((btn) => {
-                    enableInput(btn);
-                    btn.onclick = function (event) {
-                        if(wrapper.children.length < 4){
-                            enableInput(addBtn);
+        if (e.target.classList.contains("addSlotBtn")) {
+            const day = e.target.dataset.day;
+            const wrapper = document.querySelector(`.group-${currentPage}.slot-wrapper[data-day="${day}"]`);
+            const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
+            if(wrapper.children.length > 1) {
+                disableInput(addBtn);
+            }
+            if (wrapper) {
+                wrapper.appendChild(createSlotInput(day, false));
+                if (wrapper.children.length > 1) {
+                    wrapper.querySelectorAll(".removeSlotBtn").forEach((btn) => {
+                        enableInput(btn);
+                        btn.onclick = function (event) {
+                            if(wrapper.children.length < 4){
+                                enableInput(addBtn);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
-    }
-    if (e.target.classList.contains("removeSlotBtn")) {
-        const slotDiv = e.target.closest(".time-slot");
-        const wrapper = slotDiv.parentElement;
-        if (wrapper.children.length > 1) {
-            slotDiv.remove();
-                if (wrapper.children.length === 1) {
-                    disableInput(wrapper.querySelector(".removeSlotBtn"));
-                }
+        if (e.target.classList.contains("removeSlotBtn")) {
+            const slotDiv = e.target.closest(".time-slot");
+            const wrapper = slotDiv.parentElement;
+            if (wrapper.children.length > 1) {
+                slotDiv.remove();
+            } else {
+                const inputs = slotDiv.querySelectorAll("input[type='time']");
+                inputs.forEach(inp => inp.value = ""); // clear times
             }
         }
     });
