@@ -271,7 +271,6 @@ document.addEventListener("DOMContentLoaded", () => {
     removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
     disableOrEnableInput(removeBtn, disabledAction);
     if (isOnly) {
-      disableInput(removeBtn);
       removeBtn.title = "At least one slot required";
     }
     slot.append(hidden,startLabel, start, endLabel, end, removeBtn);
