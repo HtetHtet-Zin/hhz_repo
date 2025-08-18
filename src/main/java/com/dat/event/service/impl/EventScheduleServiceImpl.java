@@ -115,7 +115,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
         log.info("Event ID {}",eventDto.getEventId());
         log.info("Request DTO {}",requestEventPlanDto);
         try {
-            List<Long> saveScheduleList = new ArrayList<>();
+//            List<Long> saveScheduleList = new ArrayList<>();
             if (requestEventPlanDto.getEventTimes() != null) {
                 requestEventPlanDto.getEventTimes().forEach(eventTime -> {
                     EventScheduleEntity entity;
@@ -137,34 +137,16 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                     entity.setCreatedBy(staffNo);
                     entity.setUpdatedAt(LocalDateTime.now());
                     entity.setUpdatedBy(staffNo);
-                    saveScheduleList.add(eventScheduleRepository.save(entity).getId());
-
+                    eventScheduleRepository.save(entity);
                 });
-//            eventScheduleRepository.getEventScheduleIds(eventDto.getEventId()).stream()
-//                    .filter(scheduleId -> !saveScheduleList.contains(scheduleId))
-//                    .forEach(scheduleId -> {
-//
-//                                 var entity = eventScheduleRepository.findById(scheduleId)
-//                                         .orElseThrow(() -> new EntityNotFoundException("Schedule not found"));
-//                                 entity.setDelFlag(true);
-//                                 eventScheduleRepository.save(entity);
-//                             }
-//                    );
-                List<Long> scheduleIds = eventScheduleRepository.getEventScheduleIds(eventDto.getEventId()).stream()
-                        .filter(scheduleId -> !saveScheduleList.contains(scheduleId))
-                        .collect(Collectors.toList());
-
-                eventRegistrationRepository.deleteRegistration(scheduleIds);
-                eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
-
-            }else{
-                List<Long> scheduleIds = eventScheduleRepository.getEventScheduleIds(eventDto.getEventId()).stream()
-                        .collect(Collectors.toList());
-
-                eventRegistrationRepository.deleteRegistration(scheduleIds);
-                eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
 
             }
+            if(requestEventPlanDto.getDeleteScheduleList() != null) {
+                List<Long> scheduleIds = requestEventPlanDto.getDeleteScheduleList();
+                eventRegistrationRepository.deleteRegistration(scheduleIds);
+                eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
+            }
+
         }catch (Exception e){
             System.out.println(e.getStackTrace());
         }

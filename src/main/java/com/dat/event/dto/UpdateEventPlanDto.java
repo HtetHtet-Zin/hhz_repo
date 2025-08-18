@@ -29,4 +29,5 @@ public class UpdateEventPlanDto {
     private Long inChargePerson;
     private List<updateSupportedMember> supportedMembers;
     private List<updateEventTime> eventTimes;
+    private List<Long> deleteScheduleList;
 }

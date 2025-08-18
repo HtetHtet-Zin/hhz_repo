@@ -145,7 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.closest(".remove-supported")) {
             const row = e.target.closest("tr");
             row.remove();
-
+            const supPlanner = row.querySelector('[data-name="supPlanner"]')?.textContent || '';
+            deleteScheduleList.add(supPlanner);
             // Optional: update count or UI here if needed
             updateSupportedCount();
         }
@@ -522,6 +523,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initial render
     renderTable();
     const supportedMembersList = [];
+    let deleteScheduleList = [];
 
     function formatDateTime(dateStr, timeStr) {
         const [year, month, day] = dateStr.split('-').map(Number);
@@ -587,7 +589,8 @@ document.addEventListener("DOMContentLoaded", () => {
         inChargePersonPlannerId:form.inChargePersonPlannerId.value,
         inChargePerson: form.inchargePerson.dataset.dataId,
         supportedMembers: supportedMembersList,
-        eventTimes: dateTimeList
+        eventTimes: dateTimeList,
+        deleteScheduleList:deleteScheduleList
     };
 
     const formData = new FormData();
