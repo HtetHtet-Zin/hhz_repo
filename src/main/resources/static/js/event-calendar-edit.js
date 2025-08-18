@@ -318,7 +318,20 @@ document.addEventListener("DOMContentLoaded", () => {
         end.value= member.endTime;
         end.className = "form-control form-control-sm";
         disableOrEnableInput(end, disabledAction);
+        // --- Validation function ---
+        async function validateTimes() {
+            if (start.value && end.value && start.value >= end.value) {
+                if(await alertAction("End time must be later than start time.", { title: "Invalid input!", variant: "danger"})){
 
+                }
+                 start.value = "";
+                 end.value = "";
+            }
+        }
+
+        // Hook validation on input changes
+        start.addEventListener("input", validateTimes);
+        end.addEventListener("input", validateTimes);
         const removeBtn = document.createElement("button");
         removeBtn.type = "button";
         removeBtn.textContent = "-";
@@ -358,6 +371,21 @@ document.addEventListener("DOMContentLoaded", () => {
         end.name = `endTime_${day}[]`;
         end.className = "form-control form-control-sm";
         disableOrEnableInput(end, disabledAction);
+
+        // --- Validation function ---
+        async function validateTimes() {
+            if (start.value && end.value && start.value >= end.value) {
+                if(await alertAction("End time must be later than start time.", { title: "Invalid input!", variant: "danger"})){
+
+                }
+                 start.value = "";
+                 end.value = "";
+            }
+        }
+
+        // Hook validation on input changes
+        start.addEventListener("input", validateTimes);
+        end.addEventListener("input", validateTimes);
 
         const removeBtn = document.createElement("button");
         removeBtn.type = "button";

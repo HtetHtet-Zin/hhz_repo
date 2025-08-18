@@ -301,7 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return -1;
     }
 
-    // Create a time slot input group
     function createSlotInput(day, disabledAction, isOnly = false) {
         const slot = document.createElement("div");
         slot.className = "time-slot d-flex gap-1 mb-1 align-items-center";
@@ -330,17 +329,34 @@ document.addEventListener("DOMContentLoaded", () => {
         end.className = "form-control form-control-sm";
         disableOrEnableInput(end, disabledAction);
 
+        // --- Validation function ---
+        async function validateTimes() {
+            if (start.value && end.value && start.value >= end.value) {
+                if(await alertAction("End time must be later than start time.", { title: "Invalid input!", variant: "danger"})){
+
+                }
+                 start.value = "";
+                 end.value = "";
+            }
+        }
+
+        // Hook validation on input changes
+        start.addEventListener("input", validateTimes);
+        end.addEventListener("input", validateTimes);
+
         const removeBtn = document.createElement("button");
         removeBtn.type = "button";
         removeBtn.textContent = "-";
         removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
         disableOrEnableInput(removeBtn, disabledAction);
         if (isOnly) {
-            removeBtn.title = "Required at least one time slot.";
+            removeBtn.title = "At least one slot required";
         }
+
         slot.append(startLabel, start, endLabel, end, removeBtn);
         return slot;
     }
+
 
     let latestPage = 0;
     let currentPage = 1;
@@ -438,7 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 slotDiv.remove();
             } else {
                 const inputs = slotDiv.querySelectorAll("input[type='time']");
-                inputs.forEach(inp => inp.value = ""); // clear times
+                inputs.forEach(inp => inp.value = "");
             }
         }
     });

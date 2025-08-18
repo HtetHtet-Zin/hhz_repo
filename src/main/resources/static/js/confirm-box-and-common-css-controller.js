@@ -75,7 +75,6 @@
     let resolver = null;
 
     function openModal({ title, message, variant }, isAlert) {
-        console.log('openModel is alert', isAlert);
         titleEl.textContent = title || "Confirm";
         bodyEl.textContent = message || "Are you sure?";
         if (variant === "danger") {
