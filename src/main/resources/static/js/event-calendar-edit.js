@@ -145,8 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.closest(".remove-supported")) {
             const row = e.target.closest("tr");
             row.remove();
-            const supPlanner = row.querySelector('[data-name="supPlanner"]')?.textContent || '';
-            deleteScheduleList.add(supPlanner);
             // Optional: update count or UI here if needed
             updateSupportedCount();
         }
@@ -500,10 +498,26 @@ document.addEventListener("DOMContentLoaded", () => {
             const slotDiv = e.target.closest(".time-slot");
             const wrapper = slotDiv.parentElement;
             if (wrapper.children.length > 1) {
+
+            const input = slotDiv.querySelector("input[type='hidden']");
+              const deletedId = input.value; // shorter than getAttribute
+                const id = Number(deletedId);
+                console.log(id);
+                  deleteScheduleList.push(id);
+
                 slotDiv.remove();
+                console.log("1");
             } else {
                 const inputs = slotDiv.querySelectorAll("input[type='time']");
+
+                const input = slotDiv.querySelector("input[type='hidden']");
+                  const deletedId = input.value; // shorter than getAttribute
+                    const id = Number(deletedId);
+                      deleteScheduleList.push(id);
+
                 inputs.forEach(inp => inp.value = ""); // clear times
+                input.value = "";
+                console.log("2");
             }
         }
     });
