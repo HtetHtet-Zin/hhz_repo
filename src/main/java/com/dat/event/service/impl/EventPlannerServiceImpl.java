@@ -33,22 +33,24 @@ public class EventPlannerServiceImpl implements EventPlannerService {
 
         var eventId = eventDto.getEventId();
         eventPlannerRepository.save(eventPlannerMapper.toEntity(EventPlannerDto.builder()
-                .eventId(eventId)
-                .staffId(requestEventPlanDto.getInChargePerson())
-                .supportedMemberFlg(false)
-                 .delFlg(false)
-               .supportedMonth(null)
-                .build()));
+                                                                        .eventId(eventId)
+                                                                        .staffId(requestEventPlanDto.getInChargePerson())
+                                                                        .supportedMemberFlg(false)
+                                                                        .delFlg(false)
+                                                                        .supportedMonth(null)
+                                                                        .build()));
 
         Arrays.stream(requestEventPlanDto.getSupportedMembers()).forEach(supportedMember -> {
-            var dto = EventPlannerDto.builder()
-                    .eventId(eventId)
-                    .staffId(supportedMember.memberId())
-                    .supportedMonth(supportedMember.month())
-                    .supportedMemberFlg(true)
-                    .delFlg(false)
-                    .build();
-            eventPlannerRepository.save(eventPlannerMapper.toEntity(dto));
+            if (supportedMember.memberId() != null) {
+                var dto = EventPlannerDto.builder()
+                        .eventId(eventId)
+                        .staffId(supportedMember.memberId())
+                        .supportedMonth(supportedMember.month())
+                        .supportedMemberFlg(true)
+                        .delFlg(false)
+                        .build();
+                eventPlannerRepository.save(eventPlannerMapper.toEntity(dto));
+            }
         });
 
     }
@@ -93,21 +95,21 @@ public class EventPlannerServiceImpl implements EventPlannerService {
 
         eventPlannerRepository.save(entity);
 
-        if(requestEventPlanDto.getSupportedMembers() != null && requestEventPlanDto.getSupportedMembers().get(0).getMemberId() != null){
-            updateSupportedMember(requestEventPlanDto.getSupportedMembers(),eventDto);
-        }else{
-                eventPlannerRepository.getEventPlannerIds(eventDto.getEventId()).stream()
+        if (requestEventPlanDto.getSupportedMembers() != null && requestEventPlanDto.getSupportedMembers().get(0).getMemberId() != null) {
+            updateSupportedMember(requestEventPlanDto.getSupportedMembers(), eventDto);
+        } else {
+            eventPlannerRepository.getEventPlannerIds(eventDto.getEventId()).stream()
                     .forEach(eventPlannerRepository::deleteById);
         }
 
     }
 
-    private void updateSupportedMember(List<updateSupportedMember> updateSupportedMembersList,EventDto eventDto){
+    private void updateSupportedMember(List<updateSupportedMember> updateSupportedMembersList, EventDto eventDto) {
 
         Set<Long> savedPlannerIdList = new HashSet<>();
         updateSupportedMembersList.forEach(supportedMember -> {
             EventPlannerEntity entity;
-            if (supportedMember.getPlannerId() != null ) {
+            if (supportedMember.getPlannerId() != null) {
                 // Update mode
                 entity = eventPlannerRepository.findById(supportedMember.getPlannerId())
                         .orElseThrow(() -> new EntityNotFoundException("Planner not found"));
@@ -122,12 +124,12 @@ public class EventPlannerServiceImpl implements EventPlannerService {
             entity.setSupportedMemberFlg(true);
             entity.setDelFlg(false);
 
-            savedPlannerIdList.add(eventPlannerRepository.save(entity).getId()) ;
+            savedPlannerIdList.add(eventPlannerRepository.save(entity).getId());
         });
 
-     eventPlannerRepository.getEventPlannerIds(eventDto.getEventId()).stream()
-              .filter(plannerId -> !savedPlannerIdList.contains(plannerId))
-             .forEach(eventPlannerRepository::deleteById);
+        eventPlannerRepository.getEventPlannerIds(eventDto.getEventId()).stream()
+                .filter(plannerId -> !savedPlannerIdList.contains(plannerId))
+                .forEach(eventPlannerRepository::deleteById);
 
 
     }
@@ -146,7 +148,7 @@ public class EventPlannerServiceImpl implements EventPlannerService {
     @Transactional
     @Override
     public void deletePlanner(long eventId) {
-        System.out.println("delete planner - "+ eventId);
+        System.out.println("delete planner - " + eventId);
         eventPlannerRepository.deletePlanner(eventId);
     }
 }
