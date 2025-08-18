@@ -3,9 +3,12 @@ const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("search");
 const countElem = document.getElementById('count');
 const participantElem = document.getElementById('participant-text');
+const selectBox = document.getElementById("activity");
+const searchBtn = document.getElementById("searchBtn");
 
 let currentPage = 0;
 let currentKeyword = "";
+let currentEventName = "";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadStaffData();
@@ -17,11 +20,20 @@ searchInput.addEventListener("input", () => {
     loadStaffData();
 });
 
+searchBtn.addEventListener("click", () => {
+    currentKeyword = searchInput.value.trim();
+    currentEventName = selectBox.value;
+    currentPage = 0;
+    loadStaffData();
+});
+
 function loadStaffData() {
+
     fetch("/club/participant-list", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
+            eventName: currentEventName,
             keyword: currentKeyword,
             page: currentPage
         })
@@ -114,10 +126,11 @@ function changePage(page) {
     loadStaffData();
 }
 
-function exportData(keyword){
-    console.log('keyword', keyword);
+function exportData(keyword, eventName){
+    console.log('keyword and event name', keyword, eventName);
     const formData = new FormData();
     formData.append('keyword', keyword);
+    formData.append('eventName', eventName);
     fetch(`${exportUrl}`, {
         method: 'POST',
         body: formData

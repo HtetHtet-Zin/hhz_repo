@@ -181,14 +181,21 @@ public class EventController {
     }
 
     @GetMapping(WebUrl.EVENTS_URL)
-    public String eventList(HttpSession session) {
-        if (session != null && session.getAttribute("staffNo") != null) return "participant-list";
-        return "redirect:" + WebUrl.LOGIN_URL;
+    public String eventList(HttpSession session, Model model) {
+
+        if (session == null || session.getAttribute("staffNo") == null) {
+            return "redirect:" + WebUrl.LOGIN_URL;
+        }
+
+        model.addAttribute("events", eventService.findAll());
+        return "participant-list";
     }
 
     @PostMapping(WebUrl.EVENTS_URL)
-    public ResponseEntity<Page<EventStaffDto>> eventList(@RequestParam(required = false, defaultValue = "") final String keyword, @RequestParam(required = false, defaultValue = "0") final int page) {
-        return ResponseEntity.ok(keyword.isBlank() ? eventRegistrationService.fetchEventStaffList(null, page) : eventRegistrationService.fetchEventStaffList(keyword, page));
+    public ResponseEntity<Page<EventStaffDto>> eventList(@RequestParam(required = false, defaultValue = "") final String eventName,
+                                                         @RequestParam(required = false, defaultValue = "") final String keyword,
+                                                         @RequestParam(required = false, defaultValue = "0") final int page) {
+        return ResponseEntity.ok(eventRegistrationService.fetchEventStaffList(eventName.isBlank() ? null : eventName, keyword.isBlank() ? null : keyword, page));
     }
 
     @GetMapping(WebUrl.EVENT_REGISTRATION_URL + "/{id}")
@@ -203,7 +210,8 @@ public class EventController {
     }
 
     @PostMapping(WebUrl.EVENT_REGISTRATION_URL)
-    public ResponseEntity<Page<EventScheduleDto>> eventSchedule(@RequestParam(required = false, defaultValue = "") final String keyword, @RequestParam(required = false, defaultValue = "0") final int page,
+    public ResponseEntity<Page<EventScheduleDto>> eventSchedule(@RequestParam(required = false, defaultValue = "") final String keyword,
+                                                                @RequestParam(required = false, defaultValue = "0") final int page,
                                                                 @RequestParam final Long eventId) {
         return ResponseEntity.ok(keyword.isBlank() ? eventScheduleService.getScheduleById(eventId, null, page) : eventScheduleService.getScheduleById(eventId, keyword, page));
     }
@@ -240,13 +248,14 @@ public class EventController {
     }
 
     @PostMapping(WebUrl.EVENT_STAFF_DOWNLOAD_URL)
-    public ResponseEntity<byte[]> exportExcel(@RequestParam(required = false, defaultValue = "") final String keyword) {
+    public ResponseEntity<byte[]> exportExcel(@RequestParam(required = false, defaultValue = "") final String keyword,
+                                              @RequestParam(required = false, defaultValue = "") final String eventName) {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=event_staff_report.xlsx");
         headers.add(HttpHeaders.CONTENT_TYPE, ExcelUtility.EXCEL_FILE_TYPE);
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(eventRegistrationService.exportExcel(keyword));
+                .body(eventRegistrationService.exportExcel(keyword, eventName));
     }
 
     @GetMapping(WebUrl.EVENT_DELETE_URL + "/{id}")

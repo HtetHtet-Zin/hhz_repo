@@ -36,8 +36,8 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     private final EventScheduleRepository eventScheduleRepository;
 
     @Override
-    public Page<EventStaffDto> fetchEventStaffList(String keyword, final int page) {
-        return eventRegistrationRepository.fetchEventStaffList(keyword, PageRequest.of(page, Constants.PAGE_LIMIT));
+    public Page<EventStaffDto> fetchEventStaffList(String eventName, String keyword, final int page) {
+        return eventRegistrationRepository.fetchEventStaffList(eventName, keyword, PageRequest.of(page, Constants.PAGE_LIMIT));
     }
 
     @Override
@@ -82,16 +82,17 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     }
 
     @Override
-    public byte[] exportExcel(final String keyword) {
+    public byte[] exportExcel(final String keyword, final String eventName) {
         log.info("Event statt excel file exporting..");
         final AtomicInteger index = new AtomicInteger();
         return ExcelUtility.writeExcelFile(Stream.concat(
                 //Set header
-                Stream.of(List.of("No.", "Event	Date", "Schedule Time", "Staff-ID", "Staff Name")),
+                Stream.of(List.of("No.", "Event Name", "Event Date", "Schedule Time", "Staff-ID", "Staff Name")),
                 //Set data
-                fetchEventStaffList(keyword.isBlank() ? null : keyword.trim()).stream().map(report -> {
+                fetchEventStaffList(keyword.isBlank() ? null : keyword.trim(), eventName.isBlank() ? null : eventName.trim()).stream().map(report -> {
                     final List<Object> rowDataList = new ArrayList<>();
                     rowDataList.add(index.incrementAndGet());
+                    rowDataList.add(report.getEventName());
                     rowDataList.add(CommonUtility.ifNoDataReturnDash(String.valueOf(report.getDate())));
                     rowDataList.add(CommonUtility.ifNoDataReturnDash(report.getStartTime() + " - " + report.getEndTime()));
                     rowDataList.add(report.getStaffNo());
@@ -102,7 +103,7 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     }
 
     @Override
-    public List<EventStaffDto> fetchEventStaffList(final String keyword) {
-        return eventRegistrationRepository.fetchEventStaffList(keyword);
+    public List<EventStaffDto> fetchEventStaffList(final String keyword, final String eventName) {
+        return eventRegistrationRepository.fetchEventStaffList(keyword, eventName);
     }
 }

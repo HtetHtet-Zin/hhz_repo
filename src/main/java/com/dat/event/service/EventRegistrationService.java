@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EventRegistrationService {
 
-    Page<EventStaffDto> fetchEventStaffList(String keyword, int page);
+    Page<EventStaffDto> fetchEventStaffList(String eventName, String keyword, int page);
 
     int registerCount();
 
@@ -19,7 +19,7 @@ public interface EventRegistrationService {
     List<String> checkDuplicateSchedule(Long staffId, List<Long> registeredScheduleIds);
 
 
-    byte[] exportExcel(String keyword);
+    byte[] exportExcel(String keyword, String eventName);
 
-    List<EventStaffDto> fetchEventStaffList(String keyword);
+    List<EventStaffDto> fetchEventStaffList(String keyword, String eventName);
 }

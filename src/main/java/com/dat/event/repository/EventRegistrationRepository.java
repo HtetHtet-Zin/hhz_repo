@@ -20,12 +20,13 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
             "JOIN er.schedule sch " +
             "JOIN sch.event e " +
             "JOIN er.staff s " +
-            "WHERE (:keyword IS NULL OR " +
-            "LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(s.staffNo) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "WHERE (:eventName IS NULL " +
+            "   OR e.name = :eventName)" +
+            "AND (:keyword IS NULL " +
+            "   OR LOWER(s.staffNo) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "   OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "ORDER BY e.createdAt ASC, sch.id ASC")
-    Page<EventStaffDto> fetchEventStaffList(@Param("keyword") String keyword, Pageable pageable);
+    Page<EventStaffDto> fetchEventStaffList(@Param("eventName") String name, @Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT new com.dat.event.dto.EventStaffDto( " +
             "e.name, s.staffNo, s.name, sch.startTime, sch.endTime, sch.date) " +
@@ -33,12 +34,13 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
             "JOIN er.schedule sch " +
             "JOIN sch.event e " +
             "JOIN er.staff s " +
-            "WHERE (:keyword IS NULL OR " +
-            "LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(s.staffNo) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "WHERE (:eventName IS NULL " +
+            "   OR e.name = :eventName)" +
+            "AND (:keyword IS NULL " +
+            "   OR LOWER(s.staffNo) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "   OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "ORDER BY e.createdAt ASC, sch.id ASC")
-    List<EventStaffDto> fetchEventStaffList(@Param("keyword") String keyword);
+    List<EventStaffDto> fetchEventStaffList(@Param("keyword") String keyword, @Param("eventName") String eventName);
 
     @Query(value = "SELECT reg.schedule_id from tbl_event_registration reg JOIN tbl_event_schedule sch ON reg.schedule_id = sch.id\n" +
             "WHERE sch.event_id = :eventId AND reg.staff_id = :staffId", nativeQuery = true)
