@@ -31,6 +31,7 @@
                                     class="text-danger">*</span></label>
                             <input type="text" id="eventName" th:value="${eventName}" name="eventName"
                                    class="form-control" placeholder="Enter Event Name" required/>
+                            <div class="text-danger mt-1" id="eventNameError" style="display:none;">Event Name Required!!!</div>
                         </div>
 
                         <div class="mb-3">
@@ -46,9 +47,10 @@
                                 </label>
                                 <span class="btn cancel flex-grow-1" id="fileName" th:text="${eventName+'.jpg'}"
                                       style="border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0; margin-left: 5px;">
-                                No photo selected.
-                            </span>
+                                    No photo selected.
+                                </span>
                             </div>
+                            <div class="text-danger mt-1" id="eventPhotoError" style="display:none;">Please select a photo!!!</div>
                             <input accept="image/*" class="form-control"  hidden id="eventPhoto" name="eventPhoto"
                                    onchange="
                                const file = this.files[0];

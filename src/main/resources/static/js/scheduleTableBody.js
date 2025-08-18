@@ -86,7 +86,7 @@ function renderTable(data) {
     if (!data.content || data.content.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="4" style="text-align:center;">No schedules yet</td>
+                <td colspan="5" style="text-align:center;">No schedules yet</td>
             </tr>
         `;
         selectAllCheckbox.disabled = true;

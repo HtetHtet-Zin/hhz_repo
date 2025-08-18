@@ -166,6 +166,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // --- Auto hide errors when user fixes input ---
+    document.getElementById("eventName").addEventListener("input", function() {
+        if (this.value.trim()) {
+            document.getElementById("eventNameError").style.display = "none";
+        }
+    });
+
+    document.getElementById("eventPhoto").addEventListener("change", function() {
+        if (this.files.length > 0) {
+            document.getElementById("eventPhotoError").style.display = "none";
+        }
+    });
+
+    document.getElementById("inchargePerson").addEventListener("input", function() {
+        if (this.value.trim()) {
+            document.getElementById("inchargePersonError").style.display = "none";
+        }
+    });
+
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
         // Validate current step required inputs before proceeding
@@ -176,12 +195,29 @@ document.addEventListener("DOMContentLoaded", () => {
         let isValid = true;
 
         for (const input of requiredInputs) {
-            if (!input.checkValidity()) {
-                input.reportValidity();
-                isValid = false;
-            } else  if (input.id === "inchargePerson" && !input.value.trim()) {
-                document.getElementById("inchargePersonError").style.display = "block";
-                isValid = false;
+            if (input.id === "eventName") {
+                if (!input.value.trim()) {
+                    document.getElementById("eventNameError").style.display = "block";
+                    isValid = false;
+                }
+            }
+            else if (input.id === "eventPhoto") {
+                if (!input.files || input.files.length === 0) {
+                    document.getElementById("eventPhotoError").style.display = "block";
+                    isValid = false;
+                }
+            }
+            else if (input.id === "inchargePerson") {
+                if (!input.value.trim()) {
+                    document.getElementById("inchargePersonError").style.display = "block";
+                    isValid = false;
+                }
+            }
+            else {
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    isValid = false;
+                }
             }
         }
 
