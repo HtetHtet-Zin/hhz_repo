@@ -157,6 +157,13 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                 eventRegistrationRepository.deleteRegistration(scheduleIds);
                 eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
 
+            }else{
+                List<Long> scheduleIds = eventScheduleRepository.getEventScheduleIds(eventDto.getEventId()).stream()
+                        .collect(Collectors.toList());
+
+                eventRegistrationRepository.deleteRegistration(scheduleIds);
+                eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
+
             }
         }catch (Exception e){
             System.out.println(e.getStackTrace());
