@@ -83,23 +83,32 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
 
     @Override
     public byte[] exportExcel(final String keyword, final String eventName) {
-        log.info("Event statt excel file exporting..");
+        log.info("Event start excel file exporting..");
         final AtomicInteger index = new AtomicInteger();
         return ExcelUtility.writeExcelFile(Stream.concat(
                 //Set header
-                Stream.of(List.of("No.", "Event Name", "Event Date", "Schedule Time", "Staff-ID", "Staff Name")),
+                Stream.of(List.of("No.", "Event", "Schedule Date/Time", "Staff-ID", "Staff Name")),
                 //Set data
                 fetchEventStaffList(keyword.isBlank() ? null : keyword.trim(), eventName.isBlank() ? null : eventName.trim()).stream().map(report -> {
                     final List<Object> rowDataList = new ArrayList<>();
                     rowDataList.add(index.incrementAndGet());
                     rowDataList.add(report.getEventName());
-                    rowDataList.add(CommonUtility.ifNoDataReturnDash(String.valueOf(report.getDate())));
-                    rowDataList.add(CommonUtility.ifNoDataReturnDash(report.getStartTime() + " - " + report.getEndTime()));
+                    rowDataList.add(
+                        CommonUtility.ifNoDataReturnDash(String.valueOf(report.getDate())) + " (" +
+                            CommonUtility.ifNoDataReturnDash(
+                                report.getStartTime() != null ? report.getStartTime().format(CommonUtility.formatTo12Hrs) : null
+                            ) +
+                            " - " +
+                            CommonUtility.ifNoDataReturnDash(
+                                report.getEndTime() != null ? report.getEndTime().format(CommonUtility.formatTo12Hrs) : null
+                            ) +
+                        ")"
+                    );
                     rowDataList.add(report.getStaffNo());
                     rowDataList.add(report.getStaffName());
                     return rowDataList;
                 })
-        ).toList(), "Staff in the Event");
+        ).toList(), "Participant List");
     }
 
     @Override

@@ -150,7 +150,7 @@ function exportData(keyword, eventName){
         const a = document.createElement("a");
         a.style.display = "none";
         a.href = fileUrl;
-        a.download = 'DAT-Event-System - Staff in event list.xlsx';
+        a.download = 'DAT_Event_System - Participant List.xlsx';
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(fileUrl);
