@@ -113,6 +113,7 @@
     </dependencies>
 
 	<build>
+		<finalName>club</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
