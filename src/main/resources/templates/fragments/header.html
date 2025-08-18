@@ -4,7 +4,6 @@
 
         <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'"
            class="logo d-flex align-items-center me-auto me-xl-0">
-            <!--<h1 class="sitename">DAT EVENT</h1>-->
             <img th:src="@{/images/event_logo_new.png}" alt="DAT Event Club Logo" class="logo"/>
         </a>
 
@@ -16,10 +15,11 @@
                 <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENTS_URL}} + '\';'">ALL PARTICIPANTS</a></li>
                 <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'" th:if="${IsAdmin}">CREATE EVENT</a></li>
             </ul>
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            <i class="mobile-nav-toggle me-4 d-xl-none bi bi-list"></i>
         </nav>
 
-        <a class="btn logout" style="color:white;" th:onclick="'handleLogout(\'' + @{${WebUrl.LOGOUT_URL}} + '\');'">Logout</a>
+        <a class="btn me-2 logout" style="color:white;"
+           th:onclick="'handleLogout(\'' + @{${WebUrl.LOGOUT_URL}} + '\');'">Logout</a>
 
         <script th:src="@{/js/confirm-box-and-common-css-controller.js}"></script>
         <script>

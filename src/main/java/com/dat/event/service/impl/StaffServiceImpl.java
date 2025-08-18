@@ -6,18 +6,16 @@ import com.dat.event.dto.StaffDto;
 import com.dat.event.entity.StaffEntity;
 import com.dat.event.repository.StaffRepository;
 import com.dat.event.service.StaffService;
-import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-
 import java.util.Optional;
 
 @Slf4j
@@ -46,12 +44,12 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Page<StaffDto> findAll(final int page) {
-        return staffRepository.findAll(PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("createdAt").descending())).map(staffMapper::toDTO);
+        return staffRepository.findAll(PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("staffNo").ascending())).map(staffMapper::toDTO);
     }
 
     @Override
     public Page<StaffDto> findAll(final String keyword, final int page) {
-        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCase(keyword, keyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("createdAt").descending())).map(staffMapper::toDTO);
+        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCase(keyword, keyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("staffNo").ascending())).map(staffMapper::toDTO);
     }
 
     @Override

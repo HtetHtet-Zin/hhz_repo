@@ -63,8 +63,6 @@
 # General Styling & Shared Classes
 --------------------------------------------------------------*/
 body {
-  color: var(--default-color);
-  background-color: var(--background-color);
   font-family: var(--global-font);
    display: flex;
    flex-direction: column;
@@ -213,7 +211,7 @@ h6 {
   }
 
   .header .logo {
-    order: 1;
+   /* order: 1;*/
   }
 
   .header .btn-logout {
@@ -366,7 +364,7 @@ h6 {
     padding: 10px 0;
     margin: 0;
     border-radius: 6px;
-    background-color: var(--nav-mobile-background-color);
+    /*background-color: var(--nav-mobile-background-color);*/
     overflow-y: auto;
     transition: 0.3s;
     z-index: 9998;
@@ -375,7 +373,7 @@ h6 {
 
   .navmenu a,
   .navmenu a:focus {
-    color: var(--nav-dropdown-color);
+    /*color: var(--nav-dropdown-color);*/
     padding: 10px 20px;
     font-family: var(--global-font);
     font-size: 17px;
@@ -427,7 +425,7 @@ h6 {
     z-index: 99;
     padding: 10px 0;
     margin: 10px 20px;
-    background-color: var(--nav-dropdown-background-color);
+    /*background-color: var(--nav-dropdown-background-color);*/
     border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
     box-shadow: none;
     transition: all 0.5s ease-in-out;
