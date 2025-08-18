@@ -20,7 +20,6 @@ function setNoSupportedMember() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    setNoSupportedMember();
 
     // --- Person Modal Search Filter ---
     personSearch.addEventListener("input", () => {

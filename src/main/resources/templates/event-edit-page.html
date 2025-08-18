@@ -30,7 +30,7 @@
                             <label for="eventName" class="form-label">Event Name <span
                                     class="text-danger">*</span></label>
                             <input type="text" id="eventName" th:value="${eventName}" name="eventName"
-                                   class="form-control" placeholder="Enter Event Name" required></input>
+                                   class="form-control" placeholder="Enter Event Name" required/>
                         </div>
 
                         <div class="mb-3">
@@ -94,6 +94,9 @@
                                 </tr>
                                 </thead>
                                 <tbody id="supportedList">
+                                <tr th:if="${#lists.isEmpty(supportedMemberList)}">
+                                    <td colspan="4" style="text-align:center;">No supported members</td>
+                                </tr>
                                 <tr th:each="supportedMember, iterStat : ${supportedMemberList ?: {}}">
                                     <td th:text="${iterStat.index + 1}"></td>
                                     <td th:text="${supportedMember.name}" data-name="supName"></td>
