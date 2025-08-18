@@ -329,21 +329,6 @@ document.addEventListener("DOMContentLoaded", () => {
         end.className = "form-control form-control-sm";
         disableOrEnableInput(end, disabledAction);
 
-        // --- Validation function ---
-        async function validateTimes() {
-            if (start.value && end.value && start.value >= end.value) {
-                if(await alertAction("End time must be later than start time.", { title: "Invalid input!", variant: "danger"})){
-
-                }
-                 start.value = "";
-                 end.value = "";
-            }
-        }
-
-        // Hook validation on input changes
-        start.addEventListener("input", validateTimes);
-        end.addEventListener("input", validateTimes);
-
         const removeBtn = document.createElement("button");
         removeBtn.type = "button";
         removeBtn.textContent = "-";
@@ -356,6 +341,67 @@ document.addEventListener("DOMContentLoaded", () => {
         slot.append(startLabel, start, endLabel, end, removeBtn);
         return slot;
     }
+
+    // Event delegation for real-time duplicate & overlap check
+   // Real-time validation for time slots
+    tableBody.addEventListener("change",async (e) => {
+       if (e.target.type === "time") {
+            const slot = e.target.closest(".time-slot");
+            const wrapper = slot.closest(".slot-wrapper");
+            const day = wrapper.dataset.day;
+
+            const startInput = slot.querySelector("input[type='time']:first-of-type");
+            const endInput = slot.querySelector("input[type='time']:last-of-type");
+            const startTime = startInput.value;
+            const endTime = endInput.value;
+
+            if (!startTime || !endTime) {
+                return;
+            }
+
+            // Check if endTime is after startTime
+            if (parseInt(endTime.replace(":", "")) <= parseInt(startTime.replace(":", ""))) {
+               await alertAction("End time must be after Start time..", { title: "Select Correct Time!", variant: "danger"});
+               endInput.value = "";
+               return;
+            }
+
+            // Check duplicates (ignore current slot)
+            const isDuplicate = Array.from(wrapper.querySelectorAll(".time-slot"))
+            .filter(s => s !== slot)
+            .some(s => {
+               const sInputs = s.querySelectorAll("input[type='time']");
+               return sInputs[0].value === startTime && sInputs[1].value === endTime;
+            });
+            if (isDuplicate) {
+               await alertAction("Can't add duplicate schedule for this day. Please Select Another Different Time.", { title: "Select Correct Time!", variant: "danger"});
+               startInput.value = "";
+               endInput.value = "";
+               return;
+            }
+
+           // Check overlap (ignore current slot)
+           const startInt = parseInt(startTime.replace(":", ""));
+           const endInt = parseInt(endTime.replace(":", ""));
+
+           const isOverlap = Array.from(wrapper.querySelectorAll(".time-slot"))
+               .filter(s => s !== slot)
+               .some(s => {
+                   const sInputs = s.querySelectorAll("input[type='time']");
+                   const sStart = parseInt(sInputs[0].value.replace(":", ""));
+                   const sEnd = parseInt(sInputs[1].value.replace(":", ""));
+                   return startInt < sEnd && endInt > sStart;
+               });
+
+           if (isOverlap) {
+               await alertAction("Can't add overlapping schedule for this day. Please Select Another Different Time.", { title: "Select Correct Time!", variant: "danger"});
+               startInput.value = "";
+               endInput.value = "";
+               return;
+           }
+       }
+   });
+
 
 
     let latestPage = 0;
@@ -383,8 +429,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const dayCell = document.createElement("td");
                 dayCell.innerHTML = `<strong style="margin-right: 10px;">${day}</strong><small>(${formatDate(date)})</small>`;
                 if (i === todayIndex) {
-                dayCell.style.backgroundColor = "#d1e7dd";
-                dayCell.style.fontWeight = "bold";
+                    dayCell.style.backgroundColor = "#d1e7dd";
+                    dayCell.style.fontWeight = "bold";
                 }
 
                 const slotWrapper = document.createElement("td");
@@ -425,11 +471,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Event delegation for add/remove time slots
-    tableBody.addEventListener("click", (e) => {
+    tableBody.addEventListener("click", async (e) => {
         if (e.target.classList.contains("addSlotBtn")) {
             const day = e.target.dataset.day;
             const wrapper = document.querySelector(`.group-${currentPage}.slot-wrapper[data-day="${day}"]`);
             const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
+
+            const lastSlot = wrapper.lastElementChild;
+            const inputs = lastSlot.querySelectorAll('input[type="time"]');
+            const startTime = inputs[0].value;
+            const endTime = inputs[1].value;
+            if (!startTime || !endTime) {
+                await alertAction("Please select both start and end time before adding new slot.", { title: "Select Both Start Time And End Time!", variant: "danger"});
+                return;
+            }
             if(wrapper.children.length > 1) {
                 disableInput(addBtn);
             }
