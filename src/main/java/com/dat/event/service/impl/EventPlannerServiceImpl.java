@@ -93,8 +93,11 @@ public class EventPlannerServiceImpl implements EventPlannerService {
 
         eventPlannerRepository.save(entity);
 
-        if(requestEventPlanDto.getSupportedMembers() != null ){
+        if(requestEventPlanDto.getSupportedMembers() != null && requestEventPlanDto.getSupportedMembers().get(0).getMemberId() != null){
             updateSupportedMember(requestEventPlanDto.getSupportedMembers(),eventDto);
+        }else{
+            eventPlannerRepository.getEventPlannerIds(eventDto.getEventId()).stream()
+                    .forEach(eventPlannerRepository::deleteById);
         }
 
     }

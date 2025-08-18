@@ -481,9 +481,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         document.querySelectorAll("#supportedList tr").forEach(row => {
-            const supName =   row.querySelector('[data-name = "supName"]').textContent;
-            const supMonth =   row.querySelector('[data-name = "supMonth"]').textContent;
-            const supStaff =   row.querySelector('[data-name = "supStaff"]').textContent;
+            const supName =   row.querySelector('[data-name = "supName"]')?.textContent || '';
+            const supMonth =   row.querySelector('[data-name = "supMonth"]')?.textContent || '';
+            const supStaff =   row.querySelector('[data-name = "supStaff"]')?.textContent || '';
             const supPlanner = row.querySelector('[data-name="supPlanner"]')?.textContent || '';
             const supportedMembers ={
                 plannerId : supPlanner,
