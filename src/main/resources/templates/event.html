@@ -24,7 +24,16 @@
   <link th:href="@{/css/event.css}" rel="stylesheet">
   <link th:href="@{/css/main.css}" rel="stylesheet">
   <link th:href="@{/css/toast.min.css}" rel="stylesheet">
-
+  <style>
+.truncate-text {
+  display: inline-block;
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+  </style>
 </head>
 
 <body class="gallery-page">
@@ -48,7 +57,7 @@
           <img th:src="@{'/photo/eventPhoto/' + ${event.eventPhoto}}" alt="Event photo"/>
         </a>
           <div class="card-title">
-            <span th:text="${event.name}"></span>&nbsp
+            <span th:text="${event.name}" class="truncate-text"></span>&nbsp
             <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId}} + '\';'" th:if="${IsAdmin}">
               <i class="bi bi-pencil-square"></i>
             </a>
