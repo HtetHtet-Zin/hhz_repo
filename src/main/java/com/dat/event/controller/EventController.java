@@ -61,7 +61,6 @@ public class EventController {
     public ResponseEntity<Map<String, Object>> checkEvent(@RequestParam("eventName") String eventName){
         Map<String, Object> response = new HashMap<>();
         EventDto eventDto = eventService.findByEventName(eventName);
-        log.info("EventDto {}", eventDto);
         if (eventDto != null) {
             response.put("redirectUrl", "/club" + WebUrl.EVENT_CREATE_URL);
             response.put("status", "error");
@@ -94,7 +93,6 @@ public class EventController {
             response.put("redirectUrl", "/club" + WebUrl.EVENT_CREATE_URL);
             response.put("status", "error");
             response.put("message", "Can't create the same event");
-            System.out.println("Can't create the same event");
             return ResponseEntity.ok(response);
         }
 
@@ -106,7 +104,6 @@ public class EventController {
         response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
         response.put("status", "success");
         response.put("message", "Event created successfully");
-        System.out.println("Event created successfully");
         return ResponseEntity.ok(response);
     }
 
