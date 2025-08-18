@@ -113,7 +113,8 @@ function renderTable(data) {
                     </div>
                 </td>
                 <td>${(data.page.number * data.page.size) + index + 1}</td>
-                <td>${schedule.name} - ${schedule.date} (${schedule.fromTime} - ${schedule.toTime})</td>
+                <td>${schedule.name}</td>
+                <td>${schedule.date} (${schedule.fromTime} - ${schedule.toTime})</td>
                 <td>${schedule.participantCount == 0 ? 'No Participant' : (schedule.participantCount == 1 ? '1 participant' : schedule.participantCount + ' participants')}</td>
             </tr>
         `;
