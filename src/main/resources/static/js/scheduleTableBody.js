@@ -180,6 +180,7 @@ document.getElementById("joinBtn").addEventListener("click", () => {
     const params = new URLSearchParams();
     selectedScheduleIds.forEach(id => params.append("registeredScheduleIds", id));
     params.append("eventId", eventId);
+    params.append("isNew", isNew);
 
     fetch("/club/register-event-schedule", {
         method: "POST",

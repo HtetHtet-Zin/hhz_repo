@@ -10,9 +10,9 @@
         <nav id="navmenu" class="navmenu">
             <ul>
                 <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'">HOME</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFFS_URL}} + '\';'" th:if="${IsAdmin}">STAFFS</a></li>
                 <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFF_BIRTHDAY_URL}} + '\';'">BIRTHDAY</a></li>
                 <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENTS_URL}} + '\';'">ALL PARTICIPANTS</a></li>
+                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFFS_URL}} + '\';'" th:if="${IsAdmin}">STAFFS</a></li>
                 <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'" th:if="${IsAdmin}">CREATE EVENT</a></li>
             </ul>
             <i class="mobile-nav-toggle me-4 d-xl-none bi bi-list"></i>

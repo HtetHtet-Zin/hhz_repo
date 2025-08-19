@@ -215,7 +215,7 @@ public class EventController {
 
     @PostMapping("/register-event-schedule")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds, @RequestParam String eventId, HttpSession session, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds, @RequestParam Long eventId, @RequestParam boolean isNew, HttpSession session) {
         Map<String, String> response = new HashMap<>();
         if (session == null) {
             response.put("redirectUrl", WebUrl.LOGIN_URL);
@@ -231,7 +231,7 @@ public class EventController {
             response.put("message", "Already Registered at this date and time - " + String.join(", ", conflicts));
             return ResponseEntity.ok(response);
         }
-        int success = eventRegistrationService.registerEvent(staffId, registeredScheduleIds, Long.valueOf(eventId));
+        int success = eventRegistrationService.registerEvent(staffId, registeredScheduleIds, eventId);
         if (success == 0) {
             response.put("redirectUrl", "/club" + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
             response.put("status", "error");
@@ -239,7 +239,7 @@ public class EventController {
         } else {
             response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
             response.put("status", "success");
-            response.put("message", "Successfully Participate.");
+            response.put("message", isNew ? "Successfully Participate." : "Successfully Update.");
         }
         return ResponseEntity.ok(response);
     }
