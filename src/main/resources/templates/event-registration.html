@@ -88,16 +88,18 @@
     <div class="container my-5">
         <!-- Info Table -->
         <table class="table table-bordered schedule-table shadow-sm rounded"> <!--w-auto mx-auto mb-5-->
-            <thead>
-            <tr>
-                <th scope="col" style="width: 200px; text-align: left;">Incharge Person</th>
-                <td style="text-align: left;" th:text="${planner.incharge_person}"></td>
-            </tr>
-            <tr>
-                <th scope="col" style="width: 200px; text-align: left;">Supported Members</th>
-                <td style="text-align: left;" th:text="${planner.supported_members ?: 'No supported members yet'}"></td>
-            </tr>
-            </thead>
+            <tbody>
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 200px; text-align: left;">Incharge Person</th>
+                        <td th:text="${planner.incharge_person}" style="text-align: left;"></td>
+                    </tr>
+                    <tr>
+                        <th scope="col" style="width: 200px; text-align: left;">Supported Members</th>
+                        <td th:text="${planner.supported_members ?: 'No supported members yet'}" style="text-align: left;"></td>
+                    </tr>
+                </thead>
+            </tbody>
         </table>
 
         <div class="d-flex justify-content-between align-items-center m-3">

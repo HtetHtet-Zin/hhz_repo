@@ -43,7 +43,7 @@
 <main class="main">
 
   <!-- Page Title Section -->
-  <div class="page-title dark-background" data-aos="fade" style="background-image: url('./images/Birthday.jpg');">
+  <div class="page-title dark-background" data-aos="fade" style="background-image: url('./images/Birthday.jpg');" oncontextmenu="return false;">
     <canvas id="fireworks"></canvas>
     <div class="balloon-container" id="balloon-container"></div>
     <div class="container position-relative text-center">
@@ -95,7 +95,7 @@
                 <div class="gallery-img">
                   <a class="glightbox" data-gallery="images-gallery"
                      th:href="@{'/photo/birthdayPhoto/' + ${birthday.staffPhoto} + '.jpg'}">
-                    <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffPhoto} + '.jpg'}" class="img-fluid" alt="">
+                    <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffPhoto} + '.jpg'}" class="img-fluid" alt="" oncontextmenu="return false;" draggable="false">
                     <div class="gallery-overlay">
                       <i class="bi bi-plus-circle"></i>
                     </div>
@@ -121,7 +121,7 @@
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="birthday : ${birthdayStaffList}">
             <div class="gallery-card text-center">
               <div class="gallery-image">
-                <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffPhoto} + '.jpg'}" class="img-fluid" alt="">
+                <img th:src="@{'/photo/birthdayPhoto/' + ${birthday.staffPhoto} + '.jpg'}" class="img-fluid" alt="" oncontextmenu="return false;" draggable="false">
               </div>
 
               <div class="mt-2">
