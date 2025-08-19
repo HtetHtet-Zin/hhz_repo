@@ -49,7 +49,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <select id="activity" name="activity" class="form-control">
-                            <option value="">Select an Event</option>
+                            <option value="">All Events</option>
                             <option th:each="eve : ${events}"
                                     th:value="${eve.name}"
                                     th:text="${eve.name}"></option>
@@ -61,7 +61,7 @@
                         </button>
                     </div>
                     <div class="ms-2">
-                        <input class="form-control" name="keyword" id="search" placeholder="Search ...">
+                        <input class="form-control" name="keyword" id="search" placeholder="Search Staff...">
                     </div>
                     <div>
                         <button class="btn confirm ms-2" id="export"
