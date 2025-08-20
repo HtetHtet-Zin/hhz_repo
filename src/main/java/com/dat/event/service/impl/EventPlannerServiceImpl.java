@@ -148,7 +148,6 @@ public class EventPlannerServiceImpl implements EventPlannerService {
     @Transactional
     @Override
     public void deletePlanner(long eventId) {
-        System.out.println("delete planner - " + eventId);
         eventPlannerRepository.deletePlanner(eventId);
     }
 }
