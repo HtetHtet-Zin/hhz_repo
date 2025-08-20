@@ -6,7 +6,10 @@
  * *************************************************************/
 package com.dat.event.common.constant;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * WebUrl Class.
@@ -18,6 +21,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 @ControllerAdvice
 public final class WebUrl {
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
 
     private WebUrl() {
     }
@@ -43,5 +49,14 @@ public final class WebUrl {
 
     public static final String EVENT_API_URL = API_URL + EVENT_URL;
 
+    @ModelAttribute("currentUrl")
+    public String currentUrl(HttpServletRequest request) {
+        return request.getRequestURI();
+    }
+
+    @ModelAttribute("contextPath")
+    public String contextPath() {
+        return this.contextPath;
+    }
 
 }

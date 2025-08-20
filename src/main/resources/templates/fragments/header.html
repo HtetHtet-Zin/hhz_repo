@@ -12,11 +12,25 @@
 
         <nav id="navmenu" class="navmenu">
             <ul>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'">HOME</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFF_BIRTHDAY_URL}} + '\';'">BIRTHDAY</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENTS_URL}} + '\';'">ALL PARTICIPANTS</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.STAFFS_URL}} + '\';'" th:if="${IsAdmin}">STAFFS</a></li>
-                <li><a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_CREATE_URL}} + '\';'" th:if="${IsAdmin}">CREATE EVENT</a></li>
+                <li><a onclick="setUpHeaderLink(this);"
+                       th:classappend="${currentUrl == contextPath + WebUrl.EVENT_URL}? 'active-link' : ''"
+                       th:data-current="${currentUrl}" th:data-target="@{${WebUrl.EVENT_URL}}">HOME</a></li>
+                <li><a onclick="setUpHeaderLink(this);"
+                       th:classappend="${currentUrl == contextPath + WebUrl.STAFF_BIRTHDAY_URL}? 'active-link' : ''"
+                       th:data-current="${currentUrl}" th:data-target="@{${WebUrl.STAFF_BIRTHDAY_URL}}">BIRTHDAY</a>
+                </li>
+                <li><a onclick="setUpHeaderLink(this);"
+                       th:classappend="${currentUrl == contextPath + WebUrl.EVENTS_URL}? 'active-link' : ''"
+                       th:data-current="${currentUrl}" th:data-target="@{${WebUrl.EVENTS_URL}}">ALL PARTICIPANTS</a>
+                </li>
+                <li><a onclick="setUpHeaderLink(this);"
+                       th:classappend="${currentUrl == contextPath + WebUrl.STAFFS_URL}? 'active-link' : ''"
+                       th:data-current="${currentUrl}" th:data-target="@{${WebUrl.STAFFS_URL}}" th:if="${IsAdmin}">STAFFS</a>
+                </li>
+                <li><a onclick="setUpHeaderLink(this);"
+                       th:classappend="${currentUrl == contextPath + WebUrl.EVENT_CREATE_URL}? 'active-link' : ''"
+                       th:data-current="${currentUrl}" th:data-target="@{${WebUrl.EVENT_CREATE_URL}}"
+                       th:if="${IsAdmin}">CREATE EVENT</a></li>
             </ul>
             <i class="mobile-nav-toggle me-4 d-xl-none bi bi-list"></i>
         </nav>

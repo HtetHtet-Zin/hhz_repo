@@ -121,3 +121,9 @@
         return openModal({ title, message, variant }, true);
     };
 })();
+
+function setUpHeaderLink(element){
+    if(element.dataset.current !== element.dataset.target){
+        window.location.href= element.dataset.target;
+    }
+}
