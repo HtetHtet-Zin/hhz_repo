@@ -60,7 +60,7 @@ function activityCount(total) {
 }
 
 function loadData() {
-    fetch("/club/event-registration", {
+    fetch(`${scheduleUrl}`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
@@ -182,7 +182,7 @@ document.getElementById("joinBtn").addEventListener("click", () => {
     params.append("eventId", eventId);
     params.append("isNew", isNew);
 
-    fetch("/club/register-event-schedule", {
+    fetch(`${registrationUrl}`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params.toString()

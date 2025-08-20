@@ -202,7 +202,7 @@ public class EventController {
     public ResponseEntity<Page<EventScheduleDto>> eventSchedule(@RequestParam(required = false, defaultValue = "") final String keyword,
                                                                 @RequestParam(required = false, defaultValue = "0") final int page,
                                                                 @RequestParam final Long eventId) {
-        return ResponseEntity.ok(keyword.isBlank() ? eventScheduleService.getScheduleById(eventId, null, page) : eventScheduleService.getScheduleById(eventId, keyword, page));
+        return ResponseEntity.ok(eventScheduleService.getScheduleById(eventId, keyword.isBlank() ? null : keyword, page));
     }
 
     @PostMapping(WebUrl.EVENT_REGISTRATION_POST_URL)
