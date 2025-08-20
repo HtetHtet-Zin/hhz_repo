@@ -60,14 +60,7 @@ public class EventController {
     @PostMapping(WebUrl.EVENT_CHECK_URL)
     public ResponseEntity<Map<String, Object>> checkEvent(@RequestParam("eventName") String eventName){
         Map<String, Object> response = new HashMap<>();
-        EventDto eventDto = eventService.findByEventName(eventName);
-        if (eventDto != null) {
-            response.put("redirectUrl", "/club" + WebUrl.EVENT_CREATE_URL);
-            response.put("status", "error");
-            response.put("message", "Can't create the same event");
-            return ResponseEntity.ok(response);
-        }
-        response.put("status", "success");
+        response.put("status", eventService.findByEventName(eventName) != null ? "error" : "success");
         return ResponseEntity.ok(response);
     }
 
@@ -88,13 +81,7 @@ public class EventController {
             return ResponseEntity.ok(response);
         }
 
-        EventDto eventDto = eventService.findByEventName(requestEventPlanDto.getEventName());
-        if (eventDto != null) {
-            response.put("redirectUrl", "/club" + WebUrl.EVENT_CREATE_URL);
-            response.put("status", "error");
-            response.put("message", "Can't create the same event");
-            return ResponseEntity.ok(response);
-        }
+
 
         EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
         eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
@@ -121,8 +108,8 @@ public class EventController {
         var eventScheduleDtoList =  eventScheduleService.getEventSchedule(eventId);
         var inChargePerson = eventPlannerService.getInChargePerson(eventId);
         var supportedMemberList = eventPlannerService.getSupportedMember(eventId);
-        log.info("ssup {}", eventScheduleDtoList);
-       // log.info("staff-list {}", staffDtoList);
+        log.info("schedule-list {}", eventScheduleDtoList);
+        //log.info("staff-list {}", staffDtoList);
         return new ModelAndView("event-edit-page")
                 .addObject( "staffs", staffDtoList)
                 .addObject( "eventId", eventDto.getEventId())
@@ -143,9 +130,11 @@ public class EventController {
 
         log.info("RequestEventPlanner {}", requestEventPlanDto);
         log.info("eventPhoto {}", eventPhotoFile);
+        Map<String, String> response = new HashMap<>();
         String loginStaffNo = session != null && session.getAttribute("staffNo") != null ? session.getAttribute("staffNo").toString() : null;
         log.info("loginStaffNo {}", loginStaffNo);
         EventDto eventDto = eventService.findById(requestEventPlanDto.getEventId());
+
         if (eventDto != null && loginStaffNo != null) {
             EventDto updateDto = eventService.update(eventDto.getEventId(), requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
             eventScheduleService.updateEventSchedule(updateDto, requestEventPlanDto, loginStaffNo);
@@ -158,7 +147,10 @@ public class EventController {
                 }
             }
         }
-        return ResponseEntity.ok(requestEventPlanDto);
+        response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
+        response.put("status", "success");
+        response.put("message", "Event updated successfully");
+        return ResponseEntity.ok(response);
     }
 
 
@@ -213,7 +205,7 @@ public class EventController {
         return ResponseEntity.ok(keyword.isBlank() ? eventScheduleService.getScheduleById(eventId, null, page) : eventScheduleService.getScheduleById(eventId, keyword, page));
     }
 
-    @PostMapping("/register-event-schedule")
+    @PostMapping(WebUrl.EVENT_REGISTRATION_POST_URL)
     @ResponseBody
     public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds, @RequestParam Long eventId, @RequestParam boolean isNew, HttpSession session) {
         Map<String, String> response = new HashMap<>();

@@ -62,7 +62,8 @@
                         <div class="mb-3">
                             <label for="eventDesc" class="form-label">Description</label>
                             <textarea id="eventDesc" th:text="${description}" name="eventDesc" class="form-control"
-                                      rows="3" placeholder="Optional description"></textarea>
+                                      rows="3" placeholder="Optional description" maxlength="255"></textarea>
+                            <div class="text-danger mt-1" id="eventDescError" style="display:none;">Description must not exceed 255 characters</div>
                         </div>
 
                         <div class="mb-3">
@@ -142,9 +143,10 @@
 <script th:src="@{/js/commonUtility.js}"></script>
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:src="@{/js/main.js}"></script>
-    <script th:inline="javascript">
+<script th:inline="javascript">
     /*<![CDATA[*/
     let eventScheduleList = /*[[${eventScheduleList}]]*/ [];
+    const currentEventName = /*[[${eventName}]]*/ [];
     /*]]>*/
 </script>
 </body>

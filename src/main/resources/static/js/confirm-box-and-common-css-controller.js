@@ -39,7 +39,8 @@
         .btn:hover{/*transform:translateY(-3px) scale(1.02)*/}
         .btn.cancel{background:linear-gradient(180deg, white, transparent);border:1px solid var(--accent);color:var(--accent)}
         .btn.confirm{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
-        .btn.logout{border-radius: 50px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+        .btn.staffName{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+        .btn.logout{background:linear-gradient(90deg,var(--accent-2),var(--accent-2));color:white}
         .global-font{font-family: var(--global-font);}
         body.modal-open{overflow:hidden}
     `;

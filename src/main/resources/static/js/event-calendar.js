@@ -187,12 +187,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    document.getElementById("eventDesc").addEventListener("input", function() {
+        if (this.value.length <= 255) {
+            document.getElementById("eventDescError").style.display = "none";
+        }
+    });
+
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
         // Validate current step required inputs before proceeding
         const currentStep = document.querySelector(".wizard-step.active");
         const requiredInputs = currentStep.querySelectorAll(
-          "input[required], select[required], textarea[required]"
+          "input[required], select[required]"
         );
         let isValid = true;
 
@@ -221,6 +227,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     isValid = false;
                 }
             }
+        }
+
+        if( document.getElementById("eventDesc").value.length > 255) {
+            document.getElementById("eventDescError").style.display = "block";
+            isValid = false;
         }
 
         if (!isValid) return;

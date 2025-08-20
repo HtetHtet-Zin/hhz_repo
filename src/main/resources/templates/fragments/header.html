@@ -1,5 +1,8 @@
 <header id="header" class="header d-flex align-items-center fixed-top"
         th:fragment="siteHeader" xmlns:th="http://www.thymeleaf.org">
+
+    <link th:href="@{/css/footer.css}" rel="stylesheet" />
+
     <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
         <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'"
@@ -18,8 +21,12 @@
             <i class="mobile-nav-toggle me-4 d-xl-none bi bi-list"></i>
         </nav>
 
-        <a class="btn me-2 logout" style="color:white;"
-           th:onclick="'handleLogout(\'' + @{${WebUrl.LOGOUT_URL}} + '\');'">Logout</a>
+        <div class="grid-container">
+            <div class="label btn staffName"><span th:text="${StaffName}"></span></div>
+            <a th:onclick="'handleLogout(\'' + @{${WebUrl.LOGOUT_URL}} + '\');'">
+                <div class="icon btn logout"><i class="bi bi-box-arrow-right"></i></div>
+            </a>
+        </div>
 
         <script th:src="@{/js/confirm-box-and-common-css-controller.js}"></script>
         <script>
@@ -32,3 +39,6 @@
 
     </div>
 </header>
+
+
+

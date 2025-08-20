@@ -184,12 +184,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    document.getElementById("eventDesc").addEventListener("input", function() {
+        if (this.value.length <= 255) {
+            document.getElementById("eventDescError").style.display = "none";
+        }
+    });
+
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
         // Validate current step required inputs before proceeding
         const currentStep = document.querySelector(".wizard-step.active");
         const requiredInputs = currentStep.querySelectorAll(
-            "input[required], select[required], textarea[required]"
+            "input[required], select[required]"
         );
         let isValid = true;
 
@@ -220,9 +226,35 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
+        if(document.getElementById("eventDesc").value.length > 255) {
+            document.getElementById("eventDescError").style.display = "block";
+            isValid = false;
+        }
+
         if (!isValid) return;
         const eventNameValue = document.querySelector("#eventName").value.trim();
-        switchStep(step);
+        if (currentEventName === eventNameValue) {
+            switchStep(step);
+        } else if( step > 1 ){
+            const formData = new FormData();
+            formData.append("eventName", eventNameValue);
+
+            fetch('/club/event-check', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res =>  res.json())
+            .then(async (data) => {
+                if( data.status === "error"){
+                    await alertAction("Please enter different event name.", { title: "Duplicated Event!", variant: "danger"});
+                } else {
+                     switchStep(step);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        } else {
+           switchStep(step);
+        }
     }
 
     function switchStep(step) {
@@ -605,7 +637,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const wrapper = slotDiv.parentElement;
                 if (wrapper.children.length > 1) {
                  const input = slotDiv.querySelector("input[type='hidden']");
-                              const deletedId = input.value; // shorter than getAttribute
+                              const deletedId = input?.value; // shorter than getAttribute
                                 const id = Number(deletedId);
                                 console.log(id);
                                   deleteScheduleList.push(id);
@@ -614,7 +646,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     const inputs = slotDiv.querySelectorAll("input[type='time']");
                       const input = slotDiv.querySelector("input[type='hidden']");
-                                      const deletedId = input.value; // shorter than getAttribute
+                                      const deletedId = input?.value; // shorter than getAttribute
                                         const id = Number(deletedId);
                                           deleteScheduleList.push(id);
                     inputs.forEach(inp => inp.value = "");
@@ -697,41 +729,37 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-    const jsonPayload = {
-        eventId:form.eventId.value,
-        eventName: form.eventName.value,
-        description: form.eventDesc.value,
-        inChargePersonPlannerId:form.inChargePersonPlannerId.value,
-        inChargePerson: form.inchargePerson.dataset.dataId,
-        supportedMembers: supportedMembersList,
-        eventTimes: dateTimeList,
-        deleteScheduleList:deleteScheduleList
-    };
+        const jsonPayload = {
+            eventId:form.eventId.value,
+            eventName: form.eventName.value,
+            description: form.eventDesc.value,
+            inChargePersonPlannerId:form.inChargePersonPlannerId.value,
+            inChargePerson: form.inchargePerson.dataset.dataId,
+            supportedMembers: supportedMembersList,
+            eventTimes: dateTimeList,
+            deleteScheduleList:deleteScheduleList
+        };
 
-    const formData = new FormData();
-    const fileInput = document.getElementById("eventPhoto");
-    if (fileInput.files.length > 0) {
-        formData.append("eventPhoto", fileInput.files[0]);
-    }
-    formData.append("eventData", new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
-
-    fetch('/club/event-edit', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
+        const formData = new FormData();
+        const fileInput = document.getElementById("eventPhoto");
+        if (fileInput.files.length > 0) {
+            formData.append("eventPhoto", fileInput.files[0]);
         }
-        window.location.href = "/club/event";
-        return Promise.resolve();
-    })
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => console.error("Error:", error));
+        formData.append("eventData", new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
 
-    }
+        fetch('/club/event-edit', {
+            method: 'POST',
+            body: formData
+        })
+       .then(response =>  response.json())
+       .then(data => {
+           const redirectUrl = new URL(data.redirectUrl, window.location.origin);
+           redirectUrl.searchParams.append('message', data.message || '');
+           redirectUrl.searchParams.append('messageType', data.status || '');
+           window.location.href = redirectUrl;
+       })
+       .catch(error => console.error("Error:", error));
+   }
 
     // Expose functions globally
     window.goToStep = goToStep;

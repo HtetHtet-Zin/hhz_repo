@@ -13,3 +13,24 @@ footer {
 a {
     cursor: pointer;
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 2.5px;
+}
+
+.label {
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.icon {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+

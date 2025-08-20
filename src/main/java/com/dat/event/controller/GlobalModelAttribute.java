@@ -37,7 +37,15 @@ public class GlobalModelAttribute {
             }
         }
         return false;
+    }
 
+    @ModelAttribute("StaffName")
+    public String currentStaffName(HttpSession httpSession) {
+        Object staffName = httpSession.getAttribute("name");
+        if (staffName != null) {
+            return staffName.toString();
+        }
+        return "";
     }
 
 }

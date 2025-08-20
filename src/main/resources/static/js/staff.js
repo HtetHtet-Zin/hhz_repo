@@ -38,7 +38,7 @@ function renderTable(data) {
     if (!data.content || data.content.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="7" style="text-align:center;">No staffs yet</td>
+                <td colspan="6" style="text-align:center;">No staffs yet</td>
             </tr>
         `;
         return;
@@ -52,7 +52,6 @@ function renderTable(data) {
                 <td>${staff.name}</td>
                 <td>${staff.email}</td>
                 <td>${staff.mobile}</td>
-                <td>${staff.dob ?? ""}</td>
                 <td style="text-align:center;">
                     <input type="checkbox" class="admin-flag-toggle"
                            data-id="${staff.staffNo}"

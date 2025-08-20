@@ -82,7 +82,8 @@
                         <label for="eventDesc" class="form-label">Description</label>
                         <textarea class="form-control" id="eventDesc" name="eventDesc"
                                   placeholder="Optional description"
-                                  rows="3"></textarea>
+                                  rows="3" maxlength="255"></textarea>
+                        <div class="text-danger mt-1" id="eventDescError" style="display:none;">Description must not exceed 255 characters.</div>
                     </div>
 
                     <div class="mb-3">
@@ -242,12 +243,5 @@
 <script th:src="@{/js/main.js}"></script>
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/toast.min.js}"></script>
-
-<script>
-    var message = '[[${param.message}]]';
-    var messageType = '[[${param.messageType}]]';
-
-</script>
-
 </body>
 </html>
