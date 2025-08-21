@@ -1,7 +1,11 @@
-<header id="header" class="header d-flex align-items-center fixed-top"
-        th:fragment="siteHeader" xmlns:th="http://www.thymeleaf.org">
-
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
     <link th:href="@{/css/footer.css}" rel="stylesheet" />
+</head>
+<body>
+<header id="header" class="header d-flex align-items-center fixed-top"
+        th:fragment="siteHeader">
 
     <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
@@ -36,9 +40,9 @@
         </nav>
 
         <div class="grid-container">
-            <div class="label btn staffName" style="cursor: default;"><span th:text="${StaffName}"></span></div>
+            <div class="label staffName"><span th:text="${StaffName}"></span></div>
             <a th:onclick="'handleLogout(\'' + @{${WebUrl.LOGOUT_URL}} + '\');'">
-                <div class="icon btn logout"><i class="bi bi-box-arrow-right"></i></div>
+                <div class="icon logout"><i class="bi bi-box-arrow-right"></i></div>
             </a>
         </div>
 
@@ -53,6 +57,8 @@
 
     </div>
 </header>
+</body>
+</html>
 
 
 
