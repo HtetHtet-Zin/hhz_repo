@@ -36,7 +36,7 @@
         </nav>
 
         <div class="grid-container">
-            <div class="label btn staffName"><span th:text="${StaffName}"></span></div>
+            <div class="label btn staffName" style="cursor: default;"><span th:text="${StaffName}"></span></div>
             <a th:onclick="'handleLogout(\'' + @{${WebUrl.LOGOUT_URL}} + '\');'">
                 <div class="icon btn logout"><i class="bi bi-box-arrow-right"></i></div>
             </a>
