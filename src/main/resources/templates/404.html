@@ -9,7 +9,7 @@
   <meta name="keywords" content="">
   
   <!-- Favicons -->
-  <link th:href="@{./images/DAT Logo.png}" rel="icon">
+  <link th:href="@{/images/DAT Logo.png}" rel="icon">
 
   <!-- Vendor CSS Files -->
   <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
@@ -31,7 +31,7 @@
 
     <!-- Page Title -->
     <div class="page-title dark-background" data-aos="fade"
-         style="background-image: url(./images/404.png);" oncontextmenu="return false;">
+         th:style="'background-image: url(' + @{/images/404.png} + ')'" oncontextmenu="return false;">
       <div class="container position-relative">
         <h1>404</h1>
       </div>
