@@ -51,6 +51,10 @@ public class EventController {
     @GetMapping(WebUrl.EVENT_CREATE_URL)
     public String showCreateEventPage(HttpSession session, Model model) {
         if (session != null && session.getAttribute("staffNo") != null) {
+            Object isAdmin = session.getAttribute("adminFlag");
+            if (!Boolean.TRUE.equals(isAdmin)) {
+                return "redirect:" + WebUrl.EVENT_URL;
+            }
             model.addAttribute("staffs", staffService.findAll());
             return "event-create-page";
         }
