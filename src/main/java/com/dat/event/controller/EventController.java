@@ -81,8 +81,6 @@ public class EventController {
             return ResponseEntity.ok(response);
         }
 
-
-
         EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
         eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
         eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);

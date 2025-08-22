@@ -28,10 +28,10 @@ public final class WebUrl {
     private WebUrl() {
     }
 
-    public static final String ERROR_URL = "/404";
     public static final String STAFF_URL = "/staff";
     public static final String STAFF_BIRTHDAY_URL = "/staff-birthday";
     public static final String STAFFS_URL = "/staffs";
+
     public static final String LOGIN_URL = "/login";
     public static final String LOGOUT_URL = "/logout";
     public static final String EVENT_URL = "/event";

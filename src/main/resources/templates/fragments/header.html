@@ -7,11 +7,11 @@
 <header id="header" class="header d-flex align-items-center fixed-top"
         th:fragment="siteHeader">
 
-    <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    <div class="header-container container-xl position-relative d-flex align-items-center justify-content-between">
 
         <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_URL}} + '\';'"
            class="logo d-flex align-items-center me-auto me-xl-0">
-            <img th:src="@{/images/event_logo_new.png}" alt="DAT Event Club Logo" class="logo"/>
+            <img th:src="@{/images/event_logo.png}" alt="DAT Event Club Logo" class="logo"/>
         </a>
 
         <nav id="navmenu" class="navmenu">
@@ -29,7 +29,8 @@
                 </li>
                 <li><a onclick="setUpHeaderLink(this);"
                        th:classappend="${currentUrl == contextPath + WebUrl.STAFFS_URL}? 'active-link' : ''"
-                       th:data-current="${currentUrl}" th:data-target="@{${WebUrl.STAFFS_URL}}" th:if="${IsAdmin}">STAFFS</a>
+                       th:data-current="${currentUrl}" th:data-target="@{${WebUrl.STAFFS_URL}}"
+                       th:if="${IsAdmin}">STAFFS</a>
                 </li>
                 <li><a onclick="setUpHeaderLink(this);"
                        th:classappend="${currentUrl == contextPath + WebUrl.EVENT_CREATE_URL}? 'active-link' : ''"

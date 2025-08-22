@@ -38,7 +38,6 @@ public class StaffServiceImpl implements StaffService {
             session.setAttribute("adminFlag", staff.getAdminFlag());
             return true;
         }
-
         return false;
     }
 
@@ -66,9 +65,6 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public List<StaffDto> birthdayStaffList() {
-
-        LocalDate today = LocalDate.now();
-       int month = today.getMonthValue();
-        return staffMapper.toDtoList(staffRepository.birthdayStaff(month));
+        return staffMapper.toDtoList(staffRepository.birthdayStaff(LocalDate.now().getMonthValue()));
     }
 }

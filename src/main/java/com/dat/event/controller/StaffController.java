@@ -41,7 +41,10 @@ public class StaffController {
 
     @GetMapping(WebUrl.STAFFS_URL)
     public String findAll(HttpSession session) {
-        if (session != null && session.getAttribute("staffNo") != null) return "staff";
+        if (session != null && session.getAttribute("staffNo") != null) {
+
+            return "staff";
+        }
         return "redirect:" + WebUrl.LOGIN_URL;
     }
 

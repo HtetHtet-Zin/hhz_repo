@@ -72,13 +72,6 @@ public class LoginController {
         return "redirect:" + WebUrl.LOGIN_URL;
     }
 
-    @GetMapping(WebUrl.ERROR_URL)
-    public String ErrorPage(HttpSession session) {
-        if (session != null && session.getAttribute("staffNo") != null) {
-            session.invalidate();
-        }
-        return "404";
-    }
 
 
 

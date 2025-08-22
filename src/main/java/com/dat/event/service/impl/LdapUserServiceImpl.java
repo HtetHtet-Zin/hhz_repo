@@ -29,7 +29,6 @@ public class LdapUserServiceImpl implements LdapUserService {
     @Override
     public boolean isADUser(String staffID, String password) {
         try {
-            String base_dn = "DC=" + domain + ",DC=com";
             Hashtable<String, String> env = new Hashtable<>();
             env.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
             env.put(Context.PROVIDER_URL, url);
@@ -39,34 +38,6 @@ public class LdapUserServiceImpl implements LdapUserService {
             env.put(Context.REFERRAL, REFERRAL);
 
             DirContext ctx = new InitialDirContext(env);
-
-            /*String filter = "(sAMAccountName=" + staffID + ")";
-            SearchControls controls = new SearchControls();
-            controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-
-            NamingEnumeration<SearchResult> results = ctx.search(base_dn, filter, controls);
-
-            while (results.hasMore()) {
-                SearchResult result = results.next();
-                System.out.println("DN: " + result.getNameInNamespace());
-
-                Attributes attrs = result.getAttributes();
-                NamingEnumeration<? extends Attribute> allAttrs = attrs.getAll();
-
-                while (allAttrs.hasMore()) {
-                    Attribute attr = allAttrs.next();
-                    NamingEnumeration<?> values = attr.getAll();
-
-                    System.out.print(attr.getID() + ": ");
-
-                    while (values.hasMore()) {
-                        Object value = values.next();
-                        System.out.println(value);
-                    }
-                }
-
-                System.out.println("------------------------");
-            }*/
 
             ctx.close();
             return true;
