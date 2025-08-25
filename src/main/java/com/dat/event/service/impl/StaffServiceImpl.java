@@ -36,6 +36,7 @@ public class StaffServiceImpl implements StaffService {
             session.setAttribute("staffNo", staff.getStaffNo());
             session.setAttribute("name", staff.getName());
             session.setAttribute("adminFlag", staff.getAdminFlag());
+            log.info("Login User Info - {}, {}",staffNo, staff.getName());
             return true;
         }
         return false;

@@ -69,7 +69,6 @@ public class StaffController {
     @GetMapping(WebUrl.STAFF_BIRTHDAY_URL)
     public String birthdayStaff(HttpSession session, Model model) {
         if (session != null && session.getAttribute("staffNo") != null) {
-            log.info("name - " + session.getAttribute("staffNo"));
             var staffNoList = staffService.birthdayStaffList();
             String projectRoot = System.getProperty("user.dir");
             Path imageDir = Paths.get(projectRoot, "photo", "birthdayPhoto");
