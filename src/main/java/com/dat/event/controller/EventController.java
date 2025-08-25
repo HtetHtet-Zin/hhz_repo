@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +55,11 @@ public class EventController {
     private String contextPath;
 
     @GetMapping(WebUrl.EVENT_CREATE_URL)
-    public String showCreateEventPage(HttpSession session, Model model) {
+    public String showCreateEventPage(HttpSession session, Model model) throws AccessDeniedException {
         if (session != null && session.getAttribute("staffNo") != null) {
             Object isAdmin = session.getAttribute("adminFlag");
             if (!Boolean.TRUE.equals(isAdmin)) {
-                return "redirect:" + WebUrl.EVENT_URL;
+                throw new AccessDeniedException("No Permission To - " + session.getAttribute("staffNo"));
             }
             model.addAttribute("staffs", staffService.findAll());
             return "event-create-page";
@@ -102,13 +103,13 @@ public class EventController {
     }
 
     @GetMapping(WebUrl.EVENT_EDIT_URL+"/{id}/{name}")
-    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId, @PathVariable("name") String eventName, HttpSession session) {
+    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId, @PathVariable("name") String eventName, HttpSession session) throws AccessDeniedException {
         if (session == null || session.getAttribute("staffNo") == null) {
             return new ModelAndView("redirect:" + WebUrl.LOGIN_URL);
         }
         Boolean isAdmin = (Boolean) session.getAttribute("adminFlag");
         if (!Boolean.TRUE.equals(isAdmin)) {
-            return new ModelAndView("redirect:" + WebUrl.EVENT_URL);
+            throw new AccessDeniedException("No Permission To - " + session.getAttribute("staffNo"));
         }
         var eventDto = eventService.getEvent(eventId);
         if (!eventDto.getName().equals(eventName)) throw new ResourceNotFoundException();

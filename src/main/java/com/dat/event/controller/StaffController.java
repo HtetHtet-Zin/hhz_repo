@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,11 +41,11 @@ public class StaffController {
     private final StaffService staffService;
 
     @GetMapping(WebUrl.STAFFS_URL)
-    public String findAll(HttpSession session) {
+    public String findAll(HttpSession session) throws AccessDeniedException {
         if (session != null && session.getAttribute("staffNo") != null) {
             Object isAdmin = session.getAttribute("adminFlag");
             if (!Boolean.TRUE.equals(isAdmin)) {
-                return "redirect:" + WebUrl.EVENT_URL;
+                throw new AccessDeniedException("No Permission To - " + session.getAttribute("staffNo"));
             }
             return "staff";
         }
