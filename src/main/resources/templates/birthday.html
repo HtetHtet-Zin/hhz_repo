@@ -43,7 +43,7 @@
 <main class="main">
 
   <!-- Page Title Section -->
-  <div class="page-title dark-background" data-aos="fade" style="background-image: url('./images/Birthday.jpg');" oncontextmenu="return false;">
+  <div class="page-title dark-background" data-aos="fade" th:style="'background-image: url(' + @{/images/Birthday.jpg} + ');'" oncontextmenu="return false;">
     <canvas id="fireworks"></canvas>
     <div class="balloon-container" id="balloon-container"></div>
     <div class="container position-relative text-center">

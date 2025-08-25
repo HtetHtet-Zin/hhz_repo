@@ -19,8 +19,8 @@ public interface StaffRepository extends JpaRepository<StaffEntity, Long> {
     @Query(value = "SELECT COUNT(*) FROM tbl_staff WHERE staff_no = :staffNo", nativeQuery = true)
     Long existsByStaffNo(@Param("staffNo") String staffNo);
 
-    Page<StaffEntity> findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCase(
-            String name, String staffNo, Pageable pageable);
+    Page<StaffEntity> findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCaseOrTeamContainingIgnoreCaseOrDepartmentContainingIgnoreCase(
+            String name, String staffNo, String team, String department, Pageable pageable);
 
 
     @Query(value = "SELECT * FROM tbl_staff WHERE MONTH(dob) = :month",nativeQuery = true)

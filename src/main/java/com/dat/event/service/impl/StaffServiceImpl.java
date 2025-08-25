@@ -48,7 +48,7 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Page<StaffDto> findAll(final String keyword, final int page) {
-        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCase(keyword, keyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("staffNo").ascending())).map(staffMapper::toDTO);
+        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCaseOrTeamContainingIgnoreCaseOrDepartmentContainingIgnoreCase(keyword, keyword, keyword, keyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("staffNo").ascending())).map(staffMapper::toDTO);
     }
 
     @Override

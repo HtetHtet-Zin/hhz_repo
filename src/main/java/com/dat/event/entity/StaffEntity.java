@@ -41,6 +41,8 @@ public class StaffEntity {
     private String email;
     private Long doorLogId;
     private String mobile;
+    private String team;
+    private String department;
     private boolean delFlag;
     private LocalDateTime createdAt;
     private String createdBy;

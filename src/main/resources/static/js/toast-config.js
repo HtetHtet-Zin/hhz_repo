@@ -5,25 +5,31 @@ document.addEventListener("DOMContentLoaded", function() {
         const messageType = urlParams.get('messageType');
 
         if (message && messageType) {
-             if (messageType === 'success') {
-                toastr.success(message);
-             } else if (messageType === 'error') {
-                toastr.error(message);
-             }
-             const newUrl = window.location.origin + window.location.pathname;
-             history.replaceState(null, '', newUrl);
+            switch (messageType) {
+                case 'success' :
+                    toastr.success(message);
+                    break;
+                case 'error' :
+                    toastr.error(message);
+                    break;
+            }
+            const newUrl = window.location.origin + window.location.pathname;
+            history.replaceState(null, '', newUrl);
         }
     } catch (error) {}
 
     try {
         if (redirectMessage && redirectMessageType) {
-             if (redirectMessageType === 'success') {
-                toastr.success(redirectMessage);
-             } else if (redirectMessageType === 'error') {
-                toastr.error(redirectMessage);
-             }
-             const newUrl = window.location.origin + window.location.pathname;
-             history.replaceState(null, '', newUrl);
+            switch (redirectMessageType) {
+                case 'success' :
+                    toastr.success(redirectMessage);
+                    break;
+                case 'error' :
+                    toastr.error(redirectMessage);
+                    break;
+            }
+            const newUrl = window.location.origin + window.location.pathname;
+            history.replaceState(null, '', newUrl);
         }
     } catch (error) {}
 

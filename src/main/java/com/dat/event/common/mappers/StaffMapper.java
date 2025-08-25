@@ -24,11 +24,4 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface StaffMapper extends BaseMapper<StaffDto, StaffEntity> {
 
-    @Override
-    @Mapping(target = "staffId", source = "staffId") // ensure ID is mapped
-    StaffDto toDTO(StaffEntity entity);
-
-    @Override
-    @Mapping(target = "staffId", source = "staffId")
-    StaffEntity toEntity(StaffDto dto);
 }

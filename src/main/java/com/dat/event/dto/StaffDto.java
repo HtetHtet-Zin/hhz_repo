@@ -29,6 +29,8 @@ public class StaffDto {
     private String name;
     private String email;
     private String mobile;
+    private String team;
+    private String department;
     private LocalDate dob;
     private Boolean adminFlag;
 

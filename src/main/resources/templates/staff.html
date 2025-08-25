@@ -30,7 +30,7 @@
 
         <!-- Page Title -->
         <div class="page-title dark-background" data-aos="fade"
-             style="background-image: url(./images/staff_list.png);" oncontextmenu="return false;">
+             th:style="'background-image: url(' + @{/images/staff_list.png} + ');'" oncontextmenu="return false;">
             <div class="container position-relative">
                 <h1>Staff List</h1>
             </div>
@@ -59,6 +59,8 @@
                     <th>Staff-ID</th>
                     <th>Staff Name</th>
                     <th>Email</th>
+                    <th>Team</th>
+                    <th>Department</th>
                     <th>Mobile</th>
                     <th>Admin</th>
                 </thead>
