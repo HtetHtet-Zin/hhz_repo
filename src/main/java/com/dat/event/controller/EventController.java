@@ -8,11 +8,13 @@ package com.dat.event.controller;
 
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.common.excel.ExcelUtility;
+import com.dat.event.common.exception.ResourceNotFoundException;
 import com.dat.event.dto.*;
 import com.dat.event.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,9 @@ public class EventController {
     private final StaffService staffService;
     private final EventPlannerService eventPlannerService;
     private final ImageStorageService imageStorageService;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
 
     @GetMapping(WebUrl.EVENT_CREATE_URL)
     public String showCreateEventPage(HttpSession session, Model model) {
@@ -90,14 +95,14 @@ public class EventController {
         eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
         imageStorageService.saveImage(eventPhotoFile, savedDto.getName());
 
-        response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
+        response.put("redirectUrl", contextPath.concat(WebUrl.EVENT_URL));
         response.put("status", "success");
         response.put("message", "Event created successfully");
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(WebUrl.EVENT_EDIT_URL+"/{id}")
-    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId, HttpSession session) {
+    @GetMapping(WebUrl.EVENT_EDIT_URL+"/{id}/{name}")
+    public ModelAndView showEditEventPage(@PathVariable("id") Long eventId, @PathVariable("name") String eventName, HttpSession session) {
         if (session == null || session.getAttribute("staffNo") == null) {
             return new ModelAndView("redirect:" + WebUrl.LOGIN_URL);
         }
@@ -105,8 +110,9 @@ public class EventController {
         if (!Boolean.TRUE.equals(isAdmin)) {
             return new ModelAndView("redirect:" + WebUrl.EVENT_URL);
         }
-        var staffDtoList = staffService.findAll();
         var eventDto = eventService.getEvent(eventId);
+        if (!eventDto.getName().equals(eventName)) throw new ResourceNotFoundException();
+        var staffDtoList = staffService.findAll();
         var eventScheduleDtoList =  eventScheduleService.getEventSchedule(eventId);
         var inChargePerson = eventPlannerService.getInChargePerson(eventId);
         var supportedMemberList = eventPlannerService.getSupportedMember(eventId);
@@ -149,7 +155,7 @@ public class EventController {
                 }
             }
         }
-        response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
+        response.put("redirectUrl", contextPath.concat(WebUrl.EVENT_URL));
         response.put("status", "success");
         response.put("message", "Event updated successfully");
         return ResponseEntity.ok(response);
@@ -189,15 +195,18 @@ public class EventController {
         return ResponseEntity.ok(eventRegistrationService.fetchEventStaffList(eventName.isBlank() ? null : eventName, keyword.isBlank() ? null : keyword, page));
     }
 
-    @GetMapping(WebUrl.EVENT_REGISTRATION_URL + "/{id}")
-    public String event_registration(@PathVariable("id") String eventId, HttpSession session, Model model) {
-        if (session != null && session.getAttribute("staffNo") != null) {
-            model.addAttribute("planner", eventPlannerService.getEventWithSchedule(Long.parseLong(eventId)));
-            model.addAttribute("registeredSchedule", eventRegistrationService.getRegisteredSchedule(Long.valueOf(eventId), (Long) session.getAttribute("id")));
-            model.addAttribute("allScheduleIds", eventScheduleService.getAllScheduleIdByEvent(Long.valueOf(eventId)));
-            return "event-registration";
+    @GetMapping(WebUrl.EVENT_REGISTRATION_URL + "/{id}/{name}")
+    public String event_registration(@PathVariable("id") Long eventId, @PathVariable("name") String eventName, HttpSession session, Model model) {
+        if (session == null || session.getAttribute("staffNo") == null) {
+            return "redirect:" + WebUrl.LOGIN_URL;
         }
-        return "redirect:" + WebUrl.LOGIN_URL;
+        var eventDto = eventService.getEvent(eventId);
+        if (!eventDto.getName().trim().equals(eventName.trim())) throw new ResourceNotFoundException();
+
+        model.addAttribute("planner", eventPlannerService.getEventWithSchedule(eventId));
+        model.addAttribute("registeredSchedule", eventRegistrationService.getRegisteredSchedule(eventId, (Long) session.getAttribute("id")));
+        model.addAttribute("allScheduleIds", eventScheduleService.getAllScheduleIdByEvent(eventId));
+        return "event-registration";
     }
 
     @PostMapping(WebUrl.EVENT_REGISTRATION_URL)
@@ -220,18 +229,18 @@ public class EventController {
         Long staffId = (Long) session.getAttribute("id");
         List<String> conflicts = eventRegistrationService.checkDuplicateSchedule(staffId, registeredScheduleIds);
         if (!conflicts.isEmpty()) {
-            response.put("redirectUrl", "/club" + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
+            response.put("redirectUrl", contextPath + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
             response.put("status", "error");
             response.put("message", "Already Registered at this date and time - " + String.join(", ", conflicts));
             return ResponseEntity.ok(response);
         }
         int success = eventRegistrationService.registerEvent(staffId, registeredScheduleIds, eventId);
         if (success == 0) {
-            response.put("redirectUrl", "/club" + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
+            response.put("redirectUrl", contextPath + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
             response.put("status", "error");
-            response.put("message", "Fail to Participate.");
+            response.put("message", isNew ? "Fail to Participate." : "Fail to Update.");
         } else {
-            response.put("redirectUrl", "/club" + WebUrl.EVENT_URL);
+            response.put("redirectUrl", contextPath.concat(WebUrl.EVENT_URL));
             response.put("status", "success");
             response.put("message", isNew ? "Successfully Participate." : "Successfully Update.");
         }
@@ -249,8 +258,8 @@ public class EventController {
                 .body(eventRegistrationService.exportExcel(keyword, eventName));
     }
 
-    @GetMapping(WebUrl.EVENT_DELETE_URL + "/{id}")
-    public String deleteEvent(@PathVariable ("id") String eventId, RedirectAttributes redirectAttributes, HttpSession session) {
+    @GetMapping(WebUrl.EVENT_DELETE_URL + "/{id}/{name}")
+    public String deleteEvent(@PathVariable ("id") Long eventId, @PathVariable ("name") String eventName, RedirectAttributes redirectAttributes, HttpSession session) {
         if (session == null || session.getAttribute("staffNo") == null) {
             return "redirect:" + WebUrl.LOGIN_URL;
         }
@@ -258,10 +267,11 @@ public class EventController {
         if (!Boolean.TRUE.equals(isAdmin)) {
             return "redirect:" + WebUrl.EVENT_URL;
         }
-
-        eventScheduleService.deleteSchedule(Long.valueOf(eventId));
-        eventPlannerService.deletePlanner(Long.parseLong(eventId));
-        eventService.deleteEvent(Long.valueOf(eventId));
+        var eventDto = eventService.getEvent(eventId);
+        if (!eventDto.getName().equals(eventName)) throw new ResourceNotFoundException();
+        eventScheduleService.deleteSchedule(eventId);
+        eventPlannerService.deletePlanner(eventId);
+        eventService.deleteEvent(eventId);
         log.info("Delete Event - " + eventId + " - By " + session.getAttribute("staffNo").toString());
         redirectAttributes.addFlashAttribute("message", "Delete Success");
         redirectAttributes.addFlashAttribute("messageType", "success");

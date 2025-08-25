@@ -40,15 +40,15 @@
     <div class="grid">
       <div class="img-container" th:each="event : ${eventList}">
         <div class="card fly-in">
-        <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_REGISTRATION_URL}+'/'+${event.eventId}} + '\';'" >
+        <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_REGISTRATION_URL} + '/' +${event.eventId} +'/'+ ${event.name}} + '\';'" >
           <img th:src="@{'/photo/eventPhoto/' + ${event.eventPhoto}}" alt="Event photo" oncontextmenu="return false;" draggable="false"/>
         </a>
           <div class="card-title">
             <span th:text="${event.name}" class="truncate-text"></span>&nbsp
-            <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId}} + '\';'" th:if="${IsAdmin}">
+            <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" th:if="${IsAdmin}">
               <i class="bi bi-pencil-square"></i>
             </a>
-            <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId}} + '\')'" th:if="${IsAdmin}">
+            <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\')'" th:if="${IsAdmin}">
               <i style="color: #d02d2d;" class="bi bi-x-square-fill"></i>
             </a>
           </div>

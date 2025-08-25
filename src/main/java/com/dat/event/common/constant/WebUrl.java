@@ -39,7 +39,7 @@ public final class WebUrl {
     public static final String EVENT_DELETE_URL = "/event-delete";
     public static final String EVENT_STAFF_DOWNLOAD_URL = EVENT_URL + "/download";
     public static final String EVENT_CHECK_URL = "/event-check";
-    public static final String EVENT_EDIT_URL = "event-edit";
+    public static final String EVENT_EDIT_URL = "/event-edit";
     public static final String EVENTS_URL = "/participant-list";
     public static final String EVENT_REGISTRATION_URL = "/event-registration";
     public static final String EVENT_REGISTRATION_POST_URL = "/register-event-schedule";

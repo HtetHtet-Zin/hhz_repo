@@ -31,6 +31,7 @@ public class GlobalExceptionHandler {
             session.invalidate();
         }
         model.addAttribute("LOGIN_URL", WebUrl.LOGIN_URL);
+        //ex.printStackTrace();
         return "404";
     }
 }
