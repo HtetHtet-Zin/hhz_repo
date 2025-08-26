@@ -37,7 +37,8 @@
                        th:data-current="${currentUrl}" th:data-target="@{${WebUrl.EVENT_CREATE_URL}}"
                        th:if="${IsAdmin}">CREATE EVENT</a></li>
                 <li>
-                <a href="./pdf/Policy.pdf" target="_blank" rel="noopener noreferrer" style="color: white;">POLICY</a></li>
+                    <a th:href="@{/pdf/Policy.pdf}" target="_blank" rel="noopener noreferrer" style="color: white;">POLICY</a>
+                </li>
             </ul>
             <i class="mobile-nav-toggle me-4 d-xl-none bi bi-list"></i>
         </nav>
