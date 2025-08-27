@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,9 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +54,7 @@ public class EventController {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
+
     @GetMapping(WebUrl.EVENT_CREATE_URL)
     public String showCreateEventPage(HttpSession session, Model model) throws AccessDeniedException {
         if (session != null && session.getAttribute("staffNo") != null) {
@@ -71,36 +69,38 @@ public class EventController {
     }
 
     @PostMapping(WebUrl.EVENT_CHECK_URL)
-    public ResponseEntity<Map<String, Object>> checkEvent(@RequestParam("eventName") String eventName){
+    public ResponseEntity<Map<String, Object>> checkEvent(@RequestParam("eventName") String eventName) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", eventService.findByEventName(eventName) != null ? "error" : "success");
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(WebUrl.EVENT_CREATE_URL)
-    public ResponseEntity<Map<String, String>> createEvent(
-            HttpSession session,
+    public ResponseEntity<?> createEvent(
+            HttpSession session, RedirectAttributes redirectAttributes,
             @RequestPart("eventData") RequestEventPlanDto requestEventPlanDto,
             @RequestPart("eventPhoto") MultipartFile eventPhotoFile) {
         // step-1 create event, (name,description,createAt,createBy)
         // step-2 create schedule, (eventId,date,startTime,endTime,createAt,createBy,updateAt,updateBy)
         // step-3 create eventPlanner, (staffId,eventId,supportedMemberFlg,delFlg)
-        Map<String, String> response = new HashMap<>();
         String loginStaffNo = session != null && session.getAttribute("staffNo") != null ? session.getAttribute("staffNo").toString() : null;
+        Map<String, String> response = new HashMap<>();
+
         if (loginStaffNo == null) {
             response.put("redirectUrl", WebUrl.LOGIN_URL);
             response.put("status", "error");
             response.put("message", "Session has expired. Please log in again.");
             return ResponseEntity.ok(response);
+
         }
 
-        EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
+        EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getEventLocation(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
         eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
         eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
         imageStorageService.saveImage(eventPhotoFile, savedDto.getName());
 
-        if(requestEventPlanDto.getEventLocation().equals("OFFICE")){
-            response.put("redirectUrl", contextPath + WebUrl.EVENT_EDIT_URL +"/"+savedDto.getEventId()+"/"+savedDto.getName());
+        if (savedDto.getEventLocation().equals("OFFICE")) {
+            response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(savedDto.getEventId().toString()).concat(savedDto.getName()));
             response.put("status", null);
             response.put("message", null);
             return ResponseEntity.ok(response);
@@ -112,7 +112,7 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(WebUrl.EVENT_EDIT_URL+"/{id}/{name}")
+    @GetMapping(WebUrl.EVENT_EDIT_URL + "/{id}/{name}")
     public ModelAndView showEditEventPage(@PathVariable("id") Long eventId, @PathVariable("name") String eventName, HttpSession session) throws AccessDeniedException {
         if (session == null || session.getAttribute("staffNo") == null) {
             return new ModelAndView("redirect:" + WebUrl.LOGIN_URL);
@@ -124,48 +124,52 @@ public class EventController {
         var eventDto = eventService.getEvent(eventId);
         if (!eventDto.getName().equals(eventName)) throw new ResourceNotFoundException();
         var staffDtoList = staffService.findAll();
-        var eventScheduleDtoList =  eventScheduleService.getEventSchedule(eventId);
+        var eventScheduleDtoList = eventScheduleService.getEventSchedule(eventId);
         var inChargePerson = eventPlannerService.getInChargePerson(eventId);
         var supportedMemberList = eventPlannerService.getSupportedMember(eventId);
-        log.info("schedule-list {}", eventScheduleDtoList);
+
         //log.info("staff-list {}", staffDtoList);
         return new ModelAndView("event-edit-page")
-                .addObject( "staffs", staffDtoList)
-                .addObject( "eventId", eventDto.getEventId())
-                .addObject("eventName",eventDto.getName())
-                .addObject("description",eventDto.getDescription())
-                .addObject("eventScheduleList",eventScheduleDtoList)
-                .addObject("inChargePerson",inChargePerson.getName())
-                .addObject("inChargePersonId",inChargePerson.getStaffId())
-                .addObject("inChargePersonPlanId",inChargePerson.getPlannerId())
-                .addObject("supportedMemberList",supportedMemberList);
+                .addObject("staffs", staffDtoList)
+                .addObject("eventId", eventDto.getEventId())
+                .addObject("eventName", eventDto.getName())
+                .addObject("eventLocation", eventDto.getEventLocation())
+                .addObject("description", eventDto.getDescription())
+                .addObject("eventScheduleList", eventScheduleDtoList)
+                .addObject("inChargePerson", inChargePerson.getName())
+                .addObject("inChargePersonId", inChargePerson.getStaffId())
+                .addObject("inChargePersonPlanId", inChargePerson.getPlannerId())
+                .addObject("supportedMemberList", supportedMemberList);
     }
 
     @PostMapping(WebUrl.EVENT_EDIT_URL)
     public ResponseEntity<?> editEvent(
-            HttpSession session,
+            HttpSession session, RedirectAttributes redirectAttributes,
             @RequestPart("eventData") UpdateEventPlanDto requestEventPlanDto,
-            @RequestPart(value = "eventPhoto",required = false) MultipartFile eventPhotoFile) {
-
-        log.info("RequestEventPlanner {}", requestEventPlanDto);
-        log.info("eventPhoto {}", eventPhotoFile);
+            @RequestPart(value = "eventPhoto", required = false) MultipartFile eventPhotoFile) {
         Map<String, String> response = new HashMap<>();
         String loginStaffNo = session != null && session.getAttribute("staffNo") != null ? session.getAttribute("staffNo").toString() : null;
-        log.info("loginStaffNo {}", loginStaffNo);
         EventDto eventDto = eventService.findById(requestEventPlanDto.getEventId());
 
         if (eventDto != null && loginStaffNo != null) {
-            EventDto updateDto = eventService.update(eventDto.getEventId(), requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
+            EventDto updateDto = eventService.update(eventDto.getEventId(), requestEventPlanDto.getEventName(), requestEventPlanDto.getEventLocation(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
             eventScheduleService.updateEventSchedule(updateDto, requestEventPlanDto, loginStaffNo);
             eventPlannerService.updateEventPlanner(updateDto, requestEventPlanDto, loginStaffNo);
             if (eventPhotoFile != null && !eventPhotoFile.isEmpty()) {
                 imageStorageService.saveImage(eventPhotoFile, updateDto.getName());
-            }else{
-                if(eventDto.getName() != requestEventPlanDto.getEventName()) {
+            } else {
+                if (eventDto.getName().equalsIgnoreCase(requestEventPlanDto.getEventName())) {
                     imageStorageService.updateImage(eventDto.getName(), requestEventPlanDto.getEventName());
                 }
             }
+            if (updateDto.getEventLocation().equals("OFFICE")) {
+                response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(updateDto.getEventId().toString()).concat(updateDto.getName()));
+                response.put("status", null);
+                response.put("message", null);
+                return ResponseEntity.ok(response);
+            }
         }
+
         response.put("redirectUrl", contextPath.concat(WebUrl.EVENT_URL));
         response.put("status", "success");
         response.put("message", "Event updated successfully");
@@ -270,7 +274,7 @@ public class EventController {
     }
 
     @GetMapping(WebUrl.EVENT_DELETE_URL + "/{id}/{name}")
-    public String deleteEvent(@PathVariable ("id") Long eventId, @PathVariable ("name") String eventName, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String deleteEvent(@PathVariable("id") Long eventId, @PathVariable("name") String eventName, RedirectAttributes redirectAttributes, HttpSession session) {
         if (session == null || session.getAttribute("staffNo") == null) {
             return "redirect:" + WebUrl.LOGIN_URL;
         }
@@ -283,7 +287,7 @@ public class EventController {
         eventScheduleService.deleteSchedule(eventId);
         eventPlannerService.deletePlanner(eventId);
         eventService.deleteEvent(eventId);
-        log.info("Delete Event - " + eventId + " - By " + session.getAttribute("staffNo").toString());
+        log.info("Delete Event - {} - By {} ", eventId, session.getAttribute("staffNo").toString());
         redirectAttributes.addFlashAttribute("message", "Delete Success");
         redirectAttributes.addFlashAttribute("messageType", "success");
         return "redirect:" + WebUrl.EVENT_URL;

@@ -24,6 +24,7 @@ public class UpdateEventPlanDto {
 
     private Long eventId;
     private String eventName;
+    private String eventLocation;
     private String description;
     private Long inChargePersonPlannerId;
     private Long inChargePerson;

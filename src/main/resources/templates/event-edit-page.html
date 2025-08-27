@@ -58,6 +58,42 @@
                                     document.getElementById('fileName').textContent = file.name;
                                }" type="file"/>
                         </div>
+                        <div class="mb-3">
+                            <span class="form-label d-block">Event Location <span class="text-danger">*</span></span>
+                            <div class="radio-group" id="eventLocation">
+                                <label class="radio">
+                                    <input type="radio" name="eventLocation"
+                                           th:value="'OFFICE'"
+                                           th:checked="${eventLocation == 'OFFICE'}"
+                                           onclick="toggleOtherLocation(false)">
+                                    <span class="radio-mark"></span>
+                                    <span>Office Cafeteria</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="eventLocation"
+                                           th:value="'OTHER'"
+                                           th:checked="${eventLocation != 'OFFICE'}"
+                                           onclick="toggleOtherLocation(true)">
+                                    <span class="radio-mark"></span>
+                                    <span>Other Location</span>
+                                </label>
+                            </div>
+
+                            <!-- Hidden input -->
+                            <div id="otherLocationDiv" class="mt-2"
+                                 th:style="${eventLocation != 'OFFICE'} ? 'display:block;' : 'display:none;'">
+                                <label for="otherLocation" class="form-label">Other Location</label>
+                                <input type="text" class="form-control" id="otherLocation" name="otherLocation"
+                                       placeholder="Enter other location"
+                                       th:value="${eventLocation}">
+                            </div>
+
+                            <!-- Error message -->
+                            <div class="text-danger mt-1" id="eventLocationError" style="display:none;">
+                                Please select event location.
+                            </div>
+                        </div>
+
 
                         <div class="mb-3">
                             <label for="eventDesc" class="form-label">Description</label>

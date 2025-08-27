@@ -20,9 +20,9 @@ import java.util.List;
  */
 public interface EventService {
 
-    EventDto save(String eventName, String description, MultipartFile file, String staffNo);
+    EventDto save(String eventName, String eventLocation, String description, MultipartFile file, String staffNo);
 
-    EventDto update(Long eventId,String eventName, String description, MultipartFile file, String staffNo);
+    EventDto update(Long eventId, String eventName, String eventLocation, String description, MultipartFile file, String staffNo);
 
     EventDto getEvent(long eventId);
 
