@@ -3,7 +3,6 @@ const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("search");
 const countElem = document.getElementById('count');
 const participantElem = document.getElementById('participant-text');
-const searchBtn = document.getElementById("searchBtn");
 
 const table = tableBody.closest('table');
 const thCount = table.querySelectorAll('th').length;
@@ -17,12 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 searchInput.addEventListener("input", () => {
-    currentKeyword = searchInput.value.trim();
-    currentPage = 0;
-    loadStaffData();
-});
-
-searchBtn.addEventListener("click", () => {
     currentKeyword = searchInput.value.trim();
     currentPage = 0;
     loadStaffData();
@@ -89,9 +82,11 @@ console.log("Data - ", data.content);
                    <td>${booking.team}</td>
                 <td>${booking.department}</td>
                  <td style="text-align:center;">
-                      <input type="checkbox" class="admin-flag-toggle"
-                              data-id="${booking.id}"
-                   >
+                    <button type="button" id="approveButton" onclick="approveModalOpen()"
+                                       class="w-[120px] h-[45px] bg-[#023047] text-white text-sm font-medium rounded-[10px] shadow-md hover:bg-[#0097b2]"
+                                           data-id="${booking.id}"  >
+                                       <i class="fa-solid fa-sliders"></i> Action
+                                     </button>
                   </td>
             </tr>
         `;
@@ -136,3 +131,126 @@ function changePage(page) {
     currentPage = page;
     loadStaffData();
 }
+
+
+
+// --- Enable/Disable Approve/Reject Buttons Based on Textarea ---
+document.getElementById("modalTextarea").addEventListener("input", function () {
+  const reason = this.value.trim();
+  const approveBtn = document.querySelector('#customAlertBox button[onclick="approveModalSubmit()"]');
+  const rejectBtn = document.querySelector('#customAlertBox button[onclick="rejectModalSubmit()"]');
+
+  const enable = reason.length > 0;
+
+  if (approveBtn) {
+    approveBtn.disabled = !enable;
+    approveBtn.classList.toggle("opacity-50", !enable);
+  }
+
+  if (rejectBtn) {
+    rejectBtn.disabled = !enable;
+    rejectBtn.classList.toggle("opacity-50", !enable);
+  }
+});
+
+// --- Approve Modal Open ---
+function approveModalOpen() {
+
+  document.getElementById("customAlertBox").style.display = "block";
+}
+
+// --- Close Modal & Reset ---
+function approveModalClose() {
+  document.getElementById("customAlertBox").style.display = "none";
+  document.getElementById("modalTextarea").value = "";
+
+  const approveBtn = document.querySelector('#customAlertBox button[onclick="approveModalSubmit()"]');
+  const rejectBtn = document.querySelector('#customAlertBox button[onclick="rejectModalSubmit()"]');
+
+  if (approveBtn) {
+    approveBtn.disabled = true;
+    approveBtn.classList.add("opacity-50");
+  }
+
+  if (rejectBtn) {
+    rejectBtn.disabled = true;
+    rejectBtn.classList.add("opacity-50");
+  }
+}
+
+// --- Submit Approve ---
+function approveModalSubmit() {
+  const reason = document.getElementById("modalTextarea").value.trim();
+  const selectedIds = Array.from(document.querySelectorAll('.rowCheckbox:checked'))
+      .map(cb => cb.getAttribute('data-form-id'));
+
+  if (reason === "") {
+    approveModalShowMessage("Please enter a reason.", "error");
+    return;
+  }
+
+  if (selectedIds.length === 0) {
+    approveModalShowMessage("No forms selected.", "error");
+    approveModalClose();
+    return;
+  }
+
+  document.getElementById("formIds").value = selectedIds.join(",");
+  document.getElementById("approveReason").value = reason;
+  document.getElementById("formAction").value = "approve";
+
+
+  const okButton = document.querySelector('#customAlertBox button[onclick="approveModalSubmit()"]');
+  if (okButton) okButton.disabled = true;
+
+  document.getElementById("approveForm").submit();
+  approveModalClose();
+}
+
+// --- Submit Reject ---
+function rejectModalSubmit() {
+  const reason = document.getElementById("modalTextarea").value.trim();
+  const selectedIds = Array.from(document.querySelectorAll('.rowCheckbox:checked'))
+      .map(cb => cb.getAttribute('data-form-id'));
+
+  if (reason === "") {
+    approveModalShowMessage("Please enter a reason.", "error");
+    return;
+  }
+
+  if (selectedIds.length === 0) {
+    approveModalShowMessage("No forms selected.", "error");
+    approveModalClose();
+    return;
+  }
+
+  document.getElementById("formIds").value = selectedIds.join(",");
+  document.getElementById("approveReason").value = reason;
+  document.getElementById("formAction").value = "reject";
+
+
+  const rejectBtn = document.querySelector('#customAlertBox button[onclick="rejectModalSubmit()"]');
+  if (rejectBtn) rejectBtn.disabled = true;
+
+  document.getElementById("approveForm").submit();
+  approveModalClose();
+}
+
+
+    function validateInput(textarea) {
+        const value = textarea.value;
+        const length = value.length;
+
+        const counter = document.getElementById("wordCounter");
+        if (counter) {
+            counter.textContent = length;
+        }
+
+        if (length > 255) {
+            textarea.setCustomValidity("Maximum 255 characters allowed.");
+        } else {
+            textarea.setCustomValidity("");
+        }
+
+        textarea.reportValidity(); // Optional: show native validation message
+    }
