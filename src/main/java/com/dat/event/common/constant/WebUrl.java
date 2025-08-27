@@ -43,11 +43,14 @@ public final class WebUrl {
     public static final String EVENTS_URL = "/participant-list";
     public static final String EVENT_REGISTRATION_URL = "/event-registration";
     public static final String EVENT_REGISTRATION_POST_URL = "/register-event-schedule";
+    public static final String CAFETERIA_BOOKING_URL = "/cafeteria-booking";
+    public static final String CAFETERIA_BOOKING_POST_URL = "/cafeteria-booking-booked";
 
     public static final String GALLERY_URL = "/gallery";
     public static final String API_URL = "/api";
 
     public static final String EVENT_API_URL = API_URL + EVENT_URL;
+
 
     @ModelAttribute("currentUrl")
     public String currentUrl(HttpServletRequest request) {

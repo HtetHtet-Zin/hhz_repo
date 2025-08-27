@@ -48,13 +48,18 @@
               <img th:src="@{'/photo/eventPhoto/' + ${event.eventPhoto}}" alt="Event photo" oncontextmenu="return false;" draggable="false"/>
             </a>
             <div class="card-title">
-              <span th:text="${event.name}" class="truncate-text"></span>&nbsp
-              <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" th:if="${IsAdmin}">
-                <i class="bi bi-pencil-square"></i>
-              </a>
-              <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\')'" th:if="${IsAdmin}">
-                <i style="color: #d02d2d;" class="bi bi-x-square-fill"></i>
-              </a>
+              <span th:text="${event.name}" class="truncate-text"></span>
+              <div class="action-tabs">
+                <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" th:if="${IsAdmin}">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <a th:onclick="'window.location.href=\'' + @{${WebUrl.CAFETERIA_BOOKING_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" th:if="${IsApproval}">
+                  <i class="bi bi-bookmark-check-fill"></i>
+                </a>
+                <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\')'" th:if="${IsAdmin}">
+                  <i style="color: #d02d2d;" class="bi bi-x-square-fill"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -85,8 +90,6 @@
 <script th:src="@{/assets/vendor/isotope-layout/isotope.pkgd.min.js}"></script>
 <script th:src="@{/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js}"></script>
 <script th:src="@{/assets/vendor/glightbox/js/glightbox.min.js}"></script>
-<script th:src="@{/js/home.js}"></script>
-
 <script th:src="@{/js/lottie-player.js}"></script>
 
 <!-- toast -->

@@ -39,6 +39,17 @@ public class GlobalModelAttribute {
         return false;
     }
 
+    @ModelAttribute("IsApproval")
+    public boolean isApproval(HttpSession httpSession) {
+        Object isApproval = httpSession.getAttribute("approval");
+        if (isApproval != null) {
+            if (isApproval instanceof Boolean b) {
+                return b;
+            }
+        }
+        return false;
+    }
+
     @ModelAttribute("StaffName")
     public String currentStaffName(HttpSession httpSession) {
         Object staffName = httpSession.getAttribute("name");
@@ -48,4 +59,30 @@ public class GlobalModelAttribute {
         return "";
     }
 
+    @ModelAttribute("StaffNo")
+    public String currentStaffNo(HttpSession httpSession) {
+        Object staffNo = httpSession.getAttribute("staffNo");
+        if (staffNo != null) {
+            return staffNo.toString();
+        }
+        return "";
+    }
+
+    @ModelAttribute("Team")
+    public String currentSTeam(HttpSession httpSession) {
+        Object team = httpSession.getAttribute("team");
+        if (team != null) {
+            return team.toString();
+        }
+        return "";
+    }
+
+    @ModelAttribute("Department")
+    public String currentDepartment(HttpSession httpSession) {
+        Object department = httpSession.getAttribute("department");
+        if (department != null) {
+            return department.toString();
+        }
+        return "";
+    }
 }

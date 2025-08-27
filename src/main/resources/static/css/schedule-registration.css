@@ -36,3 +36,9 @@
     z-index: 1;
     color: white; /* make text visible */
 }
+
+.book-btn{
+    color: var(--accent-2);
+    background-color: transparent;
+    border: none;
+}

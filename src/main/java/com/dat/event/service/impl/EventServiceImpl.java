@@ -57,13 +57,13 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto update(Long eventId,String eventName, String description, MultipartFile file, String staffNo) {
         return eventMapper.toDTO(repository.save(eventMapper.toEntity(EventDto.builder()
-                                                                              .eventId(eventId)
-                                                                              .name(eventName)
-                                                                              .description(description)
-                                                                              .createdAt(LocalDateTime.now())
-                                                                              .createdBy(staffNo)
-                                                                              .delFlag(false)
-                                                                              .build())));
+                  .eventId(eventId)
+                  .name(eventName)
+                  .description(description)
+                  .createdAt(LocalDateTime.now())
+                  .createdBy(staffNo)
+                  .delFlag(false)
+                  .build())));
     }
 
     @Override
