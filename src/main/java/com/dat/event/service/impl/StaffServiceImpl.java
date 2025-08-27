@@ -44,7 +44,10 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Page<StaffDto> findAll(final int page) {
-        return staffRepository.findAll(PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("staffNo").ascending())).map(staffMapper::toDTO);
+        return staffRepository.findAll(
+                    PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.asc("staffNo"))
+                )
+        ).map(staffMapper::toDTO);
     }
 
     @Override
@@ -54,7 +57,7 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public List<StaffDto> findAll() {
-        return staffMapper.toDtoList(staffRepository.findAll());
+        return staffMapper.toDtoList(staffRepository.findAll(Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.asc("name"))));
     }
 
     @Override

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
     <meta charset="UTF-8"/>
-    <title>Event Planner</title>
+    <title th:text="${currentUrl == contextPath + WebUrl.EVENT_CREATE_URL}? 'Event Registration' : 'Event Edition'"></title>
     <link rel="icon" th:href="@{/images/DAT Logo.png}">
     <link th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet"/>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
@@ -128,9 +128,8 @@
 
                 <!-- Incharge Person Modal -->
                 <div aria-labelledby="personModalLabel" class="modal fade" id="personModal" tabindex="-1"
-                     th:fragment="incharge-person-modal"
-                     aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable modal-md">
+                     th:fragment="incharge-person-modal" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog modal-md">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="personModalLabel">Select Incharge Person</h5>
@@ -138,11 +137,10 @@
                                         type="button"></button>
                             </div>
                             <div class="modal-body">
-                                <label for="personSearch"></label><input type="text" id="personSearch"
-                                                                         class="form-control mb-3"
-                                                                         placeholder="Search by name..."
-                                                                         autocomplete="off"/>
-                                <ul id="personList" class="list-group">
+                               <input type="text" id="personSearch" class="form-control mb-3"
+                                         placeholder="Search by name..."
+                                         autocomplete="off"/>
+                                <ul id="personList" class="list-group" style="max-height: 450px; overflow-y: auto;">
                                     <li th:each="staff : ${staffs}" class="list-group-item list-group-item-action"
                                         th:text="${staff.name}" th:data-id="${staff.staffId}" style="cursor:pointer"
                                         onclick="selectIncharge(this)">
@@ -155,20 +153,18 @@
 
                 <!-- Support Member Modal -->
                 <div aria-labelledby="memberModalLabel" class="modal fade" id="memberModal" tabindex="-1"
-                     th:fragment="support-member-modal"
-                     aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable modal-md">
+                     th:fragment="support-member-modal" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog modal-md">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="memberModalLabel">Add Support Member</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                <label for="memberSearch"></label><input type="text" id="memberSearch"
-                                                                         class="form-control mb-3"
-                                                                         placeholder="Search member..."
-                                                                         autocomplete="off"/>
-                                <ul id="memberList" class="list-group mb-3">
+                                <input type="text" id="memberSearch" class="form-control mb-3"
+                                     placeholder="Search member..."
+                                     autocomplete="off"/>
+                                <ul id="memberList" class="list-group mb-3" style="max-height: 450px; overflow-y: auto;">
                                     <li th:each="member : ${staffs}"
                                         class="list-group-item list-group-item-action"
                                         th:text="${member.name}"
@@ -204,12 +200,12 @@
                 <!-- Step 2: Select Time Slots -->
                 <div class="wizard-step" id="step2" th:fragment="time-slot-select">
                     <div class="d-flex justify-content-between mb-2">
-                        <button class="btn cancel" id="prevWeekBtn" type="button"> ←
+                        <button class="btn cancel" id="prevWeekBtn" type="button"> &#10094;&#10094;
                             Previous Week
-                        </button>
+                        </button><!--←-->
                         <button class="btn cancel" id="nextWeekBtn" type="button">
-                            Next Week →
-                        </button>
+                            Next Week &#10095;&#10095;
+                        </button><!--→-->
                     </div>
                     <table class="table table-bordered" id="timeSlotTable">
                         <thead>

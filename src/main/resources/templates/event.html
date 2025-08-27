@@ -24,7 +24,7 @@
 
 </head>
 
-<body class="gallery-page">
+<body class="gallery-page" style="overflow: hidden;">
 
 <div th:replace="~{fragments/header :: header}"></div>
 
@@ -35,39 +35,45 @@
       <h1>Welcome To DAT Event Club</h1>
     </div>
   </div>
+  <!-- Page Title -->
 
-  <div class="container">
-    <div class="grid">
-      <div class="img-container" th:each="event : ${eventList}">
-        <div class="card fly-in">
-        <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_REGISTRATION_URL} + '/' +${event.eventId} +'/'+ ${event.name}} + '\';'" >
-          <img th:src="@{'/photo/eventPhoto/' + ${event.eventPhoto}}" alt="Event photo" oncontextmenu="return false;" draggable="false"/>
-        </a>
-          <div class="card-title">
-            <span th:text="${event.name}" class="truncate-text"></span>&nbsp
-            <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" th:if="${IsAdmin}">
-              <i class="bi bi-pencil-square"></i>
+  <div class="event-slider">
+    <button class="slide-btn left" onclick="changePage(-1)">&#10094;&#10094;</button>
+
+    <div class="container">
+      <div class="grid" id="eventGrid">
+        <div class="img-container " th:each="event, iterStat : ${eventList}" th:attr="data-index=${iterStat.index}">
+          <div class="card fly-in">
+            <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_REGISTRATION_URL} + '/' +${event.eventId} +'/'+ ${event.name}} + '\';'" >
+              <img th:src="@{'/photo/eventPhoto/' + ${event.eventPhoto}}" alt="Event photo" oncontextmenu="return false;" draggable="false"/>
             </a>
-            <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\')'" th:if="${IsAdmin}">
-              <i style="color: #d02d2d;" class="bi bi-x-square-fill"></i>
-            </a>
+            <div class="card-title">
+              <span th:text="${event.name}" class="truncate-text"></span>&nbsp
+              <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" th:if="${IsAdmin}">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\')'" th:if="${IsAdmin}">
+                <i style="color: #d02d2d;" class="bi bi-x-square-fill"></i>
+              </a>
+            </div>
           </div>
         </div>
+        <div class="no-events" th:if="${#lists.isEmpty(eventList)}">
+          <lottie-player
+                  th:src="@{/icon/doing_jobs.json}"
+                  background="transparent"
+                  speed="1"
+                  style="width: 300px; height: 300px; margin:auto;"
+                  loop
+                  autoplay>
+          </lottie-player>
+        </div>
       </div>
-
-      <div class="no-events" th:if="${#lists.isEmpty(eventList)}">
-        <lottie-player
-                th:src="@{/icon/doing_jobs.json}"
-                background="transparent"
-                speed="1"
-                style="width: 300px; height: 300px; margin:auto;"
-                loop
-                autoplay>
-        </lottie-player>
-      </div>
-
     </div>
+
+    <button class="slide-btn right" onclick="changePage(1)">&#10095;&#10095;</button>
   </div>
+
 </main>
 
 <!-- Vendor JS Files -->
@@ -106,5 +112,41 @@
   }
 
 </script>
+<script>
+  let currentPage = 0;
+  const pageSize = 10; // 2 rows × 5 columns
+
+  function showPage(page) {
+    const items = document.querySelectorAll("#eventGrid .img-container");
+    const totalPages = Math.ceil(items.length / pageSize);
+
+    if (page < 0) page = 0;
+    if (page >= totalPages) page = totalPages - 1;
+
+    currentPage = page;
+
+    items.forEach((item, index) => {
+      if (index >= page * pageSize && index < (page + 1) * pageSize) {
+        item.style.display = "block";
+      } else {
+        item.style.display = "none";
+      }
+    });
+
+    // button visibility
+    document.querySelector(".slide-btn.left").style.display = (currentPage === 0) ? "none" : "block";
+    document.querySelector(".slide-btn.right").style.display = (currentPage === totalPages - 1) ? "none" : "block";
+  }
+
+  function changePage(direction) {
+    showPage(currentPage + direction);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    showPage(0); // show first 10 initially
+  });
+</script>
+
+
 </body>
 </html>

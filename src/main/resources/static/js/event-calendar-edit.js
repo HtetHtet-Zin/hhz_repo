@@ -11,13 +11,20 @@ const supportedList = document.getElementById("supportedList");
 const nextWeekBtn = document.getElementById("nextWeekBtn");
 const prevWeekBtn = document.getElementById("prevWeekBtn");
 
+const supportedListTable = supportedList.closest('table');
+const supportedThCount = supportedListTable.querySelectorAll('th').length;
+
 function setNoSupportedMember() {
     supportedList.innerHTML = `
           <tr>
-              <td colspan="4" style="text-align:center;">No supported members</td>
+              <td colspan="${supportedThCount}" style="text-align:center;">No supported members</td>
           </tr>
       `;
 }
+
+document.getElementById('eventName').addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+});
 
 document.addEventListener("DOMContentLoaded", () => {
 

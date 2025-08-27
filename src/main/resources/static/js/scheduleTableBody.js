@@ -9,6 +9,9 @@ const activityElem = document.getElementById('activity-text');
 let currentPage = 0;
 let currentKeyword = "";
 
+const table = tableBody.closest('table');
+const thCount = table.querySelectorAll('th').length;
+
 function toggleAll(source) {
     isSelectAll = source.checked;
 
@@ -86,7 +89,7 @@ function renderTable(data) {
     if (!data.content || data.content.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align:center;">No schedules yet</td>
+                <td colspan="${thCount}" style="text-align:center;">No schedules yet</td>
             </tr>
         `;
         selectAllCheckbox.disabled = true;
@@ -146,7 +149,7 @@ function renderPagination(page) {
     // Previous button
     pagination.innerHTML += `
         <li class="page-item ${page.number == 0 ? 'disabled' : ''}">
-            <a class="page-link"  onclick="changePage(${page.number - 1})"><<</a>
+            <a class="page-link"  onclick="changePage(${page.number - 1})">&#10094;&#10094;</a>
         </li>
     `;
 
@@ -164,7 +167,7 @@ function renderPagination(page) {
     // Next button
     pagination.innerHTML += `
         <li class="page-item ${page.number + 1 == page.totalPages ? 'disabled' : ''}">
-            <a class="page-link" onclick="changePage(${page.number + 1})">>></a>
+            <a class="page-link" onclick="changePage(${page.number + 1})">&#10095;&#10095;</a>
         </li>
     `;
 }

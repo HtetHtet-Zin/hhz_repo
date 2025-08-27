@@ -42,9 +42,6 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository repository;
     private final EventMapper eventMapper;
-    private final EventPlannerRepository eventPlannerRepository;
-    private final EventScheduleRepository eventScheduleRepository;
-    private final EventRegistrationRepository eventRegistrationRepository;
 
     @Override
     public EventDto save(String eventName, String description, MultipartFile file, String staffNo) {
