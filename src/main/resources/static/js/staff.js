@@ -64,7 +64,6 @@ function renderTable(data) {
                 </td>
                 <td style="text-align:center;">
                     <input type="checkbox" class="approver-flag-toggle"
-                           data-flag="${staff.approverFlag}"
                            data-id="${staff.staffNo}"
                            ${staff.approverFlag ? "checked" : ""}>
                 </td>
