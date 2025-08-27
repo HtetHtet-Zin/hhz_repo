@@ -67,6 +67,16 @@ public class StaffController {
 
     }
 
+    @PostMapping(WebUrl.STAFF_URL + "/approver-flag")
+    public ResponseEntity<Void> updateApproverFlag(@RequestParam("staffNo") String staffNo,
+                                                   @RequestParam(value = "approverFlag", defaultValue = "false") boolean approverFlag) {
+
+        staffService.updateApproverFlag(staffNo, approverFlag);
+
+        return ResponseEntity.ok().build();
+
+    }
+
     @GetMapping(WebUrl.STAFF_BIRTHDAY_URL)
     public String birthdayStaff(HttpSession session, Model model) {
         if (session != null && session.getAttribute("staffNo") != null) {

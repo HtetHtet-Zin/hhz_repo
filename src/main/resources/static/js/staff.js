@@ -62,10 +62,17 @@ function renderTable(data) {
                            data-id="${staff.staffNo}"
                            ${staff.adminFlag ? "checked" : ""}>
                 </td>
+                <td style="text-align:center;">
+                    <input type="checkbox" class="approver-flag-toggle"
+                           data-flag="${staff.approverFlag}"
+                           data-id="${staff.staffNo}"
+                           ${staff.approverFlag ? "checked" : ""}>
+                </td>
             </tr>
         `;
     });
     setUpAdminFlag();
+    setUpApproverFlag();
 }
 
 function renderPagination(page) {
@@ -130,6 +137,35 @@ function setUpAdminFlag(){
             } catch (error) {
                 alert("Error updating admin flag.");
                 this.checked = !adminFlag; // revert checkbox state if failed
+            }
+        });
+    });
+}
+
+function setUpApproverFlag(){
+     document.querySelectorAll(".approver-flag-toggle").forEach(checkbox => {
+        checkbox.addEventListener("change", async function () {
+            const id = this.dataset.id;
+            const approverFlag = this.checked;
+
+            try {
+                const response = await fetch('/club/staff/approver-flag', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        staffNo: id,
+                        approverFlag: approverFlag
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Server error");
+                }
+            } catch (error) {
+                alert("Error updating approver flag.");
+                this.checked = !approverFlag; // revert checkbox state if failed
             }
         });
     });

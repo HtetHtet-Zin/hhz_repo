@@ -8,7 +8,6 @@ package com.dat.event.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -48,6 +47,7 @@ public class StaffEntity {
     private String createdBy;
     @Column(name = "admin_flag")
     private Boolean adminFlag;
+    private Boolean approverFlag;
     private LocalDate dob;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "staff")

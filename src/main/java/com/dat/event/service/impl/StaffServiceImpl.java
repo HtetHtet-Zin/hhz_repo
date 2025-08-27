@@ -45,19 +45,19 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Page<StaffDto> findAll(final int page) {
         return staffRepository.findAll(
-                    PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.asc("staffNo"))
+                PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.desc("approverFlag"), Sort.Order.asc("staffNo"))
                 )
         ).map(staffMapper::toDTO);
     }
 
     @Override
     public Page<StaffDto> findAll(final String keyword, final int page) {
-        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCaseOrTeamContainingIgnoreCaseOrDepartmentContainingIgnoreCase(keyword, keyword, keyword, keyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by("staffNo").ascending())).map(staffMapper::toDTO);
+        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCaseOrTeamContainingIgnoreCaseOrDepartmentContainingIgnoreCase(keyword, keyword, keyword, keyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.desc("approverFlag"), Sort.Order.asc("staffNo")))).map(staffMapper::toDTO);
     }
 
     @Override
     public List<StaffDto> findAll() {
-        return staffMapper.toDtoList(staffRepository.findAll(Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.asc("name"))));
+        return staffMapper.toDtoList(staffRepository.findAll(Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.desc("approverFlag"), Sort.Order.asc("name"))));
     }
 
     @Override
@@ -65,6 +65,16 @@ public class StaffServiceImpl implements StaffService {
         final StaffEntity staffEntity = staffRepository.findByStaffNo(staffNo).orElseThrow();
         staffEntity.setAdminFlag(adminFlag);
         staffRepository.save(staffEntity);
+    }
+
+    @Override
+    public void updateApproverFlag(final String staffNo, final boolean approverFlag) {
+        System.out.println(staffNo);
+        System.out.println(approverFlag);
+        final StaffEntity staffEntity = staffRepository.findByStaffNo(staffNo).orElseThrow();
+        System.out.println("Before - " + staffEntity);
+        staffEntity.setApproverFlag(approverFlag);
+        System.out.println(staffRepository.save(staffEntity));
     }
 
     @Override

@@ -6,10 +6,7 @@
  * *************************************************************/
 package com.dat.event.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
@@ -33,5 +30,6 @@ public class StaffDto {
     private String department;
     private LocalDate dob;
     private Boolean adminFlag;
+    private Boolean approverFlag;
 
 }
