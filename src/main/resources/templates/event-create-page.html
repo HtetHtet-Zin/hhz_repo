@@ -16,6 +16,49 @@
             border-color: white;
             background-color: #d1e7dd;
         }
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .radio {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        .radio input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .radio .radio-mark {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--accent);
+            border-radius: 30%;
+            display: inline-block;
+            position: relative;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .radio input:checked + .radio-mark {
+            border-color: var(--accent);
+        }
+        .radio .radio-mark::after {
+            content: "";
+            position: absolute;
+            inset: 2px;
+            border-radius: 30%;
+            background: var(--accent);
+            transform: scale(0);
+            transition: transform .15s ease-in-out;
+        }
+        .radio input:checked + .radio-mark::after {
+            transform: scale(1);
+        }
+
     </style>
 
 </head>
@@ -50,8 +93,10 @@
                 <div class="wizard-step active" id="step1">
                     <div class="mb-3">
                         <label for="eventName" class="form-label">Event Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="eventName" name="eventName" placeholder="Enter Event Name" required />
-                        <div class="text-danger mt-1" id="eventNameError" style="display:none;">Event Name Required!!!</div>
+                        <input type="text" class="form-control" id="eventName" name="eventName"
+                               placeholder="Enter Event Name" required/>
+                        <div class="text-danger mt-1" id="eventNameError" style="display:none;">Event Name Required!!!
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -70,7 +115,9 @@
                                 No photo selected!!!
                             </span>
                         </div>
-                        <div class="text-danger mt-1" id="eventPhotoError" style="display:none;">Please select a photo!!!</div>
+                        <div class="text-danger mt-1" id="eventPhotoError" style="display:none;">Please select a
+                            photo!!!
+                        </div>
                         <input accept="image/*" class="form-control" hidden id="eventPhoto" name="eventPhoto"
                                onchange="
                                const file = this.files[0];
@@ -79,21 +126,51 @@
                                }" required type="file"/>
                     </div>
                     <div class="mb-3">
+                        <span class="form-label d-block">Event Location <span class="text-danger">*</span></span>
+                        <div class="radio-group" id="eventLocation">
+                            <label class="radio">
+                                <input type="radio" name="eventLocation" id="eventLocationOffice" value="OFFICE"
+                                       onclick="toggleOtherLocation(false)">
+                                <span class="radio-mark"></span>
+                                <span>Office Cafeteria</span>
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="eventLocation" id="eventLocationOther" value="OTHER"
+                                       onclick="toggleOtherLocation(true)">
+                                <span class="radio-mark"></span>
+                                <span>Other Location</span>
+                            </label>
+                        </div>
+
+                        <!-- Hidden input -->
+                        <div id="otherLocationDiv" class="mt-2" style="display:none;">
+                            <label for="otherLocation" class="form-label" style="display:none;">Other Location</label>
+                            <input type="text" class="form-control" id="otherLocation" name="otherLocation"
+                                   placeholder="Enter other location">
+                        </div>
+                        <div class="text-danger mt-1" id="eventLocationError" style="display:none;">
+                            Please select event location.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="eventDesc" class="form-label">Description</label>
                         <textarea class="form-control" id="eventDesc" name="eventDesc"
                                   placeholder="Optional description"
                                   rows="3" maxlength="255"></textarea>
-                        <div class="text-danger mt-1" id="eventDescError" style="display:none;">Description must not exceed 255 characters.</div>
+                        <div class="text-danger mt-1" id="eventDescError" style="display:none;">Description must not
+                            exceed 255 characters.
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label" for="inchargePerson">Incharge Person <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input  class="form-control" data-bs-target="#personModal" data-bs-toggle="modal" data-id=""
+                            <input class="form-control" data-bs-target="#personModal" data-bs-toggle="modal" data-id=""
                                    id="inchargePerson"
                                    name="inchargePerson"
-                                   placeholder="Select person" readonly required />
+                                   placeholder="Select person" readonly required/>
                         </div>
                         <div class="text-danger mt-1" id="inchargePersonError" style="display:none;">Please select an
                             incharge person.
@@ -137,9 +214,9 @@
                                         type="button"></button>
                             </div>
                             <div class="modal-body">
-                               <input type="text" id="personSearch" class="form-control mb-3"
-                                         placeholder="Search by name..."
-                                         autocomplete="off"/>
+                                <input type="text" id="personSearch" class="form-control mb-3"
+                                       placeholder="Search by name..."
+                                       autocomplete="off"/>
                                 <ul id="personList" class="list-group" style="max-height: 450px; overflow-y: auto;">
                                     <li th:each="staff : ${staffs}" class="list-group-item list-group-item-action"
                                         th:text="${staff.name}" th:data-id="${staff.staffId}" style="cursor:pointer"
@@ -162,9 +239,10 @@
                             </div>
                             <div class="modal-body">
                                 <input type="text" id="memberSearch" class="form-control mb-3"
-                                     placeholder="Search member..."
-                                     autocomplete="off"/>
-                                <ul id="memberList" class="list-group mb-3" style="max-height: 450px; overflow-y: auto;">
+                                       placeholder="Search member..."
+                                       autocomplete="off"/>
+                                <ul id="memberList" class="list-group mb-3"
+                                    style="max-height: 450px; overflow-y: auto;">
                                     <li th:each="member : ${staffs}"
                                         class="list-group-item list-group-item-action"
                                         th:text="${member.name}"
@@ -231,7 +309,6 @@
         </form>
     </div>
 </main>
-
 <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/event-calendar.js}"></script>
 <script th:src="@{/js/commonUtility.js}"></script>

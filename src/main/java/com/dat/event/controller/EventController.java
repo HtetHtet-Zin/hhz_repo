@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
@@ -95,6 +98,13 @@ public class EventController {
         eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
         eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
         imageStorageService.saveImage(eventPhotoFile, savedDto.getName());
+
+        if(requestEventPlanDto.getEventLocation().equals("OFFICE")){
+            response.put("redirectUrl", contextPath + WebUrl.EVENT_EDIT_URL +"/"+savedDto.getEventId()+"/"+savedDto.getName());
+            response.put("status", null);
+            response.put("message", null);
+            return ResponseEntity.ok(response);
+        }
 
         response.put("redirectUrl", contextPath.concat(WebUrl.EVENT_URL));
         response.put("status", "success");

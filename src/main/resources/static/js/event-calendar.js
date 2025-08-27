@@ -13,6 +13,12 @@ const prevWeekBtn = document.getElementById("prevWeekBtn");
 
 const supportedListTable = supportedList.closest('table');
 const supportedThCount = supportedListTable.querySelectorAll('th').length;
+const otherLocation = document.getElementById('otherLocation');
+
+
+otherLocation.addEventListener('input', function(e) {
+     document.getElementById('eventLocationOther').value = this.value;
+});
 
 function setNoSupportedMember() {
     supportedList.innerHTML = `
@@ -21,8 +27,15 @@ function setNoSupportedMember() {
           </tr>
       `;
 }
+function toggleOtherLocation(show) {
+    document.getElementById("otherLocationDiv").style.display = show ? "block" : "none";
+}
 
 document.getElementById('eventName').addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+});
+
+otherLocation.addEventListener('input', function(e) {
     this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
 });
 
@@ -230,6 +243,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!input.checkValidity()) {
                     input.reportValidity();
                     isValid = false;
+                }
+            }
+        }
+        if(currentStep.id === "step1") {
+            const selectedLocation = document.querySelector('input[name="eventLocation"]:checked');
+            if(!selectedLocation) {
+                document.getElementById("eventLocationError").style.display = "block";
+                isValid = false;
+            } else {
+                document.getElementById("eventLocationError").style.display = "none";
+                if(selectedLocation.value === "OTHER") {
+                    const otherVal = document.getElementById("otherLocation").value.trim();
+                    if(!otherVal) {
+                        let otherError = document.getElementById("otherLocationDiv").querySelector('.text-danger');
+                        if(!otherError) {
+                            otherError = document.createElement("div");
+                            otherError.className = "text-danger mt-1";
+                            otherError.textContent = "Please enter other location.";
+                            document.getElementById("otherLocationDiv").appendChild(otherError);
+                        }
+                        otherError.style.display = "block";
+                        isValid = false;
+                    }
                 }
             }
         }
@@ -579,6 +615,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const jsonPayload = {
             eventName: form.eventName.value,
+            eventLocation: form.eventLocation.value,
             description: form.eventDesc.value,
             inChargePerson: form.inchargePerson.dataset.dataId,
             supportedMembers: members,

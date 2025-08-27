@@ -29,6 +29,7 @@ public class EventDto {
     private Long eventId;
     private String name;
     private String eventPhoto;
+    private String eventLocation;
     private String description;
     private boolean delFlag;
     private LocalDateTime createdAt;

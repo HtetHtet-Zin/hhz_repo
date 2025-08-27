@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class RequestEventPlanDto {
 
     private String eventName;
+    private String eventLocation;
     private String description;
     private Long inChargePerson;
     private SupportedMember[] supportedMembers;
