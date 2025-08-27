@@ -69,12 +69,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public void updateApproverFlag(final String staffNo, final boolean approverFlag) {
-        System.out.println(staffNo);
-        System.out.println(approverFlag);
         final StaffEntity staffEntity = staffRepository.findByStaffNo(staffNo).orElseThrow();
-        System.out.println("Before - " + staffEntity);
         staffEntity.setApproverFlag(approverFlag);
-        System.out.println(staffRepository.save(staffEntity));
+        staffRepository.save(staffEntity);
     }
 
     @Override
