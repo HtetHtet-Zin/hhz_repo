@@ -101,8 +101,8 @@ public class EventController {
 
         if (savedDto.getEventLocation().equals("OFFICE")) {
             response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(savedDto.getEventId().toString()).concat("/").concat(savedDto.getName()));
-            response.put("status", null);
-            response.put("message", null);
+            response.put("status", "success");
+            response.put("message", "Event created successfully");
             return ResponseEntity.ok(response);
         }
 
@@ -164,8 +164,8 @@ public class EventController {
             }
             if (updateDto.getEventLocation().equals("OFFICE")) {
                 response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(updateDto.getEventId().toString()).concat("/").concat(updateDto.getName()));
-                response.put("status", null);
-                response.put("message", null);
+                response.put("status", "success");
+                response.put("message", "Event updated successfully");
                 return ResponseEntity.ok(response);
             }
         }
