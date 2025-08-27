@@ -49,14 +49,14 @@
             </a>
             <div class="card-title">
               <span th:text="${event.name}" class="truncate-text"></span>
-              <div class="action-tabs">
-                <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" th:if="${IsAdmin}">
+              <div class="action-tabs" th:if="${IsAdmin}">
+                <a th:onclick="'window.location.href=\'' + @{${WebUrl.EVENT_EDIT_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'">
                   <i class="bi bi-pencil-square"></i>
                 </a>
-                <a th:onclick="'window.location.href=\'' + @{${WebUrl.CAFETERIA_BOOKING_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" th:if="${IsApproval}">
+                <a th:onclick="'window.location.href=\'' + @{${WebUrl.CAFETERIA_BOOKING_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\';'" >
                   <i class="bi bi-bookmark-check-fill"></i>
                 </a>
-                <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\')'" th:if="${IsAdmin}">
+                <a th:onclick="'handleDeleteEvent(\'' + @{${WebUrl.EVENT_DELETE_URL}+'/'+${event.eventId} +'/'+ ${event.name}} + '\')'">
                   <i style="color: #d02d2d;" class="bi bi-x-square-fill"></i>
                 </a>
               </div>
