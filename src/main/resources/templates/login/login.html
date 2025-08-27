@@ -19,10 +19,10 @@
             <!--<h1>WELCOME TO</h1>
             <h3>DAT EVENT CLUB</h3>-->
         </div>
-        <form th:action="@{/login}" method="post">
-            <input type="text" name="username" placeholder="Staff ID" autocomplete="off" required />
-            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required />
-            <button type="submit" class="login-btn">Login</button>
+        <form method="post" onsubmit="onSubmitForm();" th:action="@{/login}">
+            <input type="text" name="username" placeholder="Staff ID" autocomplete="off" required/>
+            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required/>
+            <button class="login-btn" id="login-btn" type="submit">Login</button>
         </form>
     </div>
 
@@ -36,6 +36,12 @@
     <script>
         var redirectMessage = '[[${message}]]';
         var redirectMessageType = '[[${messageType}]]';
+
+        function onSubmitForm(){
+            const loginBtn = document.getElementById('login-btn');
+            loginBtn.disabled = true;
+            // loginBtn.innerText = 'Loading...';
+        }
     </script>
 </body>
 </html>
