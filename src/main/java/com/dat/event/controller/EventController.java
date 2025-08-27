@@ -100,7 +100,7 @@ public class EventController {
         imageStorageService.saveImage(eventPhotoFile, savedDto.getName());
 
         if (savedDto.getEventLocation().equals("OFFICE")) {
-            response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(savedDto.getEventId().toString()).concat(savedDto.getName()));
+            response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(savedDto.getEventId().toString()).concat("/").concat(savedDto.getName()));
             response.put("status", null);
             response.put("message", null);
             return ResponseEntity.ok(response);
@@ -163,7 +163,7 @@ public class EventController {
                 }
             }
             if (updateDto.getEventLocation().equals("OFFICE")) {
-                response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(updateDto.getEventId().toString()).concat(updateDto.getName()));
+                response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(updateDto.getEventId().toString()).concat("/").concat(updateDto.getName()));
                 response.put("status", null);
                 response.put("message", null);
                 return ResponseEntity.ok(response);
