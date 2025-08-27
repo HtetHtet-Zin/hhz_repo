@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Booking List</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link th:href="@{./images/DAT Logo.png}" rel="icon">
+
+    <!-- Vendor CSS Files -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link th:href="@{/assets/css/main.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/pagination.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+
+</head>
+
+<body class="event-list">
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="main" style="padding-bottom: 50px;">
+
+    <!-- Page Title -->
+    <div class="page-title dark-background" data-aos="fade"
+         th:style="'background-image: url(' + @{/images/event_list.png} + ');'" oncontextmenu="return false;">
+        <div class="container position-relative">
+            <h1>Booking List</h1>
+        </div>
+    </div>
+
+    <div class="">
+        <div class="d-flex justify-content-between m-3 align-items-center">
+            <div>
+                <p>There are <span id="count"></span> <span id="participant-text"></span>.</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="ms-2">
+                    <input class="form-control" id="search" name="keyword" placeholder="Search Booking...">
+                </div>
+                <div class="ms-2">
+                    <button class="btn confirm" id="searchBtn" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <table class="table table-bordered table-list custom-bordered-table">
+            <thead>
+            <th>No. </th>
+            <th>Event Name</th>
+            <th>Booking Date</th>
+            <th>Booking Time</th>
+            <th>Booking By</th>
+            <th>Booking Status</th>
+            <th>Requested Date</th>
+            <th>Team</th>
+            <th>Department</th>
+            <th>Action</th>
+            </thead>
+
+            <tbody id="staffTableBody"></tbody>
+        </table>
+
+        <nav aria-label="Staff pagination">
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
+    </div>
+</main>
+
+<div id="preloader"></div>
+
+<!-- Vendor JS Files -->
+<script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/booking.js}"></script>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<!-- Main JS File -->
+<script th:src="@{/assets/js/main.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<!-- data js -->
+<script>
+        const exportUrl = '[[@{${WebUrl.EVENT_STAFF_DOWNLOAD_URL}}]]';
+        const participantUrl = '[[@{${WebUrl.EVENT_BOOKING_URL}}]]';
+    </script>
+</body>
+</html>

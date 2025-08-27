@@ -9,6 +9,7 @@ package com.dat.event.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +38,8 @@ public class BookingEntity {
     private String status;
     private String reason;
     private String confirmedBy;
-    private LocalDateTime confirmedDate;
-    private LocalDateTime bookedDate;
+    private LocalDate confirmedDate;
+    private LocalDate bookedDate;
     private String bookedBy;
     private int attendees;
     private boolean delFlag;

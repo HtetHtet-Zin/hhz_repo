@@ -37,6 +37,11 @@
                        th:data-current="${currentUrl}" th:data-target="@{${WebUrl.EVENT_CREATE_URL}}"
                        th:if="${IsAdmin}">CREATE EVENT</a></li>
                 <li>
+                <li><a onclick="setUpHeaderLink(this);"
+                       th:classappend="${currentUrl == contextPath + WebUrl.EVENT_BOOKING_URL}? 'active-link' : ''"
+                       th:data-current="${currentUrl}" th:data-target="@{${WebUrl.EVENT_BOOKING_URL}}"
+                       th:if="${IsAdmin}">BOOKING LIST</a></li>
+                <li>
                     <a th:href="@{/pdf/Policy.pdf}" target="_blank" rel="noopener noreferrer" style="color: white;">POLICY</a>
                 </li>
             </ul>

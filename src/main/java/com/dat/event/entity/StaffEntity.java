@@ -52,4 +52,5 @@ public class StaffEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "staff")
     private List<EventRegistrationEntity> eventRegistrationEntityList = new ArrayList<>();
+
 }

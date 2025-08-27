@@ -43,5 +43,6 @@ public final class CommonUtility {
     }
 
     public static DateTimeFormatter formatTo12Hrs = DateTimeFormatter.ofPattern("hh:mm a");
-
+    public static DateTimeFormatter formatToLocalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+    public static DateTimeFormatter formatToLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 }
