@@ -13,6 +13,20 @@ const prevWeekBtn = document.getElementById("prevWeekBtn");
 
 const supportedListTable = supportedList.closest('table');
 const supportedThCount = supportedListTable.querySelectorAll('th').length;
+const otherLocation = document.getElementById('otherLocation');
+
+
+otherLocation.addEventListener('input', function(e) {
+     document.getElementById('eventLocationOther').value = this.value;
+});
+
+function toggleOtherLocation(show) {
+    document.getElementById("otherLocationDiv").style.display = show ? "block" : "none";
+}
+
+otherLocation.addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+});
 
 function setNoSupportedMember() {
     supportedList.innerHTML = `
@@ -229,6 +243,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!input.checkValidity()) {
                     input.reportValidity();
                     isValid = false;
+                }
+            }
+        }
+        if(currentStep.id === "step1") {
+            const selectedLocation = document.querySelector('input[name="eventLocation"]:checked');
+            if(!selectedLocation) {
+                document.getElementById("eventLocationError").style.display = "block";
+                isValid = false;
+            } else {
+                document.getElementById("eventLocationError").style.display = "none";
+                if(selectedLocation.value === "OTHER") {
+                    const otherVal = document.getElementById("otherLocation").value.trim();
+                    if(!otherVal) {
+                        let otherError = document.getElementById("otherLocationDiv").querySelector('.text-danger');
+                        if(!otherError) {
+                            otherError = document.createElement("div");
+                            otherError.className = "text-danger mt-1";
+                            otherError.textContent = "Please enter other location.";
+                            document.getElementById("otherLocationDiv").appendChild(otherError);
+                        }
+                        otherError.style.display = "block";
+                        isValid = false;
+                    }
                 }
             }
         }
@@ -739,6 +776,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const jsonPayload = {
             eventId:form.eventId.value,
             eventName: form.eventName.value,
+            eventLocation: form.eventLocation.value,
             description: form.eventDesc.value,
             inChargePersonPlannerId:form.inChargePersonPlannerId.value,
             inChargePerson: form.inchargePerson.dataset.dataId,

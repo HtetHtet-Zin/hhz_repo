@@ -62,7 +62,7 @@
                             <span class="form-label d-block">Event Location <span class="text-danger">*</span></span>
                             <div class="radio-group" id="eventLocation">
                                 <label class="radio">
-                                    <input type="radio" name="eventLocation"
+                                    <input type="radio" name="eventLocation" id="eventLocationOffice"
                                            th:value="'OFFICE'"
                                            th:checked="${eventLocation == 'OFFICE'}"
                                            onclick="toggleOtherLocation(false)">
@@ -70,7 +70,7 @@
                                     <span>Office Cafeteria</span>
                                 </label>
                                 <label class="radio">
-                                    <input type="radio" name="eventLocation"
+                                    <input type="radio" name="eventLocation" id="eventLocationOther"
                                            th:value="'OTHER'"
                                            th:checked="${eventLocation != 'OFFICE'}"
                                            onclick="toggleOtherLocation(true)">
