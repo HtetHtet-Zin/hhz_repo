@@ -85,7 +85,7 @@
                                 <label for="otherLocation" class="form-label">Other Location</label>
                                 <input type="text" class="form-control" id="otherLocation" name="otherLocation"
                                        placeholder="Enter other location"
-                                       th:value="${eventLocation}">
+                                       th:value="${eventLocation == 'OFFICE' ? '' : eventLocation}">
                             </div>
 
                             <!-- Error message -->
