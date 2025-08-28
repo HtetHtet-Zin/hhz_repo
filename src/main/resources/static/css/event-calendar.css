@@ -22,6 +22,54 @@ input[type="time"] {
     width: 100px;
 }
 
+.table th {
+    border-color: white;
+    background-color: #d1e7dd;
+}
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.radio {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+.radio input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.radio .radio-mark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--accent);
+    border-radius: 30%;
+    display: inline-block;
+    position: relative;
+    transition: border-color .2s, box-shadow .2s;
+}
+.radio input:checked + .radio-mark {
+    border-color: var(--accent);
+}
+.radio .radio-mark::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 30%;
+    background: var(--accent);
+    transform: scale(0);
+    transition: transform .15s ease-in-out;
+}
+
+.radio input:checked + .radio-mark::after {
+    transform: scale(1);
+}
+
 .wizard-step {
   display: none;
 }
@@ -114,5 +162,6 @@ input[type="time"] {
         -moz-appearance: textfield; /* Remove native styling */
     }
 }
+
 
 
