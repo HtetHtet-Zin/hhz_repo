@@ -25,7 +25,7 @@ function toggleOtherLocation(show) {
 }
 
 otherLocation.addEventListener('input', function(e) {
-    this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+    this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
 });
 
 function setNoSupportedMember() {
@@ -133,16 +133,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-              <td></td>
-              <td data-name="supName">${escapeHtml(name)}</td>
-               <td data-name="supMonth">${escapeHtml(month)}</td>
-               <td style="display: none;" data-name="supStaff">${escapeHtml(staffNo)}</td>
-               <td style="display: none;"  data-name="supPlanner"></td>
-               <td>
-                 <button type="button" class="btn btn-sm btn-danger remove-supported" aria-label="Remove supported member">
-                   <i class="bi bi-trash"></i>
-                 </button>
-               </td>
+            <td></td>
+            <td></td>
+            <td data-name="supName">${escapeHtml(name)}</td>
+            <td data-name="supMonth">${escapeHtml(month)}</td>
+            <td style="display: none;" data-name="supStaff">${escapeHtml(staffNo)}</td>
+            <td style="display: none;"  data-name="supPlanner"></td>
+            <td>
+                <i class="bi bi-trash text-danger remove-supported" role="button" aria-label="Remove supported member"></i>
+            </td>
         `;
         supportedList.appendChild(tr);
 
@@ -211,6 +210,49 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    document.querySelectorAll('input[name="eventLocation"]').forEach(radio => {
+        radio.addEventListener("change", validateEventLocation);
+    });
+    document.getElementById("otherLocation").addEventListener("input", validateEventLocation);
+
+    function validateEventLocation() {
+        const selectedLocation = document.querySelector('input[name="eventLocation"]:checked');
+        const errorDiv = document.getElementById("eventLocationError");
+        let isValid = true;
+
+        if (!selectedLocation) {
+           errorDiv.style.display = "block";
+           isValid = false;
+        } else {
+            errorDiv.style.display = "none";
+            if (selectedLocation.value === "OTHER" || selectedLocation.value.trim() === "") {
+                const otherInput = document.getElementById("otherLocation");
+                let otherError = document.getElementById("otherLocationErrorMessage");
+
+                if (!otherError) {
+                    otherError = document.createElement("div");
+                    otherError.id = "otherLocationErrorMessage";   // unique id
+                    otherError.className = "text-danger mt-1";
+                    document.getElementById("otherLocationDiv").appendChild(otherError);
+                }
+
+                if (!otherInput.value.trim()) {
+                    otherError.textContent = "Please enter other location.";
+                    otherError.style.display = "block";
+                    isValid = false;
+                } else {
+                    otherError.style.display = "none";
+                }
+            } else {
+                const otherError = document.getElementById("otherLocationErrorMessage");
+                if (otherError) {
+                    otherError.style.display = "none";
+                }
+            }
+        }
+        return isValid;
+    }
+
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
         // Validate current step required inputs before proceeding
@@ -247,26 +289,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         if(currentStep.id === "step1") {
-            const selectedLocation = document.querySelector('input[name="eventLocation"]:checked');
-            if(!selectedLocation) {
-                document.getElementById("eventLocationError").style.display = "block";
+            if (!validateEventLocation()) {
                 isValid = false;
-            } else {
-                document.getElementById("eventLocationError").style.display = "none";
-                if(selectedLocation.value === "OTHER") {
-                    const otherVal = document.getElementById("otherLocation").value.trim();
-                    if(!otherVal) {
-                        let otherError = document.getElementById("otherLocationDiv").querySelector('.text-danger');
-                        if(!otherError) {
-                            otherError = document.createElement("div");
-                            otherError.className = "text-danger mt-1";
-                            otherError.textContent = "Please enter other location.";
-                            document.getElementById("otherLocationDiv").appendChild(otherError);
-                        }
-                        otherError.style.display = "block";
-                        isValid = false;
-                    }
-                }
             }
         }
 

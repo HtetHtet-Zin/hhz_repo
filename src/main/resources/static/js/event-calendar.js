@@ -36,7 +36,7 @@ document.getElementById('eventName').addEventListener('input', function(e) {
 });
 
 otherLocation.addEventListener('input', function(e) {
-    this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+   this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -138,9 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${escapeHtml(month)}</td>
           <td style="display: none;">${escapeHtml(staffNo)}</td>
           <td>
-            <button type="button" class="btn btn-sm btn-danger remove-supported" aria-label="Remove supported member">
-              <i class="bi bi-trash"></i>
-            </button>
+            <i class="bi bi-trash text-danger remove-supported" role="button" aria-label="Remove supported member"></i>
           </td>
         `;
         supportedList.appendChild(tr);
@@ -211,6 +209,50 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    document.querySelectorAll('input[name="eventLocation"]').forEach(radio => {
+        radio.addEventListener("change", validateEventLocation);
+    });
+    document.getElementById("otherLocation").addEventListener("input", validateEventLocation);
+
+    function validateEventLocation() {
+        const selectedLocation = document.querySelector('input[name="eventLocation"]:checked');
+        const errorDiv = document.getElementById("eventLocationError");
+        let isValid = true;
+
+        if (!selectedLocation) {
+           errorDiv.style.display = "block";
+           isValid = false;
+        } else {
+            errorDiv.style.display = "none";
+            if (selectedLocation.value === "OTHER" || selectedLocation.value.trim() === "") {
+                const otherInput = document.getElementById("otherLocation");
+                let otherError = document.getElementById("otherLocationErrorMessage");
+
+                if (!otherError) {
+                    otherError = document.createElement("div");
+                    otherError.id = "otherLocationErrorMessage";   // unique id
+                    otherError.className = "text-danger mt-1";
+                    document.getElementById("otherLocationDiv").appendChild(otherError);
+                }
+
+                if (!otherInput.value.trim()) {
+                    otherError.textContent = "Please enter other location.";
+                    otherError.style.display = "block";
+                    isValid = false;
+                } else {
+                    otherError.style.display = "none";
+                }
+            } else {
+                const otherError = document.getElementById("otherLocationErrorMessage");
+                if (otherError) {
+                    otherError.style.display = "none";
+                }
+            }
+        }
+        return isValid;
+    }
+
+
     // ==== Wizard Step Navigation ====
     function goToStep(step) {
         // Validate current step required inputs before proceeding
@@ -247,26 +289,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         if(currentStep.id === "step1") {
-            const selectedLocation = document.querySelector('input[name="eventLocation"]:checked');
-            if(!selectedLocation) {
-                document.getElementById("eventLocationError").style.display = "block";
+            if (!validateEventLocation()) {
                 isValid = false;
-            } else {
-                document.getElementById("eventLocationError").style.display = "none";
-                if(selectedLocation.value === "OTHER") {
-                    const otherVal = document.getElementById("otherLocation").value.trim();
-                    if(!otherVal) {
-                        let otherError = document.getElementById("otherLocationDiv").querySelector('.text-danger');
-                        if(!otherError) {
-                            otherError = document.createElement("div");
-                            otherError.className = "text-danger mt-1";
-                            otherError.textContent = "Please enter other location.";
-                            document.getElementById("otherLocationDiv").appendChild(otherError);
-                        }
-                        otherError.style.display = "block";
-                        isValid = false;
-                    }
-                }
             }
         }
 
@@ -397,7 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Event delegation for real-time duplicate & overlap check
    // Real-time validation for time slots
     tableBody.addEventListener("change",async (e) => {
-       if (e.target.type === "time") {
+        if (e.target.type === "time") {
             const slot = e.target.closest(".time-slot");
             const wrapper = slot.closest(".slot-wrapper");
             const day = wrapper.dataset.day;
@@ -433,25 +457,25 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
            // Check overlap (ignore current slot)
-           const startInt = parseInt(startTime.replace(":", ""));
-           const endInt = parseInt(endTime.replace(":", ""));
+            const startInt = parseInt(startTime.replace(":", ""));
+            const endInt = parseInt(endTime.replace(":", ""));
 
-           const isOverlap = Array.from(wrapper.querySelectorAll(".time-slot"))
-               .filter(s => s !== slot)
-               .some(s => {
+            const isOverlap = Array.from(wrapper.querySelectorAll(".time-slot"))
+                .filter(s => s !== slot)
+                .some(s => {
                    const sInputs = s.querySelectorAll("input[type='time']");
                    const sStart = parseInt(sInputs[0].value.replace(":", ""));
                    const sEnd = parseInt(sInputs[1].value.replace(":", ""));
                    return startInt < sEnd && endInt > sStart;
-               });
+                });
 
-           if (isOverlap) {
-               await alertAction("Can't add overlapping schedule for this day. Please Select Another Different Time.", { title: "Select Correct Time!", variant: "danger"});
-               startInput.value = "";
-               endInput.value = "";
-               return;
-           }
-       }
+            if (isOverlap) {
+                await alertAction("Can't add overlapping schedule for this day. Please Select Another Different Time.", { title: "Select Correct Time!", variant: "danger"});
+                startInput.value = "";
+                endInput.value = "";
+                return;
+            }
+        }
    });
 
 

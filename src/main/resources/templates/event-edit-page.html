@@ -82,7 +82,7 @@
                             <!-- Hidden input -->
                             <div id="otherLocationDiv" class="mt-2"
                                  th:style="${eventLocation != 'OFFICE'} ? 'display:block;' : 'display:none;'">
-                                <label for="otherLocation" class="form-label">Other Location</label>
+                                <label for="otherLocation" class="form-label" style="display:none;">Other Location</label>
                                 <input type="text" class="form-control" id="otherLocation" name="otherLocation"
                                        placeholder="Enter other location"
                                        th:value="${eventLocation == 'OFFICE' ? '' : eventLocation}">
@@ -145,10 +145,7 @@
                                     <td style="display: none;" th:text="${supportedMember.plannerId}"
                                         data-name="supPlanner"></td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-danger remove-supported"
-                                                aria-label="Remove supported member">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        <i class="bi bi-trash text-danger remove-supported" role="button" aria-label="Remove supported member"></i>
                                     </td>
                                 </tr>
                                 </tbody>
