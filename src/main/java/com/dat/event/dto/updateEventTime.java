@@ -13,4 +13,5 @@ public class updateEventTime {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
    private LocalDateTime endDateTime;
    private Long eventTimeId;
+
 }

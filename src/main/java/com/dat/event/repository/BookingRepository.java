@@ -38,7 +38,8 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
                    s.department AS department,
                     es.date AS date,
                    es.start_time AS startTime,
-                   es.end_time AS endTime
+                   es.end_time AS endTime,
+                   b.schedule_id AS scheduleId
                FROM tbl_booking b
                INNER JOIN tbl_staff s ON s.staff_no = b.booked_by
                INNER JOIN tbl_event_schedule es ON es.id = b.schedule_id

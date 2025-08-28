@@ -47,6 +47,7 @@ public final class WebUrl {
     public static final String CAFETERIA_BOOKING_POST_URL = "/cafeteria-booking-booked";
     public static final String CHECK_BOOKED_URL = "/cafeteria-booking-checked";
     public static final String EVENT_BOOKING_URL = "/booking-list";
+    public static final String EVENT_BOOKING_APPROVE_URL = "/approve";
 
     public static final String GALLERY_URL = "/gallery";
     public static final String API_URL = "/api";

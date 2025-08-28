@@ -20,7 +20,7 @@
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <link th:href="@{/css/pagination.css}" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
-
+    <link th:href="@{/css/toast.min.css}" rel="stylesheet">
 </head>
 
 <body class="event-list">
@@ -57,7 +57,7 @@
             <th>Event Name</th>
             <th>Booking Date</th>
             <th>Booking Time</th>
-            <th>Booking By</th>
+            <th>Booked By</th>
             <th>Booking Status</th>
             <th>Requested Date</th>
             <th>Team</th>
@@ -78,7 +78,7 @@
      style="display: none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); background: #ffffff; border-radius: 5px; padding: 24px 30px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); z-index: 9999; min-width: 800px; font-family: Arial, sans-serif;">
     <div style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 18px; color: #999;"
          onclick="approveModalClose()">
-        <i class="fa-solid fa-circle-xmark"></i>
+        <i class="bi bi-x"></i>
     </div>
     <h2 id="modalTitle" class="text-xl font-semibold mb-4 text-gray-700">Approve/Reject Reason</h2>
     <hr style="border: none; border-top: 1px solid #ddd; margin: 10px 0 20px" />
@@ -89,14 +89,15 @@
     <div style="text-align: right; font-size: 0.9rem; color: gray; margin-top: 4px;">
         <span id="wordCounter">0</span> / 255
     </div>
-
+    <input type="hidden" name="selectedId" id="selectedId" />
+    <input type="hidden" name="scheduleId" id="scheduleId" />
     <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
         <button onclick="rejectModalSubmit()" disabled
-                class="w-[120px] h-[45px] bg-[#ff3131] text-black text-sm font-medium rounded-[10px] shadow-md hover:bg-[#e0e0e0]">
+                class="btn cancel">
             <i class="fas fa-times mr-2"></i>Reject
         </button>
         <button onclick="approveModalSubmit()" disabled
-                class="w-[120px] h-[45px] bg-[#023047] text-white text-sm font-medium rounded-[10px] shadow-md hover:bg-[#0097b2]">
+                class="btn confirm">
             <i class="fas fa-check mr-2"></i>Approve
         </button>
     </div>
@@ -107,14 +108,25 @@
 <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/booking.js}"></script>
 
+<!-- toast -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/toast.min.js}"></script>
+<script th:src="@{/js/toast-config.js}"></script>
+<!-- toast -->
+
 <div th:replace="~{fragments/footer :: footer}"></div>
 <!-- Main JS File -->
 <script th:src="@{/assets/js/main.js}"></script>
 <script th:src="@{/js/main.js}"></script>
 <!-- data js -->
 <script>
+  var redirectMessage = '[[${message}]]';
+  var redirectMessageType = '[[${messageType}]]';
+
         const exportUrl = '[[@{${WebUrl.EVENT_STAFF_DOWNLOAD_URL}}]]';
         const participantUrl = '[[@{${WebUrl.EVENT_BOOKING_URL}}]]';
+        const BookingUrl = '[[@{${WebUrl.EVENT_BOOKING_APPROVE_URL}}]]';
+            const checkBooked = '[[@{${WebUrl.CHECK_BOOKED_URL}}]]';
     </script>
 </body>
 </html>

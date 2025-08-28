@@ -43,8 +43,8 @@ public class BookingDto {
     private LocalDate date;
     private String startTime;
     private String endTime;
+    private Long scheduleId;
 
-    private EventScheduleDto schedule;
     private String bookedBy;
     private String reason;
     private String confirmedBy;

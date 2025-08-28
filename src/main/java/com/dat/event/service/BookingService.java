@@ -21,4 +21,8 @@ import java.util.List;
 public interface BookingService {
 
     Page<BookingDto> findAllBooking(String keyword, int page);
+
+    void checkBookingANDApproverFlag(Long bookingId , String staffNo);
+
+    void approveBookingById(Long bookingId,String name,String reason,String action);
 }

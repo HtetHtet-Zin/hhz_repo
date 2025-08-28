@@ -16,4 +16,7 @@ package com.dat.event.common.constant;
 
 public final class Constants {
     public static final int PAGE_LIMIT = 10;
+    public static final String PENDING= "Pending";
+    public static final String APPROVED= "Approved";
+    public static final String REJECTED= "Rejected";
 }

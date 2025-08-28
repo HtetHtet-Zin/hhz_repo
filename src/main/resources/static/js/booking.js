@@ -34,7 +34,6 @@ function loadStaffData() {
     .then(res => res.json())
     .then(data => {
         participantCount(data.page.totalElements);
-        console.log(data.content);
         renderTable(data);
         renderPagination(data.page);
     })
@@ -55,7 +54,6 @@ function participantCount(total) {
 }
 
 function renderTable(data) {
-console.log("Data - l");
     const count = data.page.totalElements;
     tableBody.innerHTML = "";
 
@@ -68,8 +66,8 @@ console.log("Data - l");
         return;
     }
 
-console.log("Data - ", data.content);
     data.content.forEach((booking, index) => {
+    const isPending = booking.status === 'Pending';
         tableBody.innerHTML += `
             <tr>
                 <td>${(data.page.number * data.page.size) + index + 1}</td>
@@ -82,9 +80,9 @@ console.log("Data - ", data.content);
                    <td>${booking.team}</td>
                 <td>${booking.department}</td>
                  <td style="text-align:center;">
-                    <button type="button" id="approveButton" onclick="approveModalOpen()"
-                                       class="w-[120px] h-[45px] bg-[#023047] text-white text-sm font-medium rounded-[10px] shadow-md hover:bg-[#0097b2]"
-                                           data-id="${booking.id}"  >
+                    <button type="button" id="approveButton" onclick="approveModalOpen(this)"
+                                       class="btn confirm"
+                                           value="${booking.id}" data-id="${booking.scheduleId}"  ${!isPending ? 'disabled' : ''}>
                                        <i class="fa-solid fa-sliders"></i> Action
                                      </button>
                   </td>
@@ -154,9 +152,13 @@ document.getElementById("modalTextarea").addEventListener("input", function () {
 });
 
 // --- Approve Modal Open ---
-function approveModalOpen() {
+function approveModalOpen(button) {
 
   document.getElementById("customAlertBox").style.display = "block";
+    const selectedId = button.value.trim();
+    const scheduleId = button.getAttribute("data-id");
+   document.getElementById("selectedId").value = selectedId;
+   document.getElementById("scheduleId").value = scheduleId;
 }
 
 // --- Close Modal & Reset ---
@@ -181,58 +183,89 @@ function approveModalClose() {
 // --- Submit Approve ---
 function approveModalSubmit() {
   const reason = document.getElementById("modalTextarea").value.trim();
-  const selectedIds = Array.from(document.querySelectorAll('.rowCheckbox:checked'))
-      .map(cb => cb.getAttribute('data-form-id'));
+  const selectedId =document.getElementById("selectedId").value;
+  const scheduleId =document.getElementById("scheduleId").value;
 
   if (reason === "") {
-    approveModalShowMessage("Please enter a reason.", "error");
+     alertAction("Please enter a reason.", {
+                      title: "Missing Reason!", variant: "danger"
+                  });
     return;
   }
+   const formData = new FormData();
 
-  if (selectedIds.length === 0) {
-    approveModalShowMessage("No forms selected.", "error");
-    approveModalClose();
-    return;
-  }
+    if (validateBooking(scheduleId)) {
+            approveModalClose();
+              alertAction("This time slot is already booked.", {
+                  title: "Booking Conflict!", variant: "danger"
+              });
 
-  document.getElementById("formIds").value = selectedIds.join(",");
-  document.getElementById("approveReason").value = reason;
-  document.getElementById("formAction").value = "approve";
+   } else {
+       formData.append("bookingId", selectedId);
+       formData.append("approveReason", reason);
+       formData.append("formAction", "approve");
 
 
-  const okButton = document.querySelector('#customAlertBox button[onclick="approveModalSubmit()"]');
-  if (okButton) okButton.disabled = true;
+     const okButton = document.querySelector('#customAlertBox button[onclick="approveModalSubmit()"]');
+     if (okButton) okButton.disabled = true;
 
-  document.getElementById("approveForm").submit();
-  approveModalClose();
+             fetch('/club/approve', {
+                 method: 'POST',
+                 body: formData
+             })
+            .then(response =>  response.json())
+            .then(data => {
+                const redirectUrl = new URL(data.redirectUrl, window.location.origin);
+                redirectUrl.searchParams.append('message', data.message || '');
+                redirectUrl.searchParams.append('messageType', data.status || '');
+                window.location.href = redirectUrl;
+            })
+            .catch(error => console.error("Error:", error));
+
+     approveModalClose();
+
+          }
 }
 
 // --- Submit Reject ---
 function rejectModalSubmit() {
   const reason = document.getElementById("modalTextarea").value.trim();
-  const selectedIds = Array.from(document.querySelectorAll('.rowCheckbox:checked'))
-      .map(cb => cb.getAttribute('data-form-id'));
+  const selectedId = document.getElementById("approveButton").value.trim();
+
 
   if (reason === "") {
     approveModalShowMessage("Please enter a reason.", "error");
     return;
   }
 
-  if (selectedIds.length === 0) {
-    approveModalShowMessage("No forms selected.", "error");
+  if (selectedId === "") {
+    approveModalShowMessage("No booking selected.", "error");
     approveModalClose();
     return;
   }
 
-  document.getElementById("formIds").value = selectedIds.join(",");
-  document.getElementById("approveReason").value = reason;
-  document.getElementById("formAction").value = "reject";
-
+    const formData = new FormData();
+    formData.append("bookingId", selectedId);
+    formData.append("approveReason", reason);
+    formData.append("formAction", "reject");
 
   const rejectBtn = document.querySelector('#customAlertBox button[onclick="rejectModalSubmit()"]');
   if (rejectBtn) rejectBtn.disabled = true;
 
-  document.getElementById("approveForm").submit();
+            fetch('/club/approve', {
+                method: 'POST',
+                body: formData
+            })
+           .then(response =>  response.json())
+           .then(data => {
+               const redirectUrl = new URL(data.redirectUrl, window.location.origin);
+               redirectUrl.searchParams.append('message', data.message || '');
+               redirectUrl.searchParams.append('messageType', data.status || '');
+               window.location.href = redirectUrl;
+           })
+           .catch(error => console.error("Error:", error));
+
+
   approveModalClose();
 }
 
@@ -253,4 +286,19 @@ function rejectModalSubmit() {
         }
 
         textarea.reportValidity(); // Optional: show native validation message
+    }
+    function validateBooking(scheduleId) {
+     return   fetch(`${checkBooked}`, {
+            method: 'POST',
+            body: new URLSearchParams({
+                scheduleId: scheduleId,
+            })
+        })
+        .then(res =>  res.json())
+        .then(isConflict => {
+            console.log("is Conflict - ", isConflict);
+            return isConflict;
+        })
+        .catch(error => console.error("Error:", error));
+
     }

@@ -43,7 +43,7 @@ public class BookingEntity {
     private String bookedBy;
     private int attendees;
     private boolean delFlag;
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
     private String updatedBy;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)

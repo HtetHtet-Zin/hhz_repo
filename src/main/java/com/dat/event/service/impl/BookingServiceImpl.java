@@ -9,21 +9,20 @@ package com.dat.event.service.impl;
 import com.dat.event.common.CommonUtility;
 import com.dat.event.common.constant.Constants;
 import com.dat.event.dto.BookingDto;
-import com.dat.event.dto.EventScheduleDto;
 import com.dat.event.repository.BookingRepository;
+import com.dat.event.repository.EventScheduleRepository;
+import com.dat.event.repository.StaffRepository;
 import com.dat.event.service.BookingService;
+import com.dat.event.service.EventScheduleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 /**
  * BookingServiceImpl Class.
@@ -38,7 +37,8 @@ import java.util.List;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
-
+    private final StaffRepository staffRepository;
+    private final EventScheduleRepository scheduleRepository;
 
     @Override
     public Page<BookingDto> findAllBooking(String keyword, int page) {
@@ -64,7 +64,32 @@ public class BookingServiceImpl implements BookingService {
                 .endTime(objects[9] != null
                                 ? LocalTime.parse(objects[9].toString()).format(CommonUtility.formatTo12Hrs)
                                 : null)
+                .scheduleId(objects[10] != null ? Long.valueOf(objects[10].toString()) : null)
                 .build()
         );
+    }
+
+    @Override
+    public void checkBookingANDApproverFlag(Long bookingId , String staffNo) {
+       bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not Found"));
+       var staff = staffRepository.findByStaffNo(staffNo).orElseThrow(() ->new IllegalArgumentException("Staff not Found"));
+      if(!staff.getApproverFlag()){
+          throw new IllegalArgumentException(staffNo +" don't have approve permission");
+      }
+    }
+
+    @Override
+    public void approveBookingById(Long bookingId, String name, String reason, String action) {
+
+       var booking = bookingRepository.findById(bookingId).orElseThrow();
+       var schedule = scheduleRepository.findById(booking.getSchedule().getId()).orElseThrow();
+       schedule.setBookingFlag("approve".equalsIgnoreCase(action) ? true : false);
+        booking.setSchedule(schedule);
+       booking.setConfirmedBy(name);
+       booking.setConfirmedDate(LocalDate.now());
+       booking.setStatus( "approve".equalsIgnoreCase(action) ? Constants.APPROVED : Constants.REJECTED);
+       booking.setUpdatedAt(LocalDateTime.now());
+       booking.setUpdatedBy(name);
+       bookingRepository.save(booking);
     }
 }
