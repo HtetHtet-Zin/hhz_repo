@@ -145,12 +145,20 @@ function renderTable(data) {
 function handleBookingDate(bookingDate,bookingFlag){
     const today = new Date();
     const scheduleDate = new Date(bookingDate);
-    const diffTime = scheduleDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    let diffBusinessDays = 0;
+    let current = new Date(today);
 
-    if( bookingFlag === null && diffDays > 5){
+    while (current < scheduleDate) {
+        current.setDate(current.getDate() + 1);
+        const day = current.getDay();
+        if (day !== 0 && day !== 6) {
+            diffBusinessDays++;
+        }
+    }
+
+    if( bookingFlag === null && diffBusinessDays  > 5){
         return true;
-    } else if (bookingFlag === false &&  diffDays > 2 ) {
+    } else if (bookingFlag === false &&  diffBusinessDays  > 2 ) {
         return true;
     }
     return false;
