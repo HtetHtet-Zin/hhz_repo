@@ -157,10 +157,8 @@ public class EventController {
             eventPlannerService.updateEventPlanner(updateDto, requestEventPlanDto, loginStaffNo);
             if (eventPhotoFile != null && !eventPhotoFile.isEmpty()) {
                 imageStorageService.saveImage(eventPhotoFile, updateDto.getName());
-            } else {
-                if (eventDto.getName().equalsIgnoreCase(requestEventPlanDto.getEventName())) {
+            } else if (!eventDto.getName().equals(requestEventPlanDto.getEventName())){
                     imageStorageService.updateImage(eventDto.getName(), requestEventPlanDto.getEventName());
-                }
             }
             if (updateDto.getEventLocation().equals("OFFICE")) {
                 response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(updateDto.getEventId().toString()).concat("/").concat(updateDto.getName()));

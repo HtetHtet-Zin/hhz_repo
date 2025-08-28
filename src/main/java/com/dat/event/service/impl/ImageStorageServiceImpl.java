@@ -82,13 +82,13 @@ public class ImageStorageServiceImpl implements ImageStorageService {
             String projectRoot = System.getProperty("user.dir");
 
             Path of = Path.of(projectRoot, "photo", "eventPhoto");
-            Path oldName = of.resolve(oldEventName+".jpg");
+            Path oldNamePath = of.resolve(oldEventName+".jpg");
 
 
-            Path newName = of.resolve(newEventName+".jpg");
+            Path newNamePath = of.resolve(newEventName+".jpg");
 
-            Files.copy(oldName, newName, StandardCopyOption.REPLACE_EXISTING);
-
+            Files.move(oldNamePath, newNamePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.deleteIfExists(oldNamePath);
 
         } catch (IOException exception) {
             log.error("Error saving image: {}", exception.getMessage());
