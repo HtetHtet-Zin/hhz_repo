@@ -104,7 +104,9 @@ function renderTable(data) {
 
     data.content.forEach((schedule, index) => {
         let btnHtml = "";
-        if (schedule.bookingFlag === null) {
+
+
+        if ( schedule.bookingFlag === null && handleBookingDate(schedule.date,schedule.bookingFlag) ) {
             btnHtml = `
                 <button class="book-btn"
                         data-id="${schedule.id}"
@@ -115,7 +117,7 @@ function renderTable(data) {
                     <i class="bi bi-bookmark-check-fill"></i>
                 </button>
             `;
-        } else if (schedule.bookingFlag === false) {
+        } else if (schedule.bookingFlag === false && handleBookingDate(schedule.date,schedule.bookingFlag) ) {
             btnHtml = `
                 <button class="book-btn">
                     <i class="bi bi-hourglass-split"></i>
@@ -138,6 +140,20 @@ function renderTable(data) {
             </tr>
         `;
     });
+}
+
+function handleBookingDate(bookingDate,bookingFlag){
+    const today = new Date();
+    const scheduleDate = new Date(bookingDate);
+    const diffTime = scheduleDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if( bookingFlag === null && diffDays > 5){
+        return true;
+    } else if (bookingFlag === false &&  diffDays > 2 ) {
+        return true;
+    }
+    return false;
 }
 
 // cafeteria Usage Form
