@@ -27,33 +27,34 @@ import java.util.List;
  */
 public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
 
-    @Query(
-            value = """
-                               SELECT DISTINCT
-                                           b.booking_id AS bookingId,
-                                           b.event_name AS eventName,
-                                           b.booked_date AS bookedDate,
-                                           b.status AS status,
-                                           s.name AS name,
-                                           s.team AS team,             
-                                           s.department AS department,
-                                            es.date AS date,
-                                           es.start_time AS startTime,
-                                           es.end_time AS endTime
-                                       FROM tbl_booking b
-                                       INNER JOIN tbl_staff s ON s.staff_no = b.booked_by
-                                       INNER JOIN tbl_event_schedule es ON es.id = b.schedule_id
-                                       WHERE b.del_flag = false
-                                       AND  (:keyword IS NULL 
-                                               OR LOWER(b.event_name) LIKE LOWER(CONCAT('%', :keyword, '%')) 
-                                               OR LOWER(b.status) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                                               OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                                               OR LOWER(s.team) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                                               OR LOWER(s.department) LIKE LOWER(CONCAT('%', :keyword, '%')))
-                                       ORDER BY  b.booked_date ASC
-                    """,
+    @Query(value = """
+               SELECT DISTINCT
+                   b.booking_id AS bookingId,
+                   b.event_name AS eventName,
+                   b.booked_date AS bookedDate,
+                   b.status AS status,
+                   s.name AS name,
+                   s.team AS team,             
+                   s.department AS department,
+                    es.date AS date,
+                   es.start_time AS startTime,
+                   es.end_time AS endTime
+               FROM tbl_booking b
+               INNER JOIN tbl_staff s ON s.staff_no = b.booked_by
+               INNER JOIN tbl_event_schedule es ON es.id = b.schedule_id
+               WHERE b.del_flag = false
+               AND  (:keyword IS NULL 
+                   OR LOWER(b.event_name) LIKE LOWER(CONCAT('%', :keyword, '%')) 
+                   OR LOWER(b.status) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(s.team) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(s.department) LIKE LOWER(CONCAT('%', :keyword, '%')))
+               ORDER BY  b.booked_date ASC
+                """,
             nativeQuery = true
     )
     Page<Object[]> getAllBooking(@Param("keyword") String keyword, Pageable pageable);
+
+
 
 }

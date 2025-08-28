@@ -9,6 +9,7 @@ package com.dat.event.common;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Map;
@@ -45,4 +46,9 @@ public final class CommonUtility {
     public static DateTimeFormatter formatTo12Hrs = DateTimeFormatter.ofPattern("hh:mm a");
     public static DateTimeFormatter formatToLocalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
     public static DateTimeFormatter formatToLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public static boolean isTimeOverlap(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
+        return start1.isBefore(end2) && end1.isAfter(start2);
+    }
+
 }

@@ -41,6 +41,7 @@ public class EventScheduleDto {
     private String updatedBy;
     private LocalDateTime updateAt;
     private Boolean delFlg;
+    private Boolean bookingFlag;
     private Integer participantCount;
 
     private String fromTime;

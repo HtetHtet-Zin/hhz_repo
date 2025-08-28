@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -26,22 +27,16 @@ import java.util.List;
 public interface EventScheduleRepository extends JpaRepository<EventScheduleEntity, Long> {
 
     @Query(value = """
-            SELECT sch.id, sch.start_time, sch.end_time, sch.date, eve.name, COUNT(reg.id)
+            SELECT sch.id, sch.start_time, sch.end_time, sch.date, eve.name, COUNT(reg.id), sch.booking_flag
             FROM tbl_event_schedule sch JOIN tbl_event eve
                 ON sch.event_id = eve.event_id
             LEFT JOIN tbl_event_registration reg
                   ON reg.schedule_id = sch.id
             WHERE sch.event_id = :eventId
             AND (:keyword IS NULL OR date LIKE %:keyword%)
-            GROUP BY sch.id, sch.start_time, sch.end_time, sch.date, eve.name
+            GROUP BY sch.id, sch.start_time, sch.end_time, sch.date, eve.name, sch.booking_flag
             ORDER BY sch.date ASC, sch.start_time ASC, sch.end_time ASC
-            """,
-            countQuery = """
-        SELECT COUNT(*)
-        FROM tbl_event_schedule
-        WHERE event_id = :eventId
-        AND (:keyword IS NULL OR date LIKE %:keyword%)
-        """, nativeQuery = true)
+            """, nativeQuery = true)
     Page<Object[]> getScheduleByEventId(@Param("eventId") Long eventId, @Param("keyword") String keyword, Pageable pageable);
 
     @Query(value = "SELECT id FROM tbl_event_schedule WHERE event_id = :eventId", nativeQuery = true)
@@ -51,6 +46,11 @@ public interface EventScheduleRepository extends JpaRepository<EventScheduleEnti
 
     @Query(value = "SELECT id FROM tbl_event_schedule WHERE event_id = :eventId",nativeQuery = true)
     List<Long> getEventScheduleIds(@Param("eventId") Long eventId);
+
+    /*@Query("SELECT e.id FROM EventScheduleEntity e WHERE e.bookingFlag = false AND e.event.id = :eventId")
+    List<Long> pendingSchedules(@Param("eventId") Long eventId);*/
+
+    List<EventScheduleEntity> findByDateAndBookingFlagTrue(LocalDate date);
 
 
 

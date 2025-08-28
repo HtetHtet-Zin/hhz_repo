@@ -37,4 +37,8 @@ public interface EventScheduleService {
 
     void deleteSchedule(Long eventId);
 
+    boolean checkTimeAlreadyBooked(Long id);
+
+    //List<Long> pendingBooking(Long id);
+
 }

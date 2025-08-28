@@ -103,21 +103,38 @@ function renderTable(data) {
     }
 
     data.content.forEach((schedule, index) => {
+        let btnHtml = "";
+        if (schedule.bookingFlag === null) {
+            btnHtml = `
+                <button class="book-btn"
+                        data-id="${schedule.id}"
+                        data-date="${schedule.date}"
+                        data-start="${schedule.fromTime}"
+                        data-end="${schedule.toTime}"
+                        onclick="handleBookingClick(this)">
+                    <i class="bi bi-bookmark-check-fill"></i>
+                </button>
+            `;
+        } else if (schedule.bookingFlag === false) {
+            btnHtml = `
+                <button class="book-btn">
+                    <i class="bi bi-hourglass-split"></i>
+                </button>
+            `;
+        } else if (schedule.bookingFlag === true) {
+            btnHtml = `
+                <button class="book-btn" disabled>
+                    <i class="bi bi-check-circle-fill"></i>
+                </button>
+            `;
+        }
+
         tableBody.innerHTML += `
             <tr>
                 <td>${(data.page.number * data.page.size) + index + 1}</td>
                 <td>${schedule.name}</td>
                 <td>${schedule.date} (${schedule.fromTime} - ${schedule.toTime})</td>
-                <td>
-                    <button class="book-btn"
-                            data-id="${schedule.id}"
-                            data-date="${schedule.date}"
-                            data-start="${schedule.fromTime}"
-                            data-end="${schedule.toTime}"
-                            onclick="handleBookingClick(this)">
-                        <i class="bi bi-bookmark-check-fill"></i>
-                    </button>
-                </td>
+                <td>${btnHtml}</td>
             </tr>
         `;
     });
@@ -131,7 +148,7 @@ function handleBookingClick(button) {
     const start = button.getAttribute("data-start");
     const end = button.getAttribute("data-end");
 
-    if (validateBooking(date, start, end)) {
+    if (!validateBooking(scheduleId)) {
 
         const applicantName = document.getElementById('applicantName');
         const applicantStaffId = document.getElementById('applicantStaffId');
@@ -154,16 +171,19 @@ function handleBookingClick(button) {
     }
 }
 
-function validateBooking(date, start, end) {
-    /*fetch('/club/event-check', {
+function validateBooking(scheduleId) {
+    fetch(`${checkBooked}`, {
         method: 'POST',
+        body: new URLSearchParams({
+            scheduleId: scheduleId,
+        })
     })
     .then(res =>  res.json())
-    .then(data => {
-
+    .then(isConflict => {
+        console.log("is Conflict - ", isConflict);
+        return isConflict;
     })
-    .catch(error => console.error("Error:", error));*/
-    return true;
+    .catch(error => console.error("Error:", error));
 }
 
 // cafeteria Usage Form

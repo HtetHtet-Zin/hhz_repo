@@ -100,6 +100,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                 .date(objects[3] != null ? LocalDate.parse(objects[3].toString()) : null)
                 .name(objects[4] != null ? objects[4].toString() : null)
                 .participantCount(objects[5] != null ? Integer.valueOf(objects[5].toString()) : null)
+                .bookingFlag(objects[6] != null ? (((Number) objects[6]).intValue() == 1) : null)
                 .build()
         );
     }
@@ -166,5 +167,29 @@ public class EventScheduleServiceImpl implements EventScheduleService {
         List<Long> scheduleIds = eventScheduleRepository.getEventScheduleIds(eventId);
         eventRegistrationRepository.deleteRegistration(scheduleIds);
         eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
+    }
+
+    /*@Override
+    public List<Long> pendingBooking(Long id) {
+        return eventScheduleRepository.pendingSchedules(id);
+    }*/
+
+    @Override
+    public boolean checkTimeAlreadyBooked(Long id) {
+        EventScheduleEntity givenSchedule = eventScheduleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Schedule not found"));
+        List<EventScheduleEntity> bookedSchedules = eventScheduleRepository
+                .findByDateAndBookingFlagTrue(givenSchedule.getDate());
+
+        return bookedSchedules.stream()
+                .anyMatch(schedule ->
+                        !schedule.getId().equals(givenSchedule.getId()) &&
+                                CommonUtility.isTimeOverlap(
+                                        givenSchedule.getStartTime(),
+                                        givenSchedule.getEndTime(),
+                                        schedule.getStartTime(),
+                                        schedule.getEndTime()
+                                )
+                );
     }
 }
