@@ -11,6 +11,7 @@ import com.dat.event.common.constant.Constants;
 import com.dat.event.dto.BookingDto;
 import com.dat.event.repository.BookingRepository;
 import com.dat.event.repository.EventScheduleRepository;
+import com.dat.event.repository.RequestedAccessoriesRepository;
 import com.dat.event.repository.StaffRepository;
 import com.dat.event.service.BookingService;
 import com.dat.event.service.EventScheduleService;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * BookingServiceImpl Class.
@@ -39,11 +42,12 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final StaffRepository staffRepository;
     private final EventScheduleRepository scheduleRepository;
+    private final RequestedAccessoriesRepository requestedAccessoriesRepository;
 
     @Override
     public Page<BookingDto> findAllBooking(String keyword, int page) {
         Page<Object[]> bookings= bookingRepository.getAllBooking(keyword, PageRequest.of(page, Constants.PAGE_LIMIT));
-        return bookings.map(objects -> BookingDto.builder()
+       Page<BookingDto> bookingDtos =  bookings.map(objects -> BookingDto.builder()
                 .id(objects[0] != null ? Long.valueOf(objects[0].toString()) : null)
                 .eventName(objects[1] != null
                                   ? objects[1].toString()
@@ -65,8 +69,17 @@ public class BookingServiceImpl implements BookingService {
                                 ? LocalTime.parse(objects[9].toString()).format(CommonUtility.formatTo12Hrs)
                                 : null)
                 .scheduleId(objects[10] != null ? Long.valueOf(objects[10].toString()) : null)
+                .attendees(objects[11] != null ? Integer.parseInt((objects[11].toString())) : null)
                 .build()
         );
+         bookingDtos.forEach(bookingDto -> {
+            var Accessories = requestedAccessoriesRepository.getAccessories(bookingDto.getId());
+            String accessory = String.join(", ", Accessories);
+            bookingDto.setAccessories(accessory);
+        });
+
+        return bookingDtos;
+
     }
 
     @Override

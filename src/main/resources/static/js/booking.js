@@ -79,6 +79,8 @@ function renderTable(data) {
                    <td>${booking.bookedDate}</td>
                    <td>${booking.team}</td>
                 <td>${booking.department}</td>
+                 <td>${booking.attendees}</td>
+                <td>${booking.accessories}</td>
                  <td style="text-align:center;">
                     <button type="button" id="approveButton" onclick="approveModalOpen(this)"
                                        class="btn confirm"

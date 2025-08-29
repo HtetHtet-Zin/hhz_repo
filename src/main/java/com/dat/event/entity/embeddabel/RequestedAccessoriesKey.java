@@ -27,5 +27,5 @@ import java.io.Serializable;
 public class RequestedAccessoriesKey implements Serializable {
 
     private Long bookingId;
-    private Long AccessoriesId;
+    private Long accessoriesId;
 }

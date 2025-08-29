@@ -44,12 +44,13 @@ public class BookingDto {
     private String startTime;
     private String endTime;
     private Long scheduleId;
+    private int attendees;
+    private String accessories;
 
     private String bookedBy;
     private String reason;
     private String confirmedBy;
     private LocalDateTime confirmedDate;
-    private int attendees;
     private boolean delFlag;
     private LocalDateTime updateAt;
     private String updatedBy;

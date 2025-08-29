@@ -33,8 +33,8 @@ public class RequestedAccessoriesEntity {
     private BookingEntity booking;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("AccessoriesId")
-    @JoinColumn(name = "acce_id", nullable = false)
+    @MapsId("accessoriesId")
+    @JoinColumn(name = "accessories_id", nullable = false)
     @JsonIgnore
     private AccessoriesEntity accessories;
 }
