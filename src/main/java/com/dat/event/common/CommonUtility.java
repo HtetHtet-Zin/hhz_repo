@@ -24,6 +24,11 @@ import java.util.Map;
 
 public final class CommonUtility {
 
+    public static DateTimeFormatter formatTo12Hrs = DateTimeFormatter.ofPattern("hh:mm a");
+    public static DateTimeFormatter formatToLocalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+    public static DateTimeFormatter formatToLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+
     public static String ifNoDataReturnDash(final String input) {
         return isEmptyObject(input) ? "-" : input;
     }
@@ -43,12 +48,18 @@ public final class CommonUtility {
                 (input.getClass().isArray() && Array.getLength(input) == 0);
     }
 
-    public static DateTimeFormatter formatTo12Hrs = DateTimeFormatter.ofPattern("hh:mm a");
-    public static DateTimeFormatter formatToLocalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-    public static DateTimeFormatter formatToLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     public static boolean isTimeOverlap(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
         return start1.isBefore(end2) && end1.isAfter(start2);
+    }
+
+    public static String trimSentence(final String input) {
+        if (input == null) return null;
+        final StringBuilder result = new StringBuilder();
+        for (final String output : input.trim().split(" ")) {
+            if (!output.isBlank())
+                result.append(output.trim().concat(" "));
+        }
+        return result.toString().trim();
     }
 
 }

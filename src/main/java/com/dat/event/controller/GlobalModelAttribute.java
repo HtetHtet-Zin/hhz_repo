@@ -6,9 +6,9 @@
  * *************************************************************/
 package com.dat.event.controller;
 
+import com.dat.event.common.CommonUtility;
 import com.dat.event.common.constant.WebUrl;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -84,5 +84,10 @@ public class GlobalModelAttribute {
             return department.toString();
         }
         return "";
+    }
+
+    @ModelAttribute("CommonUtility")
+    public Class<CommonUtility> commonUtilityClass() {
+        return CommonUtility.class;
     }
 }

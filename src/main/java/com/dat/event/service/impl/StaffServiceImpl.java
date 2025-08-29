@@ -1,5 +1,6 @@
 package com.dat.event.service.impl;
 
+import com.dat.event.common.CommonUtility;
 import com.dat.event.common.constant.Constants;
 import com.dat.event.common.mappers.StaffMapper;
 import com.dat.event.dto.StaffDto;
@@ -48,19 +49,20 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Page<StaffDto> findAll(final int page) {
         return staffRepository.findAll(
-                PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.desc("approverFlag"), Sort.Order.asc("staffNo"))
+                PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc(StaffEntity.Fields.adminFlag), Sort.Order.desc(StaffEntity.Fields.approverFlag), Sort.Order.asc(StaffEntity.Fields.staffNo))
                 )
         ).map(staffMapper::toDTO);
     }
 
     @Override
     public Page<StaffDto> findAll(final String keyword, final int page) {
-        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCaseOrTeamContainingIgnoreCaseOrDepartmentContainingIgnoreCase(keyword, keyword, keyword, keyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.desc("approverFlag"), Sort.Order.asc("staffNo")))).map(staffMapper::toDTO);
+        final String trimKeyword = CommonUtility.trimSentence(keyword);
+        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCaseOrTeamContainingIgnoreCaseOrDepartmentContainingIgnoreCase(trimKeyword, trimKeyword, trimKeyword, trimKeyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc(StaffEntity.Fields.adminFlag), Sort.Order.desc(StaffEntity.Fields.approverFlag), Sort.Order.asc(StaffEntity.Fields.staffNo)))).map(staffMapper::toDTO);
     }
 
     @Override
     public List<StaffDto> findAll() {
-        return staffMapper.toDtoList(staffRepository.findAll(Sort.by(Sort.Order.desc("adminFlag"), Sort.Order.desc("approverFlag"), Sort.Order.asc("name"))));
+        return staffMapper.toDtoList(staffRepository.findAll(Sort.by(Sort.Order.desc(StaffEntity.Fields.adminFlag), Sort.Order.desc(StaffEntity.Fields.approverFlag), Sort.Order.asc(StaffEntity.Fields.staffNo))));
     }
 
     @Override
