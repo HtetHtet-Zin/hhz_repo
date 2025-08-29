@@ -134,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td></td>
-            <td></td>
             <td data-name="supName">${escapeHtml(name)}</td>
             <td data-name="supMonth">${escapeHtml(month)}</td>
             <td style="display: none;" data-name="supStaff">${escapeHtml(staffNo)}</td>
