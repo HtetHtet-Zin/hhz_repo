@@ -13,12 +13,7 @@ const prevWeekBtn = document.getElementById("prevWeekBtn");
 
 const supportedListTable = supportedList.closest('table');
 const supportedThCount = supportedListTable.querySelectorAll('th').length;
-const otherLocation = document.getElementById('otherLocation');
 
-
-otherLocation.addEventListener('input', function(e) {
-     document.getElementById('eventLocationOther').value = this.value;
-});
 
 function setNoSupportedMember() {
     supportedList.innerHTML = `
@@ -27,17 +22,13 @@ function setNoSupportedMember() {
           </tr>
       `;
 }
-function toggleOtherLocation(show) {
-    document.getElementById("otherLocationDiv").style.display = show ? "block" : "none";
-}
+
 
 document.getElementById('eventName').addEventListener('input', function(e) {
     this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
 });
 
-otherLocation.addEventListener('input', function(e) {
-   this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
-});
+
 
 document.addEventListener("DOMContentLoaded", () => {
     setNoSupportedMember();
@@ -212,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('input[name="eventLocation"]').forEach(radio => {
         radio.addEventListener("change", validateEventLocation);
     });
-    document.getElementById("otherLocation").addEventListener("input", validateEventLocation);
+//    document.getElementById("otherLocation").addEventListener("input", validateEventLocation);
 
     function validateEventLocation() {
         const selectedLocation = document.querySelector('input[name="eventLocation"]:checked');
@@ -225,23 +216,16 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             errorDiv.style.display = "none";
             if (selectedLocation.value === "OTHER" || selectedLocation.value.trim() === "") {
-                const otherInput = document.getElementById("otherLocation");
+//                const otherInput = document.getElementById("otherLocation");
                 let otherError = document.getElementById("otherLocationErrorMessage");
 
                 if (!otherError) {
                     otherError = document.createElement("div");
                     otherError.id = "otherLocationErrorMessage";   // unique id
                     otherError.className = "text-danger mt-1";
-                    document.getElementById("otherLocationDiv").appendChild(otherError);
                 }
 
-                if (!otherInput.value.trim()) {
-                    otherError.textContent = "Please enter other location.";
-                    otherError.style.display = "block";
-                    isValid = false;
-                } else {
-                    otherError.style.display = "none";
-                }
+
             } else {
                 const otherError = document.getElementById("otherLocationErrorMessage");
                 if (otherError) {

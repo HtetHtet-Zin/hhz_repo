@@ -118,11 +118,22 @@ function renderTable(data) {
                 </button>
             `;
         } else if (schedule.bookingFlag === false && handleBookingDate(schedule.date,schedule.bookingFlag) ) {
-            btnHtml = `
-                <button class="book-btn">
-                    <i class="bi bi-hourglass-split"></i>
-                </button>
-            `;
+            if(handleBookingDate(schedule.date,schedule.bookingFlag)){
+             btnHtml = `
+                        <button class="book-btn" disabled>
+                             <i class="bi bi-hourglass-split"></i>
+                            </button>
+                    `;
+
+            }else{
+             btnHtml = `
+                        <button class="book-btn">
+                            <i class="bi bi-hourglass-split"></i>
+                        </button>
+                        `;
+            }
+
+
         } else if (schedule.bookingFlag === true) {
             btnHtml = `
                 <button class="book-btn" disabled>
@@ -156,7 +167,7 @@ function handleBookingDate(bookingDate,bookingFlag){
         }
     }
 
-    if( bookingFlag === null && diffBusinessDays  > 5){
+    if( bookingFlag === null && diffBusinessDays  >= 5){
         return true;
     } else if (bookingFlag === false &&  diffBusinessDays  > 2 ) {
         return true;

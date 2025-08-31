@@ -94,12 +94,12 @@ public class EventController {
 
         }
 
-        EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getEventLocation(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
+        EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
         eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
         eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
         imageStorageService.saveImage(eventPhotoFile, savedDto.getName());
 
-        if (savedDto.getEventLocation().equals("OFFICE")) {
+        if (requestEventPlanDto.getEventLocation().equals("OFFICE")) {
             response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(savedDto.getEventId().toString()).concat("/").concat(savedDto.getName()));
             response.put("status", "success");
             response.put("message", "Event created successfully");
@@ -133,7 +133,6 @@ public class EventController {
                 .addObject("staffs", staffDtoList)
                 .addObject("eventId", eventDto.getEventId())
                 .addObject("eventName", eventDto.getName())
-                .addObject("eventLocation", eventDto.getEventLocation())
                 .addObject("description", eventDto.getDescription())
                 .addObject("eventScheduleList", eventScheduleDtoList)
                 .addObject("inChargePerson", inChargePerson.getName())
@@ -152,7 +151,7 @@ public class EventController {
         EventDto eventDto = eventService.findById(requestEventPlanDto.getEventId());
 
         if (eventDto != null && loginStaffNo != null) {
-            EventDto updateDto = eventService.update(eventDto.getEventId(), requestEventPlanDto.getEventName(), requestEventPlanDto.getEventLocation(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
+            EventDto updateDto = eventService.update(eventDto.getEventId(), requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
             eventScheduleService.updateEventSchedule(updateDto, requestEventPlanDto, loginStaffNo);
             eventPlannerService.updateEventPlanner(updateDto, requestEventPlanDto, loginStaffNo);
             if (eventPhotoFile != null && !eventPhotoFile.isEmpty()) {
@@ -160,7 +159,7 @@ public class EventController {
             } else if (!eventDto.getName().equals(requestEventPlanDto.getEventName())){
                     imageStorageService.updateImage(eventDto.getName(), requestEventPlanDto.getEventName());
             }
-            if (updateDto.getEventLocation().equals("OFFICE")) {
+            if (requestEventPlanDto.getEventLocation().equals("OFFICE")) {
                 response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(updateDto.getEventId().toString()).concat("/").concat(updateDto.getName()));
                 response.put("status", "success");
                 response.put("message", "Event updated successfully");

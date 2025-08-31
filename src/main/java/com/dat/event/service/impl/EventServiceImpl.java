@@ -44,10 +44,9 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
 
     @Override
-    public EventDto save(String eventName, String eventLocation, String description, MultipartFile file, String staffNo) {
+    public EventDto save(String eventName, String description, MultipartFile file, String staffNo) {
         return eventMapper.toDTO(repository.save(eventMapper.toEntity(EventDto.builder()
                 .name(eventName)
-                .eventLocation(eventLocation)
                 .description(description)
                 .createdAt(LocalDateTime.now())
                 .createdBy(staffNo)
@@ -56,11 +55,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto update(Long eventId, String eventName, String eventLocation, String description, MultipartFile file, String staffNo) {
+    public EventDto update(Long eventId, String eventName, String description, MultipartFile file, String staffNo) {
         return eventMapper.toDTO(repository.save(eventMapper.toEntity(EventDto.builder()
                 .eventId(eventId)
                 .name(eventName)
-                .eventLocation(eventLocation)
                 .description(description)
                 .createdAt(LocalDateTime.now())
                 .createdBy(staffNo)

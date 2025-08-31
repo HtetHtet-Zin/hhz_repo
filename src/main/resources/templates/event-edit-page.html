@@ -64,28 +64,26 @@
                                 <label class="radio">
                                     <input type="radio" name="eventLocation" id="eventLocationOffice"
                                            th:value="'OFFICE'"
-                                           th:checked="${eventLocation == 'OFFICE'}"
-                                           onclick="toggleOtherLocation(false)">
+
+                                          >
                                     <span class="radio-mark"></span>
                                     <span>Office Cafeteria</span>
                                 </label>
                                 <label class="radio">
                                     <input type="radio" name="eventLocation" id="eventLocationOther"
                                            th:value="'OTHER'"
-                                           th:checked="${eventLocation != 'OFFICE'}"
-                                           onclick="toggleOtherLocation(true)">
+
+                                           >
                                     <span class="radio-mark"></span>
                                     <span>Other Location</span>
                                 </label>
                             </div>
 
                             <!-- Hidden input -->
-                            <div id="otherLocationDiv" class="mt-2"
-                                 th:style="${eventLocation != 'OFFICE'} ? 'display:block;' : 'display:none;'">
+                            <div id="otherLocationDiv" class="mt-2" style="display:none;">
                                 <label for="otherLocation" class="form-label" style="display:none;">Other Location</label>
                                 <input type="text" class="form-control" id="otherLocation" name="otherLocation"
-                                       placeholder="Enter other location"
-                                       th:value="${eventLocation == 'OFFICE' ? '' : eventLocation}">
+                                       placeholder="Enter other location">
                             </div>
 
                             <!-- Error message -->

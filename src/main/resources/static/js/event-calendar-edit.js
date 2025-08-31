@@ -13,20 +13,7 @@ const prevWeekBtn = document.getElementById("prevWeekBtn");
 
 const supportedListTable = supportedList.closest('table');
 const supportedThCount = supportedListTable.querySelectorAll('th').length;
-const otherLocation = document.getElementById('otherLocation');
 
-
-otherLocation.addEventListener('input', function(e) {
-     document.getElementById('eventLocationOther').value = this.value;
-});
-
-function toggleOtherLocation(show) {
-    document.getElementById("otherLocationDiv").style.display = show ? "block" : "none";
-}
-
-otherLocation.addEventListener('input', function(e) {
-    this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
-});
 
 function setNoSupportedMember() {
     supportedList.innerHTML = `
@@ -212,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('input[name="eventLocation"]').forEach(radio => {
         radio.addEventListener("change", validateEventLocation);
     });
-    document.getElementById("otherLocation").addEventListener("input", validateEventLocation);
+//    document.getElementById("otherLocation").addEventListener("input", validateEventLocation);
 
     function validateEventLocation() {
         const selectedLocation = document.querySelector('input[name="eventLocation"]:checked');
@@ -225,23 +212,16 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             errorDiv.style.display = "none";
             if (selectedLocation.value === "OTHER" || selectedLocation.value.trim() === "") {
-                const otherInput = document.getElementById("otherLocation");
+//                const otherInput = document.getElementById("otherLocation");
                 let otherError = document.getElementById("otherLocationErrorMessage");
 
                 if (!otherError) {
                     otherError = document.createElement("div");
                     otherError.id = "otherLocationErrorMessage";   // unique id
                     otherError.className = "text-danger mt-1";
-                    document.getElementById("otherLocationDiv").appendChild(otherError);
                 }
 
-                if (!otherInput.value.trim()) {
-                    otherError.textContent = "Please enter other location.";
-                    otherError.style.display = "block";
-                    isValid = false;
-                } else {
-                    otherError.style.display = "none";
-                }
+
             } else {
                 const otherError = document.getElementById("otherLocationErrorMessage");
                 if (otherError) {
@@ -617,56 +597,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-//    // Event delegation for add/remove time slots
-//    tableBody.addEventListener("click", (e) => {
-//        if (e.target.classList.contains("addSlotBtn")) {
-//            const day = e.target.dataset.day;
-//            const wrapper = document.querySelector(`.group-${currentPage}.slot-wrapper[data-day="${day}"]`);
-//            const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
-//            if(wrapper.children.length > 1) {
-//                disableInput(addBtn);
-//            }
-//            if (wrapper) {
-//                wrapper.appendChild(createSlotInput(day, false));
-//                if (wrapper.children.length > 1) {
-//                    wrapper.querySelectorAll(".removeSlotBtn").forEach((btn) => {
-//                        enableInput(btn);
-//                        btn.onclick = function (event) {
-//                            if(wrapper.children.length < 4){
-//                                enableInput(addBtn);
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        }
-//        if (e.target.classList.contains("removeSlotBtn")) {
-//            const slotDiv = e.target.closest(".time-slot");
-//            const wrapper = slotDiv.parentElement;
-//            if (wrapper.children.length > 1) {
-//
-//            const input = slotDiv.querySelector("input[type='hidden']");
-//              const deletedId = input.value; // shorter than getAttribute
-//                const id = Number(deletedId);
-//                console.log(id);
-//                  deleteScheduleList.push(id);
-//
-//                slotDiv.remove();
-//                console.log("1");
-//            } else {
-//                const inputs = slotDiv.querySelectorAll("input[type='time']");
-//
-//                const input = slotDiv.querySelector("input[type='hidden']");
-//                  const deletedId = input.value; // shorter than getAttribute
-//                    const id = Number(deletedId);
-//                      deleteScheduleList.push(id);
-//
-//                inputs.forEach(inp => inp.value = ""); // clear times
-//                input.value = "";
-//                console.log("2");
-//            }
-//        }
-//    });
 
     tableBody.addEventListener("click", async (e) => {
             if (e.target.classList.contains("addSlotBtn")) {

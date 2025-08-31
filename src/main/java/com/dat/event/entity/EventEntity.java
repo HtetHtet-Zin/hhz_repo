@@ -32,7 +32,6 @@ public class EventEntity {
 
     @Column(unique = true)
     private String name;
-    private String eventLocation;
     private String description;
     private boolean delFlag;
     private LocalDateTime createdAt;

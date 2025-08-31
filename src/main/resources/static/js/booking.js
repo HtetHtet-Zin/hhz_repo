@@ -85,7 +85,7 @@ function renderTable(data) {
                     <button type="button" id="approveButton" onclick="approveModalOpen(this)"
                                        class="btn confirm"
                                            value="${booking.id}" data-id="${booking.scheduleId}"  ${!isPending ? 'disabled' : ''}>
-                                     <i class="bi bi-patch-exclamation-fill"></i>
+                                     <i class="bi bi-pencil-square"></i>
                                      </button>
                   </td>
             </tr>

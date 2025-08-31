@@ -42,7 +42,7 @@
                        th:data-current="${currentUrl}" th:data-target="@{${WebUrl.EVENT_BOOKING_URL}}"
                        th:if="${IsAdmin}">BOOKING LIST</a></li>
                 <li>
-                    <a th:href="@{/pdf/Policy.pdf}" target="_blank" rel="noopener noreferrer" style="color: white;">POLICY</a>
+                    <a  th:onclick="'window.open(\'' + @{/pdf/Policy.pdf} + '\', \'_blank\')'"  rel="noopener noreferrer">POLICY</a>
                 </li>
             </ul>
             <i class="mobile-nav-toggle me-4 d-xl-none bi bi-list"></i>

@@ -14,6 +14,7 @@ import com.dat.event.dto.EventScheduleDto;
 import com.dat.event.dto.RequestEventPlanDto;
 import com.dat.event.dto.UpdateEventPlanDto;
 import com.dat.event.entity.EventScheduleEntity;
+import com.dat.event.repository.BookingRepository;
 import com.dat.event.repository.EventRegistrationRepository;
 import com.dat.event.repository.EventRepository;
 import com.dat.event.repository.EventScheduleRepository;
@@ -53,6 +54,8 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     private final EventRepository eventRepository;
 
     private final EventRegistrationRepository eventRegistrationRepository;
+
+    private final BookingRepository bookingRepository;
 
     @Override
     public void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
@@ -146,6 +149,9 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                 List<Long> scheduleIds = requestEventPlanDto.getDeleteScheduleList();
                 eventRegistrationRepository.deleteRegistration(scheduleIds);
                 eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
+                if(bookingRepository.existsByScheduleIdIn(scheduleIds)){
+                    bookingRepository.deleteBooking(scheduleIds);
+                }
             }
 
         }catch (Exception e){

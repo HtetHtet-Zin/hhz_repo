@@ -13,10 +13,12 @@ import com.dat.event.entity.StaffEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * BookingRepository Class.
@@ -57,6 +59,9 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
     )
     Page<Object[]> getAllBooking(@Param("keyword") String keyword, Pageable pageable);
 
+    @Modifying
+    @Query(value = "DELETE FROM tbl_booking WHERE schedule_id IN (:scheduleIds)", nativeQuery = true)
+    void deleteBooking(@Param("scheduleIds") List<Long> scheduleIds);
 
-
+    boolean existsByScheduleIdIn(List<Long> scheduleIds);
 }
