@@ -451,7 +451,38 @@ function validateAll(start, end, date) {
 }
 
 function submitData(submitType) {
-    if (!validateAll(start,end)) return;
+    if (!validateAll(start,end, date)) return;
+
+    const formData = new FormData();
+    formData.append("scheduleId", scheduleId.value);
+    formData.append("eventId", eventId);
+    formData.append("eventName", eventName);
+    formData.append("attendees", attendees.value);
+
+    selectedAccessories.forEach(val => formData.append("accessories", val));
+
+    formData.append("purpose", purpose.value);
+    formData.append("signature", signature.files[0]);
+    formData.append("submitType", submitType);
+
+    fetch(`${bookingUrl}`, {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        const redirectUrl = new URL(data.redirectUrl, window.location.origin);
+        redirectUrl.searchParams.append('message', data.message || '');
+        redirectUrl.searchParams.append('messageType', data.status || '');
+        window.location.href = redirectUrl;
+    })
+    .catch(err => {
+        console.error("Submit error:", err);
+    });
+}
+
+function submitEditData(submitType) {
+    if (!validateAll(start, end ,date)) return;
 
     const formData = new FormData();
     formData.append("scheduleId", scheduleId.value);
@@ -513,6 +544,9 @@ document.querySelectorAll("[data-bs-dismiss='modal']").forEach(btn => {
 
 document.getElementById("saveBtn").addEventListener("click", () => submitData("SAVE"));
 document.getElementById("saveContinueBtn").addEventListener("click", () => submitData("CONTINUE"));
+
+document.getElementById("editBtn").addEventListener("click", () => submitEditData("SAVE"));
+document.getElementById("editContinueBtn").addEventListener("click", () => submitEditData("CONTINUE"));
 
 
 // cafeteria Usage Form
