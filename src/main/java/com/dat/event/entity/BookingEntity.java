@@ -38,13 +38,14 @@ public class BookingEntity {
     private String status;
     private String reason;
     private String confirmedBy;
-    private LocalDate confirmedDate;
-    private LocalDate bookedDate;
+    private LocalDateTime confirmedDate;
+    private LocalDateTime bookedDate;
     private String bookedBy;
     private int attendees;
     private boolean delFlag;
     private LocalDateTime updatedAt;
     private String updatedBy;
+    private String purpose;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestedAccessoriesEntity> requestedAccessoriesEntityList = new ArrayList<>();

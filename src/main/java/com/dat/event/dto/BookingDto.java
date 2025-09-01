@@ -46,6 +46,8 @@ public class BookingDto {
     private Long scheduleId;
     private int attendees;
     private String accessories;
+    private String purpose;
+    private String signaturePath;
 
     private String bookedBy;
     private String reason;
@@ -54,6 +56,7 @@ public class BookingDto {
     private boolean delFlag;
     private LocalDateTime updateAt;
     private String updatedBy;
+
 
 
 }

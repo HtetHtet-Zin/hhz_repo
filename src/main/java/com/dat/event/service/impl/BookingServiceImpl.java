@@ -60,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
     public Page<BookingDto> findAllBooking(String keyword, int page) {
         LocalDate tdyDate = LocalDate.now();
         Page<Object[]> bookings= bookingRepository.getAllBooking(tdyDate,keyword, PageRequest.of(page, Constants.PAGE_LIMIT));
-       Page<BookingDto> bookingDtos =  bookings.map(objects -> BookingDto.builder()
+        Page<BookingDto> bookingDtos =  bookings.map(objects -> BookingDto.builder()
                 .id(objects[0] != null ? Long.valueOf(objects[0].toString()) : null)
                 .eventName(objects[1] != null
                                   ? objects[1].toString()
@@ -109,10 +109,11 @@ public class BookingServiceImpl implements BookingService {
         booking.setSchedule(schedule);
         booking.setEventName(eventName);
         booking.setStatus(Constants.PENDING);
-        booking.setBookedDate(LocalDate.now());
+        booking.setBookedDate(LocalDateTime.now());
         booking.setBookedBy(staffId);
         booking.setAttendees(attendees);
         booking.setDelFlag(false);
+        booking.setPurpose(purpose);
         var savedBooking = bookingRepository.save(booking);
 
         if (accessories != null) {
@@ -137,25 +138,40 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public void checkBookingANDApproverFlag(Long bookingId , String staffNo) {
-       bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not Found"));
-       var staff = staffRepository.findByStaffNo(staffNo).orElseThrow(() ->new IllegalArgumentException("Staff not Found"));
-      if(!staff.getApproverFlag()){
-          throw new IllegalArgumentException(staffNo +" don't have approve permission");
-      }
+        bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not Found"));
+        var staff = staffRepository.findByStaffNo(staffNo).orElseThrow(() ->new IllegalArgumentException("Staff not Found"));
+        if(!staff.getApproverFlag()){
+            throw new IllegalArgumentException(staffNo +" don't have approve permission");
+        }
     }
 
     @Override
     public void approveBookingById(Long bookingId, String name, String reason, String action) {
 
-       var booking = bookingRepository.findById(bookingId).orElseThrow();
-       var schedule = scheduleRepository.findById(booking.getSchedule().getId()).orElseThrow();
-       schedule.setBookingFlag("approve".equalsIgnoreCase(action) ? true : false);
+        var booking = bookingRepository.findById(bookingId).orElseThrow();
+        var schedule = scheduleRepository.findById(booking.getSchedule().getId()).orElseThrow();
+        schedule.setBookingFlag("approve".equalsIgnoreCase(action) ? true : false);
         booking.setSchedule(schedule);
-       booking.setConfirmedBy(name);
-       booking.setConfirmedDate(LocalDate.now());
-       booking.setStatus( "approve".equalsIgnoreCase(action) ? Constants.APPROVED : Constants.REJECTED);
-       booking.setUpdatedAt(LocalDateTime.now());
-       booking.setUpdatedBy(name);
-       bookingRepository.save(booking);
+        booking.setConfirmedBy(name);
+        booking.setConfirmedDate(LocalDateTime.now());
+        booking.setStatus( "approve".equalsIgnoreCase(action) ? Constants.APPROVED : Constants.REJECTED);
+        booking.setUpdatedAt(LocalDateTime.now());
+        booking.setUpdatedBy(name);
+        bookingRepository.save(booking);
+    }
+
+    @Override
+    public BookingDto getBookingSchedule(Long scheduleId) {
+        Object[] obj = bookingRepository.getBookingSchedule(scheduleId);
+        BookingDto book = new BookingDto();
+        book.setStaffName(obj[0].toString());
+        book.setBookedBy(obj[1].toString());
+        book.setTeam(obj[2].toString());
+        book.setDepartment(obj[3].toString());
+        book.setAttendees((Integer) obj[4]);
+        book.setPurpose(obj[5].toString());
+        book.setAccessories(obj[6].toString());
+
+        return book;
     }
 }
