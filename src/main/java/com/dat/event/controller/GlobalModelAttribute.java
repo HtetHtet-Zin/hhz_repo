@@ -39,7 +39,7 @@ public class GlobalModelAttribute {
         return false;
     }
 
-    @ModelAttribute("IsApproval")
+    @ModelAttribute("IsApprover")
     public boolean isApproval(HttpSession httpSession) {
         Object isApproval = httpSession.getAttribute("approval");
         if (isApproval != null) {

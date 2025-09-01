@@ -152,7 +152,6 @@ public class BookingController {
                 if (!Boolean.TRUE.equals(isApproval)) {
                     throw new AccessDeniedException("No Permission To - " + session.getAttribute("staffNo"));
                 }
-                System.out.println("syarMyo"+action);
                 bookingService.checkBookingANDApproverFlag(bookingId, (String) session.getAttribute("staffNo"));
                 bookingService.approveBookingById(bookingId, (String) session.getAttribute("name"), reason, action);
 

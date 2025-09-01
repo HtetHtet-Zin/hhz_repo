@@ -40,7 +40,7 @@
                 <li><a onclick="setUpHeaderLink(this);"
                        th:classappend="${currentUrl == contextPath + WebUrl.EVENT_BOOKING_URL}? 'active-link' : ''"
                        th:data-current="${currentUrl}" th:data-target="@{${WebUrl.EVENT_BOOKING_URL}}"
-                       th:if="${IsAdmin}">BOOKING LIST</a></li>
+                       th:if="${IsApprover}">BOOKING LIST</a></li>
                 <li>
                     <a  th:onclick="'window.open(\'' + @{/pdf/Policy.pdf} + '\', \'_blank\')'"  rel="noopener noreferrer">POLICY</a>
                 </li>
