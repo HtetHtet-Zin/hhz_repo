@@ -33,7 +33,7 @@
           box-shadow:0 6px 20px rgba(99,102,241,0.16);
         }
         .modal-title{font-size:18px;font-weight:700;color:var(--accent)}
-        .modal-body{color:var(--muted);margin-top:10px;line-height:1.5}
+        .modal-body{/*color:var(--muted);*/margin-top:10px;line-height:1.5}
         .controls{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
         .btn{border:none;padding:8px 14px ;border-radius:10px;cursor:pointer;font-weight:600;transition:transform .18s ease}
         .btn:hover{/*transform:translateY(-3px) scale(1.02)*/}

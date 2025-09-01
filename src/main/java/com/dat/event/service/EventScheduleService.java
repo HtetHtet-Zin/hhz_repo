@@ -27,7 +27,7 @@ import java.util.List;
 public interface EventScheduleService {
     void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo);
 
-    Page<EventScheduleDto> getScheduleById(Long eventId, String keyword, int page);
+    Page<EventScheduleDto> getScheduleById(Long eventId, String keyword, int page, boolean booking);
 
     List<Long> getAllScheduleIdByEvent(Long eventId);
 
@@ -38,7 +38,5 @@ public interface EventScheduleService {
     void deleteSchedule(Long eventId);
 
     boolean checkTimeAlreadyBooked(Long id);
-
-    //List<Long> pendingBooking(Long id);
 
 }

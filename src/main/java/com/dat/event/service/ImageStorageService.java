@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ImageStorageService {
-    void saveImage(MultipartFile file, String eventName);
+    void saveImage(MultipartFile file, String name, boolean isEvent);
 
     Map<String, String> findEventImage(List<String> eventNames);
 

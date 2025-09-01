@@ -6,8 +6,10 @@
  * *************************************************************/
 package com.dat.event.service;
 
+import com.dat.event.dto.AccessoriesDto;
 import com.dat.event.dto.BookingDto;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,4 +27,8 @@ public interface BookingService {
     void checkBookingANDApproverFlag(Long bookingId , String staffNo);
 
     void approveBookingById(Long bookingId,String name,String reason,String action);
+
+    List<AccessoriesDto> getAccessories();
+
+    void makeBooking(Long scheduleId, int attendees, List<Long> accessories, String purpose, MultipartFile signature, String staffId, String eventName);
 }

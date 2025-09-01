@@ -85,12 +85,22 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     }
 
     @Override
-    public Page<EventScheduleDto> getScheduleById(Long eventId, String keyword, int page) {
-        Page<Object[]> schedules = eventScheduleRepository.getScheduleByEventId(
-                eventId,
-                keyword,
-                PageRequest.of(page, Constants.PAGE_LIMIT)
-        );
+    public Page<EventScheduleDto> getScheduleById(Long eventId, String keyword, int page, boolean booking) {
+
+        Page<Object[]> schedules;
+        if (booking) {
+            schedules = eventScheduleRepository.getScheduleByEventIdForBooking(
+                    eventId,
+                    keyword,
+                    PageRequest.of(page, Constants.PAGE_LIMIT)
+            );
+        } else {
+            schedules = eventScheduleRepository.getScheduleByEventId(
+                    eventId,
+                    keyword,
+                    PageRequest.of(page, Constants.PAGE_LIMIT)
+            );
+        }
 
         return schedules.map(objects -> EventScheduleDto.builder()
                 .id(objects[0] != null ? Long.valueOf(objects[0].toString()) : null)
@@ -174,11 +184,6 @@ public class EventScheduleServiceImpl implements EventScheduleService {
         eventRegistrationRepository.deleteRegistration(scheduleIds);
         eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
     }
-
-    /*@Override
-    public List<Long> pendingBooking(Long id) {
-        return eventScheduleRepository.pendingSchedules(id);
-    }*/
 
     @Override
     public boolean checkTimeAlreadyBooked(Long id) {

@@ -97,7 +97,7 @@ public class EventController {
         EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
         eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
         eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
-        imageStorageService.saveImage(eventPhotoFile, savedDto.getName());
+        imageStorageService.saveImage(eventPhotoFile, savedDto.getName(), true);
 
         if (requestEventPlanDto.getEventLocation().equals("OFFICE")) {
             response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(savedDto.getEventId().toString()).concat("/").concat(savedDto.getName()));
@@ -142,8 +142,7 @@ public class EventController {
     }
 
     @PostMapping(WebUrl.EVENT_EDIT_URL)
-    public ResponseEntity<?> editEvent(
-            HttpSession session, RedirectAttributes redirectAttributes,
+    public ResponseEntity<?> editEvent(HttpSession session,
             @RequestPart("eventData") UpdateEventPlanDto requestEventPlanDto,
             @RequestPart(value = "eventPhoto", required = false) MultipartFile eventPhotoFile) {
         Map<String, String> response = new HashMap<>();
@@ -155,7 +154,7 @@ public class EventController {
             eventScheduleService.updateEventSchedule(updateDto, requestEventPlanDto, loginStaffNo);
             eventPlannerService.updateEventPlanner(updateDto, requestEventPlanDto, loginStaffNo);
             if (eventPhotoFile != null && !eventPhotoFile.isEmpty()) {
-                imageStorageService.saveImage(eventPhotoFile, updateDto.getName());
+                imageStorageService.saveImage(eventPhotoFile, updateDto.getName(), true);
             } else if (!eventDto.getName().equals(requestEventPlanDto.getEventName())){
                     imageStorageService.updateImage(eventDto.getName(), requestEventPlanDto.getEventName());
             }
@@ -225,15 +224,14 @@ public class EventController {
     public ResponseEntity<Page<EventScheduleDto>> eventSchedule(@RequestParam(required = false, defaultValue = "") final String keyword,
                                                                 @RequestParam(required = false, defaultValue = "0") final int page,
                                                                 @RequestParam final Long eventId) {
-        return ResponseEntity.ok(eventScheduleService.getScheduleById(eventId, keyword.isBlank() ? null : keyword, page));
+        return ResponseEntity.ok(eventScheduleService.getScheduleById(eventId, keyword.isBlank() ? null : keyword, page, false));
     }
 
     @PostMapping(WebUrl.EVENT_REGISTRATION_POST_URL)
-    @ResponseBody
     public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds, @RequestParam Long eventId, @RequestParam boolean isNew, HttpSession session) {
         Map<String, String> response = new HashMap<>();
         if (session == null) {
-            response.put("redirectUrl", WebUrl.LOGIN_URL);
+            response.put("redirectUrl", contextPath + WebUrl.LOGIN_URL);
             response.put("status", "error");
             response.put("message", "Session has expired. Please log in again.");
             return ResponseEntity.ok(response);

@@ -33,11 +33,25 @@ public interface EventScheduleRepository extends JpaRepository<EventScheduleEnti
             LEFT JOIN tbl_event_registration reg
                   ON reg.schedule_id = sch.id
             WHERE sch.event_id = :eventId
+            AND (sch.booking_flag IS NULL OR sch.booking_flag = 1)
             AND (:keyword IS NULL OR date LIKE %:keyword%)
             GROUP BY sch.id, sch.start_time, sch.end_time, sch.date, eve.name, sch.booking_flag
             ORDER BY sch.date ASC, sch.start_time ASC, sch.end_time ASC
             """, nativeQuery = true)
     Page<Object[]> getScheduleByEventId(@Param("eventId") Long eventId, @Param("keyword") String keyword, Pageable pageable);
+
+    @Query(value = """
+            SELECT sch.id, sch.start_time, sch.end_time, sch.date, eve.name, COUNT(reg.id), sch.booking_flag
+            FROM tbl_event_schedule sch JOIN tbl_event eve
+                ON sch.event_id = eve.event_id
+            LEFT JOIN tbl_event_registration reg
+                  ON reg.schedule_id = sch.id
+            WHERE sch.event_id = :eventId
+            AND (:keyword IS NULL OR date LIKE %:keyword%)
+            GROUP BY sch.id, sch.start_time, sch.end_time, sch.date, eve.name, sch.booking_flag
+            ORDER BY sch.date ASC, sch.start_time ASC, sch.end_time ASC
+            """, nativeQuery = true)
+    Page<Object[]> getScheduleByEventIdForBooking(@Param("eventId") Long eventId, @Param("keyword") String keyword, Pageable pageable);
 
     @Query(value = "SELECT id FROM tbl_event_schedule WHERE event_id = :eventId", nativeQuery = true)
     List<Long> getAllScheduleIdByEvent(@Param("eventId") Long eventId);

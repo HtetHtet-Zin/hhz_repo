@@ -8,24 +8,31 @@ package com.dat.event.service.impl;
 
 import com.dat.event.common.CommonUtility;
 import com.dat.event.common.constant.Constants;
+import com.dat.event.common.mappers.AccessoriesMapper;
+import com.dat.event.dto.AccessoriesDto;
 import com.dat.event.dto.BookingDto;
+import com.dat.event.entity.BookingEntity;
+import com.dat.event.entity.EventScheduleEntity;
+import com.dat.event.entity.RequestedAccessoriesEntity;
+import com.dat.event.entity.embeddabel.RequestedAccessoriesKey;
+import com.dat.event.repository.AccessoriesRepository;
 import com.dat.event.repository.BookingRepository;
 import com.dat.event.repository.EventScheduleRepository;
 import com.dat.event.repository.RequestedAccessoriesRepository;
 import com.dat.event.repository.StaffRepository;
 import com.dat.event.service.BookingService;
-import com.dat.event.service.EventScheduleService;
+import com.dat.event.service.ImageStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * BookingServiceImpl Class.
@@ -40,6 +47,10 @@ import java.util.stream.Collectors;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
+    private final AccessoriesRepository accessoriesRepository;
+    private final AccessoriesMapper accessoriesMapper;
+    private final EventScheduleRepository eventScheduleRepository;
+    private final ImageStorageService imageStorageService;
     private final StaffRepository staffRepository;
     private final EventScheduleRepository scheduleRepository;
     private final RequestedAccessoriesRepository requestedAccessoriesRepository;
@@ -80,6 +91,46 @@ public class BookingServiceImpl implements BookingService {
 
         return bookingDtos;
 
+    }
+
+    @Override
+    public List<AccessoriesDto> getAccessories() {
+        return accessoriesMapper.toDtoList(accessoriesRepository.findAll());
+    }
+
+    @Override
+    public void makeBooking(Long scheduleId, int attendees, List<Long> accessories, String purpose, MultipartFile signature, String staffId, String eventName) {
+        EventScheduleEntity schedule = eventScheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Schedule not found"));
+
+        BookingEntity booking = new BookingEntity();
+        booking.setSchedule(schedule);
+        booking.setEventName(eventName);
+        booking.setStatus(Constants.PENDING);
+        booking.setBookedDate(LocalDate.now());
+        booking.setBookedBy(staffId);
+        booking.setAttendees(attendees);
+        booking.setDelFlag(false);
+        var savedBooking = bookingRepository.save(booking);
+
+        if (accessories != null) {
+            List<RequestedAccessoriesEntity> requestedList = accessories.stream().map(accId -> {
+                RequestedAccessoriesEntity req = new RequestedAccessoriesEntity();
+                RequestedAccessoriesKey key = new RequestedAccessoriesKey(savedBooking.getId(), accId);
+                req.setId(key);
+                req.setBooking(booking);
+                req.setAccessories(accessoriesRepository.findById(accId)
+                        .orElseThrow(() -> new RuntimeException("Accessory not found: " + accId)));
+                return req;
+            }).toList();
+            requestedAccessoriesRepository.saveAll(requestedList);
+        }
+
+        schedule.setBookingFlag(false);
+        schedule.setUpdatedAt(LocalDateTime.now());
+        schedule.setUpdatedBy(staffId);
+        eventScheduleRepository.save(schedule);
+        imageStorageService.saveImage(signature, staffId, false);
     }
 
     @Override

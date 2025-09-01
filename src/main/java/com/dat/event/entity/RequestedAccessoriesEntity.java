@@ -37,4 +37,5 @@ public class RequestedAccessoriesEntity {
     @JoinColumn(name = "accessories_id", nullable = false)
     @JsonIgnore
     private AccessoriesEntity accessories;
+
 }

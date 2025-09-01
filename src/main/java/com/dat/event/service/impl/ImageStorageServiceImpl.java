@@ -25,26 +25,18 @@ import java.util.stream.Stream;
 public class ImageStorageServiceImpl implements ImageStorageService {
 
     @Override
-    public void saveImage(MultipartFile file, String eventName) {
+    public void saveImage(MultipartFile file, String name, boolean isEvent) {
         try {
             String projectRoot = System.getProperty("user.dir");
 
-            Path imageDir = Paths.get(projectRoot, "photo", "eventPhoto");
+            Path imageDir = Paths.get(projectRoot, "photo", isEvent ? "eventPhoto" : "signature");
             if (!Files.exists(imageDir)) {
                 Files.createDirectories(imageDir);
             }
 
-            String originalFilename = file.getOriginalFilename();
             String extension = ".jpg";
 
-//            if (originalFilename != null && originalFilename.contains(".")) {
-//                extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-//            } else {
-//                log.warn("No file extension found. Defaulting to .jpg");
-//                extension = ".jpg";
-//            }
-
-            String renamedFileName = eventName.concat(extension);
+            String renamedFileName = name.concat(extension);
             Path filePath = imageDir.resolve(renamedFileName);
 
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
