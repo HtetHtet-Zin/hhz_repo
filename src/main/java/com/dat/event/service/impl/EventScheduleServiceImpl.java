@@ -88,15 +88,16 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     public Page<EventScheduleDto> getScheduleById(Long eventId, String keyword, int page, boolean booking) {
 
         Page<Object[]> schedules;
+        LocalDate  tdyDate = LocalDate.now();
         if (booking) {
             schedules = eventScheduleRepository.getScheduleByEventIdForBooking(
-                    eventId,
+                    eventId,tdyDate,
                     keyword,
                     PageRequest.of(page, Constants.PAGE_LIMIT)
             );
         } else {
             schedules = eventScheduleRepository.getScheduleByEventId(
-                    eventId,
+                    eventId,tdyDate,
                     keyword,
                     PageRequest.of(page, Constants.PAGE_LIMIT)
             );

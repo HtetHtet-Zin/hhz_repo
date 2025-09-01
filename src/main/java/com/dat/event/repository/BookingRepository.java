@@ -17,6 +17,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
                INNER JOIN tbl_staff s ON s.staff_no = b.booked_by
                INNER JOIN tbl_event_schedule es ON es.id = b.schedule_id
                WHERE b.del_flag = false
+               AND es.date >= :tdyDate
                AND  (:keyword IS NULL 
                    OR LOWER(b.event_name) LIKE LOWER(CONCAT('%', :keyword, '%')) 
                    OR LOWER(b.status) LIKE LOWER(CONCAT('%', :keyword, '%'))
@@ -57,7 +59,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
                 """,
             nativeQuery = true
     )
-    Page<Object[]> getAllBooking(@Param("keyword") String keyword, Pageable pageable);
+    Page<Object[]> getAllBooking(@Param("tdyDate")LocalDate tdyDate, @Param("keyword") String keyword, Pageable pageable);
 
     @Modifying
     @Query(value = "DELETE FROM tbl_booking WHERE schedule_id IN (:scheduleIds)", nativeQuery = true)

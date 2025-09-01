@@ -24,6 +24,7 @@ import com.dat.event.service.BookingService;
 import com.dat.event.service.ImageStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<BookingDto> findAllBooking(String keyword, int page) {
-        Page<Object[]> bookings= bookingRepository.getAllBooking(keyword, PageRequest.of(page, Constants.PAGE_LIMIT));
+        LocalDate tdyDate = LocalDate.now();
+        Page<Object[]> bookings= bookingRepository.getAllBooking(tdyDate,keyword, PageRequest.of(page, Constants.PAGE_LIMIT));
        Page<BookingDto> bookingDtos =  bookings.map(objects -> BookingDto.builder()
                 .id(objects[0] != null ? Long.valueOf(objects[0].toString()) : null)
                 .eventName(objects[1] != null
