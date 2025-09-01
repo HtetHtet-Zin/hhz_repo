@@ -72,9 +72,8 @@ function renderTable(data) {
             <tr>
                 <td>${(data.page.number * data.page.size) + index + 1}</td>
                <td>${booking.eventName}</td>
-                   <td>${booking.date}</td>
-                    <td>${booking.startTime} - ${booking.endTime}</td>
-                    <td>${booking.name}</td>
+                   <td>${booking.date} (${booking.startTime} - ${booking.endTime})</td>
+                    <td>${booking.staffName}</td>
                     <td>${booking.status}</td>
                    <td>${booking.bookedDate}</td>
                    <td>${booking.team}</td>
@@ -183,7 +182,7 @@ function approveModalClose() {
 }
 
 // --- Submit Approve ---
-function approveModalSubmit() {
+async function approveModalSubmit() {
   const reason = document.getElementById("modalTextarea").value.trim();
   const selectedId =document.getElementById("selectedId").value;
   const scheduleId =document.getElementById("scheduleId").value;
@@ -195,8 +194,7 @@ function approveModalSubmit() {
     return;
   }
    const formData = new FormData();
-
-    if (validateBooking(scheduleId)) {
+    if (await validateBooking(scheduleId)) {
             approveModalClose();
               alertAction("This time slot is already booked.", {
                   title: "Booking Conflict!", variant: "danger"
