@@ -179,10 +179,11 @@ function changePage(page) {
 }
 
 document.getElementById("joinBtn").addEventListener("click", () => {
-
+    const eventName = document.getElementById("eventName").textContent;
     const params = new URLSearchParams();
     selectedScheduleIds.forEach(id => params.append("registeredScheduleIds", id));
     params.append("eventId", eventId);
+    params.append("eventName", eventName);
     params.append("isNew", isNew);
 
     fetch(`${registrationUrl}`, {
@@ -198,10 +199,7 @@ document.getElementById("joinBtn").addEventListener("click", () => {
         window.location.href = redirectUrl;
     })
     .catch(err => {
-        const redirectUrl = new URL(`/club/event-registration/${eventId}`, window.location.origin);
-        redirectUrl.searchParams.append('message', "Error occurred, please try again.");
-        redirectUrl.searchParams.append('messageType', "error");
-        window.location.href = redirectUrl;
+         console.error("Error :", err)
     });
 });
 

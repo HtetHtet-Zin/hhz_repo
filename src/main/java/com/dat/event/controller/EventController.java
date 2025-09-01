@@ -228,7 +228,9 @@ public class EventController {
     }
 
     @PostMapping(WebUrl.EVENT_REGISTRATION_POST_URL)
-    public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds, @RequestParam Long eventId, @RequestParam boolean isNew, HttpSession session) {
+    public ResponseEntity<Map<String, String>> handleSchedules(@RequestParam(required = false) List<Long> registeredScheduleIds,
+                                                               @RequestParam Long eventId, @RequestParam String eventName,
+                                                               @RequestParam boolean isNew, HttpSession session) {
         Map<String, String> response = new HashMap<>();
         if (session == null) {
             response.put("redirectUrl", contextPath + WebUrl.LOGIN_URL);
@@ -238,15 +240,16 @@ public class EventController {
         }
         Long staffId = (Long) session.getAttribute("id");
         List<String> conflicts = eventRegistrationService.checkDuplicateSchedule(staffId, registeredScheduleIds);
+        String url = WebUrl.EVENT_REGISTRATION_URL.concat("/").concat(eventId.toString());
         if (!conflicts.isEmpty()) {
-            response.put("redirectUrl", contextPath + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
+            response.put("redirectUrl", contextPath + url.concat("/").concat(eventName));
             response.put("status", "error");
             response.put("message", "Already Registered at this date and time - " + String.join(", ", conflicts));
             return ResponseEntity.ok(response);
         }
         int success = eventRegistrationService.registerEvent(staffId, registeredScheduleIds, eventId);
         if (success == 0) {
-            response.put("redirectUrl", contextPath + WebUrl.EVENT_REGISTRATION_URL.concat("/") + eventId);
+            response.put("redirectUrl", contextPath + url.concat("/").concat(eventName));
             response.put("status", "error");
             response.put("message", isNew ? "Fail to Participate." : "Fail to Update.");
         } else {
