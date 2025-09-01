@@ -214,9 +214,90 @@ const editPreview = document.getElementById("editSignaturePreview");
 const editUploadLink = document.getElementById("editUploadSignatureLink");
 
 let selectedAccessories = new Set();
+let selectedAccessoriesName = new Set();
 let start;
 let end;
 let date;
+
+accessoriesSelect.addEventListener("change", function () {
+    const selectedValue = this.value;
+    const selectedText = this.options[this.selectedIndex].text;
+
+    if (selectedValue && !selectedAccessories.has(selectedValue)) {
+        selectedAccessories.add(selectedValue);
+        selectedAccessoriesName.add(selectedText);
+
+        const col = document.createElement("div");
+        col.className = "col-4";
+        col.dataset.value = selectedValue;
+
+        // Create card-style chip
+        col.innerHTML = `
+            <div class="border rounded p-2 d-flex justify-content-between align-items-center">
+                <span>${selectedText}</span>
+                <button type="button" class="btn-close ms-2" aria-label="Remove"></button>
+            </div>
+        `;
+
+        // Handle remove
+        col.querySelector(".btn-close").addEventListener("click", function () {
+            selectedAccessories.delete(selectedValue);
+            selectedAccessoriesName.delete(selectedText);
+            col.remove();
+        });
+
+        selectedAccessoriesDiv.appendChild(col);
+    }
+
+    this.value = "";
+});
+
+signature.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = "none";
+        preview.src = "";
+    }
+});
+
+uploadLink.addEventListener("click", function (e) {
+    e.preventDefault();
+    signature.click();
+});
+
+attendees.addEventListener("input", function() {
+    this.value = this.value.replace(/\D/g, '');
+
+    if (this.value.length > 2) {
+        this.value = this.value.slice(0, 2);
+    }
+});
+
+attendees.addEventListener("input", function() {
+    if (this.value.trim()) {
+        document.getElementById("attendeeError").style.display = "none";
+    }
+});
+
+purpose.addEventListener("input", function() {
+    if (this.value.length <= 255) {
+        document.getElementById("purposeError").style.display = "none";
+    }
+});
+
+signature.addEventListener("change", function() {
+    if (this.files.length > 0) {
+        document.getElementById("signError").style.display = "none";
+    }
+});
 
 // cafeteria Usage Form
 function handleBookingClick(button) {
@@ -252,6 +333,25 @@ function handleEditBookingClick(button) {
     start = button.getAttribute("data-start");
     end = button.getAttribute("data-end");
 
+    fetch(`${getBookingScheduleUrl}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+            scheduleId: id
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        editApplicantName.value = data.staffName;
+        editApplicantStaffId.value = data.bookedBy;
+        editTeam.value = data.team;
+        editDepartment.value = data.department;
+        editAttendees.value = data.attendees;
+        editPurpose.value = data.purpose;
+        editSignedDate.value = data.bookedDate;
+    })
+    .catch(err => console.error("Error loading schedule:", err));
+
     editScheduleId.value =  id;
     editPreferredDate.value = `${date} (${start} - ${end})`;
 
@@ -277,58 +377,6 @@ function setToday() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('signedDate').value = today;
 }
-
-accessoriesSelect.addEventListener("change", function () {
-    const selectedValue = this.value;
-    const selectedText = this.options[this.selectedIndex].text;
-
-    if (selectedValue && !selectedAccessories.has(selectedValue)) {
-        selectedAccessories.add(selectedValue);
-
-        const col = document.createElement("div");
-        col.className = "col-4";
-        col.dataset.value = selectedValue;
-
-        // Create card-style chip
-        col.innerHTML = `
-            <div class="border rounded p-2 d-flex justify-content-between align-items-center">
-                <span>${selectedText}</span>
-                <button type="button" class="btn-close ms-2" aria-label="Remove"></button>
-            </div>
-        `;
-
-        // Handle remove
-        col.querySelector(".btn-close").addEventListener("click", function () {
-            selectedAccessories.delete(selectedValue);
-            col.remove();
-        });
-
-        selectedAccessoriesDiv.appendChild(col);
-    }
-
-    this.value = "";
-});
-
-signature.addEventListener("change", function (event) {
-    const file = event.target.files[0];
-
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.src = e.target.result;
-            preview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-    } else {
-        preview.style.display = "none";
-        preview.src = "";
-    }
-});
-
-uploadLink.addEventListener("click", function (e) {
-    e.preventDefault();
-    signature.click();
-});
 
 // Convert time string to minutes since midnight
 function timeToMinutes(timeStr) {
@@ -380,32 +428,6 @@ function checkDuration(startStr, endStr, dateStr, errorDivId, maxHours = 5) {
     errorDiv.style.display = "none";
     return true;
 }
-
-attendees.addEventListener("input", function() {
-    this.value = this.value.replace(/\D/g, '');
-
-    if (this.value.length > 2) {
-        this.value = this.value.slice(0, 2);
-    }
-});
-
-attendees.addEventListener("input", function() {
-    if (this.value.trim()) {
-        document.getElementById("attendeeError").style.display = "none";
-    }
-});
-
-purpose.addEventListener("input", function() {
-    if (this.value.length <= 255) {
-        document.getElementById("purposeError").style.display = "none";
-    }
-});
-
-signature.addEventListener("change", function() {
-    if (this.files.length > 0) {
-        document.getElementById("signError").style.display = "none";
-    }
-});
 
 function validateAll(start, end, date) {
     let isValid = true;
@@ -460,10 +482,12 @@ function submitData(submitType) {
     formData.append("attendees", attendees.value);
 
     selectedAccessories.forEach(val => formData.append("accessories", val));
+    selectedAccessoriesName.forEach(val => formData.append("accessoriesName", val));
 
     formData.append("purpose", purpose.value);
     formData.append("signature", signature.files[0]);
     formData.append("submitType", submitType);
+    formData.append("scheduleDate", preferredDate.value);
 
     fetch(`${bookingUrl}`, {
         method: "POST",
@@ -493,10 +517,9 @@ function submitEditData(submitType) {
     selectedAccessories.forEach(val => formData.append("accessories", val));
 
     formData.append("purpose", purpose.value);
-    formData.append("signature", signature.files[0]);
     formData.append("submitType", submitType);
 
-    fetch(`${bookingUrl}`, {
+    fetch(`${editBookingUrl}`, {
         method: "POST",
         body: formData
     })
@@ -508,7 +531,7 @@ function submitEditData(submitType) {
         window.location.href = redirectUrl;
     })
     .catch(err => {
-        console.error("Submit error:", err);
+        console.error("Edit error:", err);
     });
 }
 

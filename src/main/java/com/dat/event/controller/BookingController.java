@@ -84,18 +84,22 @@ public class BookingController {
     public ResponseEntity<?> cafeteria_booking( @RequestParam("scheduleId") Long scheduleId,
                                      @RequestParam("attendees") int attendees,
                                      @RequestParam(value = "accessories", required = false) List<Long> accessories,
+                                     @RequestParam(value = "accessoriesName", required = false) List<String> accessoriesName,
                                      @RequestParam("purpose") String purpose,
                                      @RequestPart("signature") MultipartFile signature,
                                      @RequestParam("submitType") String submitType,
                                      @RequestParam("eventId") Long eventId,
+                                     @RequestParam("scheduleDate") String scheduleDate,
                                      @RequestParam("eventName") String eventName, HttpSession session) {
 
         System.out.println("schedule Id - " + scheduleId);
         System.out.println("attendees - " + attendees);
         System.out.println("accessories - " + accessories);
+        System.out.println("accessoriesName - " + accessoriesName);
         System.out.println("purpose - " + purpose);
         System.out.println("eventId - " + eventId);
         System.out.println("eventName - " + eventName);
+        System.out.println("scheduleDate - " + scheduleDate);
         System.out.println("signature - " + signature.getOriginalFilename());
 
         Map<String, String> response = new HashMap<>();
@@ -118,6 +122,11 @@ public class BookingController {
             response.put("message", "Booking Success.");
         }
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(WebUrl.GET_BOOKING_SCHEDULE_URL)
+    public ResponseEntity<BookingDto> getBookingSchedule(@RequestParam("scheduleId") Long scheduleId) {
+        return ResponseEntity.ok(bookingService.getBookingSchedule(scheduleId));
     }
 
     @GetMapping(WebUrl.EVENT_BOOKING_URL)
