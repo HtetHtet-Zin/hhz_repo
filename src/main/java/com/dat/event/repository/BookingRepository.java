@@ -66,4 +66,28 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
     void deleteBooking(@Param("scheduleIds") List<Long> scheduleIds);
 
     boolean existsByScheduleIdIn(List<Long> scheduleIds);
+
+    @Query(value = """
+            SELECT sta.name, sta.staff_no, sta.team, sta.department, book.attendees,
+            book.purpose, GROUP_CONCAT(acc.acce_Id) AS accessories FROM event.tbl_booking book
+            JOIN tbl_staff sta
+            	ON sta.staff_no = book.booked_by
+            JOIN tbl_event_schedule sch
+            	ON sch.id = book.schedule_id
+            LEFT JOIN tbl_requested_accessories req
+                ON req.booking_id = book.booking_id
+            LEFT JOIN tbl_accessories acc
+                ON acc.acce_id = req.accessories_id
+            WHERE book.schedule_id = :scheduleId
+            GROUP BY
+                sta.name,
+                sta.staff_no,
+                sta.team,
+                sta.department,
+                book.attendees,
+                book.purpose;
+            """,
+            nativeQuery = true
+    )
+    Object[] getBookingSchedule(@Param("scheduleId") Long scheduleId);
 }
