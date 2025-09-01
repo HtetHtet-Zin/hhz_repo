@@ -231,7 +231,6 @@ accessoriesSelect.addEventListener("change", function () {
         col.className = "col-4";
         col.dataset.value = selectedValue;
 
-        // Create card-style chip
         col.innerHTML = `
             <div class="border rounded p-2 d-flex justify-content-between align-items-center">
                 <span>${selectedText}</span>
@@ -300,14 +299,14 @@ signature.addEventListener("change", function() {
 });
 
 // cafeteria Usage Form
-function handleBookingClick(button) {
+async function handleBookingClick(button) {
 
     const id = button.getAttribute("data-id");
     date = button.getAttribute("data-date");
     start = button.getAttribute("data-start");
     end = button.getAttribute("data-end");
 
-    if (validateBooking(id)) {
+    if (!await validateBooking(id)) {
 
         scheduleId.value =  id;
         applicantName.value = currentStaffName;
