@@ -11,6 +11,9 @@ spring:
         - classpath:/static/
         - classpath:/static/images/
         - classpath:/static/assets/
+  config:
+    import:
+      - "classpath:mail.yml"
 
   jpa:
     properties:

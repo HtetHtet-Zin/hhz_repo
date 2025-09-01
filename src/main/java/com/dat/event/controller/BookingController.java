@@ -9,7 +9,14 @@ package com.dat.event.controller;
 import com.dat.event.common.constant.Constants;
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.common.exception.ResourceNotFoundException;
+import com.dat.event.common.mappers.StaffMapper;
+import com.dat.event.dto.StaffDto;
+import com.dat.event.email.config.EmailProperties;
+import com.dat.event.email.service.EmailService;
+import com.dat.event.entity.EventScheduleEntity;
 import com.dat.event.dto.EventScheduleDto;
+import com.dat.event.entity.StaffEntity;
+import com.dat.event.repository.StaffRepository;
 import com.dat.event.service.*;
 import jakarta.servlet.http.HttpSession;
 import com.dat.event.dto.BookingDto;
@@ -23,9 +30,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +61,10 @@ public class BookingController {
     private final EventPlannerService eventPlannerService;
     private final BookingService bookingService;
     private final EventScheduleService eventScheduleService;
+    private final EmailService emailService;
+    private final EmailProperties emailProperties;
+    private final StaffRepository staffRepository;
+    private final StaffMapper staffMapper;
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
@@ -81,16 +96,16 @@ public class BookingController {
     }
 
     @PostMapping(WebUrl.CAFETERIA_BOOKING_POST_URL)
-    public ResponseEntity<?> cafeteria_booking( @RequestParam("scheduleId") Long scheduleId,
-                                     @RequestParam("attendees") int attendees,
-                                     @RequestParam(value = "accessories", required = false) List<Long> accessories,
-                                     @RequestParam(value = "accessoriesName", required = false) List<String> accessoriesName,
-                                     @RequestParam("purpose") String purpose,
-                                     @RequestPart("signature") MultipartFile signature,
-                                     @RequestParam("submitType") String submitType,
-                                     @RequestParam("eventId") Long eventId,
-                                     @RequestParam("scheduleDate") String scheduleDate,
-                                     @RequestParam("eventName") String eventName, HttpSession session) {
+    public ResponseEntity<?> cafeteria_booking(@RequestParam("scheduleId") Long scheduleId,
+                                               @RequestParam("attendees") int attendees,
+                                               @RequestParam(value = "accessories", required = false) List<Long> accessories,
+                                               @RequestParam(value = "accessoriesName", required = false) List<String> accessoriesName,
+                                               @RequestParam("purpose") String purpose,
+                                               @RequestPart("signature") MultipartFile signature,
+                                               @RequestParam("submitType") String submitType,
+                                               @RequestParam("eventId") Long eventId,
+                                               @RequestParam("scheduleDate") String scheduleDate,
+                                               @RequestParam("eventName") String eventName, HttpSession session) {
 
         System.out.println("schedule Id - " + scheduleId);
         System.out.println("attendees - " + attendees);
@@ -110,7 +125,8 @@ public class BookingController {
             return ResponseEntity.ok(response);
         }
         String staffId = (String) session.getAttribute("staffNo");
-        bookingService.makeBooking(scheduleId, attendees, accessories, purpose, signature, staffId, eventName);
+//        bookingService.makeBooking(scheduleId, attendees, accessories, purpose, signature, staffId, eventName);
+        StaffDto staffDto = staffRepository.findByStaffNo(staffId).map(staffMapper::toDTO).orElseThrow();
 
         if (submitType.equals(Constants.SAVE)) {
             response.put("redirectUrl", contextPath + WebUrl.EVENT_URL);
@@ -121,13 +137,32 @@ public class BookingController {
             response.put("status", "success");
             response.put("message", "Booking Success.");
         }
+
+        try {
+            String template = new String(Files.readAllBytes(Paths.get(emailProperties.getTemplatePath())));
+            String requestAccessories = (accessoriesName == null || accessoriesName.isEmpty()) ? "None" : String.join(", ", accessoriesName);
+            String body = template
+                    .replace("{eventName}", eventName)
+                    .replace("{date}",scheduleDate)
+                    .replace("{attendees}", String.valueOf(attendees))
+                    .replace("{accessories}", requestAccessories)
+                    .replace("{purpose}", purpose)
+                    .replace("{name}", staffDto.getName())
+                    .replace("{team}", staffDto.getTeam())
+                    .replace("{department}", staffDto.getDepartment());
+            emailService.sendMail(staffDto.getEmail(), "Cafeteria Booking Request", body);
+        } catch (Exception e) {
+            response.put("redirectUrl", contextPath + WebUrl.CAFETERIA_BOOKING_URL.concat("/") + eventId + "/" + eventName);
+            response.put("status", "error");
+            response.put("message", "Failed to send email.");
+        }
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(WebUrl.GET_BOOKING_SCHEDULE_URL)
-    public ResponseEntity<BookingDto> getBookingSchedule(@RequestParam("scheduleId") Long scheduleId) {
-        return ResponseEntity.ok(bookingService.getBookingSchedule(scheduleId));
-    }
+//    @PostMapping(WebUrl.GET_BOOKING_SCHEDULE_URL)
+//    public ResponseEntity<BookingDto> getBookingSchedule(@RequestParam("scheduleId") Long scheduleId) {
+//        return ResponseEntity.ok(bookingService.getBookingSchedule(scheduleId));
+//    }
 
     @GetMapping(WebUrl.EVENT_BOOKING_URL)
     public String bookingList(HttpSession session, Model model) throws AccessDeniedException {
@@ -142,8 +177,8 @@ public class BookingController {
     }
 
     @PostMapping(WebUrl.EVENT_BOOKING_URL)
-    public ResponseEntity<Page<BookingDto>> bookingList( @RequestParam(required = false, defaultValue = "") final String keyword,
-                                                         @RequestParam(required = false, defaultValue = "0") final int page) {
+    public ResponseEntity<Page<BookingDto>> bookingList(@RequestParam(required = false, defaultValue = "") final String keyword,
+                                                        @RequestParam(required = false, defaultValue = "0") final int page) {
         return ResponseEntity.ok(bookingService.findAllBooking(keyword.isBlank() ? null : keyword, page));
     }
 
@@ -151,28 +186,28 @@ public class BookingController {
     @PostMapping(WebUrl.EVENT_BOOKING_APPROVE_URL)
     public ResponseEntity<Map<String, String>> approveForms(@RequestParam("bookingId") Long bookingId,
                                                             @RequestParam("approveReason") String reason,
-                                                            @RequestParam(value = "formAction",required = false) String action,
+                                                            @RequestParam(value = "formAction", required = false) String action,
                                                             HttpSession session,
                                                             RedirectAttributes redirectAttributes) throws AccessDeniedException {
 
         Map<String, String> response = new HashMap<>();
-            if (session != null && session.getAttribute("staffNo") != null) {
-                Object isApproval = session.getAttribute("approval");
-                if (!Boolean.TRUE.equals(isApproval)) {
-                    throw new AccessDeniedException("No Permission To - " + session.getAttribute("staffNo"));
-                }
-                bookingService.checkBookingANDApproverFlag(bookingId, (String) session.getAttribute("staffNo"));
-                bookingService.approveBookingById(bookingId, (String) session.getAttribute("name"), reason, action);
+        if (session != null && session.getAttribute("staffNo") != null) {
+            Object isApproval = session.getAttribute("approval");
+            if (!Boolean.TRUE.equals(isApproval)) {
+                throw new AccessDeniedException("No Permission To - " + session.getAttribute("staffNo"));
+            }
+            bookingService.checkBookingANDApproverFlag(bookingId, (String) session.getAttribute("staffNo"));
+            bookingService.approveBookingById(bookingId, (String) session.getAttribute("name"), reason, action);
 
-                    response.put("redirectUrl", contextPath.concat(WebUrl.EVENT_BOOKING_URL));
-                    response.put("status", "success");
-                    response.put("message", "approve".equalsIgnoreCase(action) ? " Approved Successfully." : "Rejected Successfully.");
+            response.put("redirectUrl", contextPath.concat(WebUrl.EVENT_BOOKING_URL));
+            response.put("status", "success");
+            response.put("message", "approve".equalsIgnoreCase(action) ? " Approved Successfully." : "Rejected Successfully.");
 
             return ResponseEntity.ok(response);
         }
         response.put("redirectUrl", WebUrl.LOGIN_URL);
         response.put("status", "error");
-        response.put("message", "No Permission to"+ session.getAttribute("staffNo"));
+        response.put("message", "No Permission to" + session.getAttribute("staffNo"));
         return ResponseEntity.ok(response);
     }
 }
