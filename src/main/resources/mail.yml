@@ -1,0 +1,20 @@
+spring:
+  mail:
+    host: diracetechnology-com.mail.protection.outlook.com
+    username: myomyintaung@diracetechnology.com
+    password: Mm@d@td!race
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: true
+
+app:
+  mail:
+    templatePath: template/template.txt
+    recipients:
+      - htethtetzin@diracetechnology.com
+      - kyiminkhant@diracetechnology.com
+
+
