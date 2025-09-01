@@ -282,7 +282,7 @@ public class EventController {
         }
         var eventDto = eventService.getEvent(eventId);
         if (!eventDto.getName().equals(eventName)) throw new ResourceNotFoundException();
-        eventScheduleService.deleteSchedule(eventId);
+        eventScheduleService.deleteScheduleAndBooking(eventId);
         eventPlannerService.deletePlanner(eventId);
         eventService.deleteEvent(eventId);
         log.info("Delete Event - {} - By {} ", eventId, session.getAttribute("staffNo").toString());

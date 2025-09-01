@@ -35,7 +35,7 @@ public interface EventScheduleService {
 
     List<EventScheduleDto> getEventSchedule(Long eventId);
 
-    void deleteSchedule(Long eventId);
+    void deleteScheduleAndBooking(Long eventId);
 
     boolean checkTimeAlreadyBooked(Long id);
 

@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * EventRepository Class.
  * <p>
@@ -21,5 +23,7 @@ import org.springframework.stereotype.Repository;
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
 
     EventEntity findByName(String eventName);
+
+    List<EventEntity> findAllByOrderByCreatedAtDesc();
 
 }

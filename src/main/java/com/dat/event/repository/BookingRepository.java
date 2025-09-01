@@ -92,4 +92,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
             nativeQuery = true
     )
     Object getBookingSchedule(@Param("scheduleId") Long scheduleId);
+
+    @Query(value = "SELECT booking_id FROM tbl_booking WHERE schedule_id IN (:scheduleIds)", nativeQuery = true)
+    List<Long> getBookingIdbyScheduleIds(@Param("scheduleIds") List<Long> scheduleIds);
 }

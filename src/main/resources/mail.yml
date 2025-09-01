@@ -14,7 +14,7 @@ app:
   mail:
     templatePath: template/template.txt
     recipients:
-      - htethtetzin@diracetechnology.com
-      - kyiminkhant@diracetechnology.com
+      - htoolaekyaw@diracetechnology.com
+
 
 

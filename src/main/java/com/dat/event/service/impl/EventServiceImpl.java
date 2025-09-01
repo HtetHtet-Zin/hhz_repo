@@ -84,7 +84,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventDto> findAll() {
-        return eventMapper.toDtoList(repository.findAll());
+        return eventMapper.toDtoList(repository.findAllByOrderByCreatedAtDesc());
     }
 
     @Override

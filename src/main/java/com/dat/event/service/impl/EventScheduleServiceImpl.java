@@ -14,10 +14,7 @@ import com.dat.event.dto.EventScheduleDto;
 import com.dat.event.dto.RequestEventPlanDto;
 import com.dat.event.dto.UpdateEventPlanDto;
 import com.dat.event.entity.EventScheduleEntity;
-import com.dat.event.repository.BookingRepository;
-import com.dat.event.repository.EventRegistrationRepository;
-import com.dat.event.repository.EventRepository;
-import com.dat.event.repository.EventScheduleRepository;
+import com.dat.event.repository.*;
 import com.dat.event.service.EventScheduleService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +53,8 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     private final EventRegistrationRepository eventRegistrationRepository;
 
     private final BookingRepository bookingRepository;
+
+    private final RequestedAccessoriesRepository requestedAccessoriesRepository;
 
     @Override
     public void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
@@ -158,11 +157,14 @@ public class EventScheduleServiceImpl implements EventScheduleService {
             }
             if(requestEventPlanDto.getDeleteScheduleList() != null) {
                 List<Long> scheduleIds = requestEventPlanDto.getDeleteScheduleList();
-                eventRegistrationRepository.deleteRegistration(scheduleIds);
-                eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
                 if(bookingRepository.existsByScheduleIdIn(scheduleIds)){
+                    List<Long> bookingIds = bookingRepository.getBookingIdbyScheduleIds(scheduleIds);
+                    requestedAccessoriesRepository.deleteRequestedAccessories(bookingIds);
                     bookingRepository.deleteBooking(scheduleIds);
                 }
+                eventRegistrationRepository.deleteRegistration(scheduleIds);
+                eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
+
             }
 
         }catch (Exception e){
@@ -178,10 +180,13 @@ public class EventScheduleServiceImpl implements EventScheduleService {
 
     @Transactional
     @Override
-    public void deleteSchedule(Long eventId) {
+    public void deleteScheduleAndBooking(Long eventId) {
         eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid event ID"));
         List<Long> scheduleIds = eventScheduleRepository.getEventScheduleIds(eventId);
+        List<Long> bookingIds = bookingRepository.getBookingIdbyScheduleIds(scheduleIds);
+        requestedAccessoriesRepository.deleteRequestedAccessories(bookingIds);
+        bookingRepository.deleteBooking(scheduleIds);
         eventRegistrationRepository.deleteRegistration(scheduleIds);
         eventScheduleRepository.deleteAllByIdInBatch(scheduleIds);
     }

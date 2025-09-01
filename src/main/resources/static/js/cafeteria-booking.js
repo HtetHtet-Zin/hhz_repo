@@ -507,6 +507,8 @@ function validateAllForms(start, end, date, isEdit = false) {
 
 function submitData(submitType) {
     if (!validateAllForms(start,end, date, false)) return;
+    startLoading();
+
 
     const formData = new FormData();
     formData.append("scheduleId", scheduleId.value);
@@ -528,6 +530,7 @@ function submitData(submitType) {
     })
     .then(res => res.json())
     .then(data => {
+    stopLoading();
         const redirectUrl = new URL(data.redirectUrl, window.location.origin);
         redirectUrl.searchParams.append('message', data.message || '');
         redirectUrl.searchParams.append('messageType', data.status || '');
