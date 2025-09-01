@@ -2,16 +2,13 @@ Dear HR,
 
 I would like to request a booking for the Office Cafeteria for the following event:
 
-Event: {eventName}
+Event                   :   {eventName}
+Purpose of the Event    :   {purpose}
+Booking DateTime        :   {date}
+Expected Attendees      :   {attendees}
+Requested Accessories   :   {accessories}
 
-Booking Date: {date}
-Expected Attendees : {attendees}
-Requested Accessories: {accessories}
-
-Purpose of the Event:
-{purpose}
-
-Best regards,
+With Best regards,
 {name}
 {team}
 {department}
