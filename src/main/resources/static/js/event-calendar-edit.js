@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                      }
 
                             }else{
-                             if(await alertAction("Please fill AM.", { title: "Invalid input!", variant: "danger"})){
+                             if(await alertAction("Please fill AM or PM.", { title: "Invalid input!", variant: "danger"})){
 
                                                                 }
                                                                  start.value = "";
@@ -433,7 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                                      }
 
                                       }else{
-                                             if(await alertAction("Please fill PM.", { title: "Invalid input!", variant: "danger"})){
+                                             if(await alertAction("Please fill AM or PM.", { title: "Invalid input!", variant: "danger"})){
                                                                                       }
                                                                               start.value = "";
                                                                              end.value = "";
@@ -499,7 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
                              }
 
                     }else{
-                     if(await alertAction("Please fill AM.", { title: "Invalid input!", variant: "danger"})){
+                     if(await alertAction("Please fill AM or PM.", { title: "Invalid input!", variant: "danger"})){
 
                                                         }
                                                          start.value = "";
@@ -522,7 +522,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                              }
 
                               }else{
-                                     if(await alertAction("Please fill PM.", { title: "Invalid input!", variant: "danger"})){
+                                     if(await alertAction("Please fill AM or PM.", { title: "Invalid input!", variant: "danger"})){
                                                                               }
                                                                       start.value = "";
                                                                      end.value = "";
