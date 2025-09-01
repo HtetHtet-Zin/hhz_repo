@@ -67,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
                                 ? LocalDateTime.parse(objects[2].toString(),CommonUtility.formatToLocalDateTime)
                                 : null)
                 .status(objects[3] != null ? objects[3].toString() : null)
-                .name(objects[4] != null ? objects[4].toString() : null)
+                .staffName(objects[4] != null ? objects[4].toString() : null)
                 .team(objects[5] != null ? objects[5].toString() : null)
                 .department(objects[6] != null ? objects[6].toString() : null)
                 .date(objects[7] != null
