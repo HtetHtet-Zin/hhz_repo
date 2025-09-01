@@ -37,7 +37,7 @@ public class BookingDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime bookedDate;
     private String status;
-    private String name;
+    private String staffName;
     private String team;
     private String department;
     private LocalDate date;
