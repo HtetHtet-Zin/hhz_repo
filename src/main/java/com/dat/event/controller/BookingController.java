@@ -106,7 +106,7 @@ public class BookingController {
             return ResponseEntity.ok(response);
         }
         String staffId = (String) session.getAttribute("staffNo");
-        //bookingService.makeBooking(scheduleId, attendees, accessories, purpose, signature, staffId, eventName);
+        bookingService.makeBooking(scheduleId, attendees, accessories, purpose, signature, staffId, eventName);
 
         if (submitType.equals(Constants.SAVE)) {
             response.put("redirectUrl", contextPath + WebUrl.EVENT_URL);
