@@ -34,6 +34,9 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/photo/eventPhoto/**")
                 .addResourceLocations("file:" + Paths.get("photo/eventPhoto").toAbsolutePath()+"/");
+
+        registry.addResourceHandler("/photo/signature/**")
+                .addResourceLocations("file:" + Paths.get("photo/signature").toAbsolutePath()+"/");
     }
 
     @Override

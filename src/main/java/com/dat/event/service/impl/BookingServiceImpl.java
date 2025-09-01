@@ -30,6 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -137,6 +138,33 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public void updateBooking(Long bookingId, int attendees, List<Long> accessories, String purpose, String staffName) {
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        booking.setAttendees(attendees);
+        booking.setPurpose(purpose);
+        booking.setUpdatedBy(staffName);
+        booking.setUpdatedAt(LocalDateTime.now());
+
+        // clear
+        booking.getRequestedAccessoriesEntityList().clear();
+
+        if(accessories != null) {
+            for (Long accId : accessories) {
+                RequestedAccessoriesEntity requested = new RequestedAccessoriesEntity();
+                RequestedAccessoriesKey key = new RequestedAccessoriesKey(booking.getId(), accId);
+                requested.setId(key);
+                requested.setBooking(booking);
+                requested.setAccessories(accessoriesRepository.findById(accId)
+                        .orElseThrow(() -> new RuntimeException("Accessory not found: " + accId)));
+                booking.getRequestedAccessoriesEntityList().add(requested);
+            }
+        }
+
+        bookingRepository.save(booking);
+    }
+
+    @Override
     public void checkBookingANDApproverFlag(Long bookingId , String staffNo) {
         bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not Found"));
         var staff = staffRepository.findByStaffNo(staffNo).orElseThrow(() ->new IllegalArgumentException("Staff not Found"));
@@ -162,7 +190,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getBookingSchedule(Long scheduleId) {
-        Object[] obj = bookingRepository.getBookingSchedule(scheduleId);
+        Object[] obj = (Object[]) bookingRepository.getBookingSchedule(scheduleId);
+        if (obj == null) {
+            System.out.println("No result found for scheduleId = " + scheduleId);
+            return null;
+        }
         BookingDto book = new BookingDto();
         book.setStaffName(obj[0].toString());
         book.setBookedBy(obj[1].toString());
@@ -171,6 +203,8 @@ public class BookingServiceImpl implements BookingService {
         book.setAttendees((Integer) obj[4]);
         book.setPurpose(obj[5].toString());
         book.setAccessories(obj[6].toString());
+        book.setBookedDate(((Timestamp) obj[7]).toLocalDateTime());
+        book.setId((Long) obj[8]);
 
         return book;
     }

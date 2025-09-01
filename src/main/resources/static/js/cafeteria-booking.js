@@ -204,7 +204,7 @@ const editApplicantStaffId = document.getElementById('editApplicantStaffId');
 const editTeam = document.getElementById('editTeam');
 const editDepartment = document.getElementById('editDepartment');
 const editPreferredDate = document.getElementById('editPreferredDate');
-const editScheduleId = document.getElementById('editScheduleId');
+const bookingId = document.getElementById('bookingId');
 const editAccessoriesSelect = document.getElementById("editAccessories");
 const editSelectedAccessoriesDiv = document.getElementById("editSelectedAccessories");
 const editAttendees = document.getElementById("editAttendees");
@@ -212,6 +212,7 @@ const editPurpose = document.getElementById("editPurpose");
 const editSignature = document.getElementById("editSignature");
 const editPreview = document.getElementById("editSignaturePreview");
 const editUploadLink = document.getElementById("editUploadSignatureLink");
+const editSignedDate = document.getElementById("editSignedDate");
 
 let selectedAccessories = new Set();
 let selectedAccessoriesName = new Set();
@@ -227,25 +228,21 @@ accessoriesSelect.addEventListener("change", function () {
         selectedAccessories.add(selectedValue);
         selectedAccessoriesName.add(selectedText);
 
-        const col = document.createElement("div");
-        col.className = "col-4";
-        col.dataset.value = selectedValue;
+        createAccessoryChip(selectedValue, selectedText, this.options[this.selectedIndex], selectedAccessoriesDiv);
+    }
 
-        col.innerHTML = `
-            <div class="border rounded p-2 d-flex justify-content-between align-items-center">
-                <span>${selectedText}</span>
-                <button type="button" class="btn-close ms-2" aria-label="Remove"></button>
-            </div>
-        `;
+    this.value = "";
+});
 
-        // Handle remove
-        col.querySelector(".btn-close").addEventListener("click", function () {
-            selectedAccessories.delete(selectedValue);
-            selectedAccessoriesName.delete(selectedText);
-            col.remove();
-        });
+editAccessoriesSelect.addEventListener("change", function () {
+    const selectedValue = this.value;
+    const selectedText = this.options[this.selectedIndex].text;
 
-        selectedAccessoriesDiv.appendChild(col);
+    if (selectedValue && !selectedAccessories.has(selectedValue)) {
+        selectedAccessories.add(selectedValue);
+        selectedAccessoriesName.add(selectedText);
+
+        createAccessoryChip(selectedValue, selectedText, this.options[this.selectedIndex], editSelectedAccessoriesDiv);
     }
 
     this.value = "";
@@ -326,6 +323,7 @@ async function handleBookingClick(button) {
     }
 }
 
+// fetch the booking schedule and set value to text-box
 function handleEditBookingClick(button) {
     const id = button.getAttribute("data-id");
     const date = button.getAttribute("data-date");
@@ -341,21 +339,45 @@ function handleEditBookingClick(button) {
     })
     .then(res => res.json())
     .then(data => {
+        bookingId.value = data.id;
         editApplicantName.value = data.staffName;
         editApplicantStaffId.value = data.bookedBy;
         editTeam.value = data.team;
         editDepartment.value = data.department;
         editAttendees.value = data.attendees;
         editPurpose.value = data.purpose;
-        editSignedDate.value = data.bookedDate;
+
+        const date = new Date(data.bookedDate);
+        const formattedDate = ("0" + (date.getMonth() + 1)).slice(-2) + "/" +
+                              ("0" + date.getDate()).slice(-2) + "/" +
+                              date.getFullYear();
+        editSignedDate.value = formattedDate;
+        bindAccessoriesInEdit(data.accessories);
+
+        editPreview.src = `/club/photo/signature/${data.bookedBy}.jpg`;
+        editPreview.style.display = "inline-block";
     })
     .catch(err => console.error("Error loading schedule:", err));
-
-    editScheduleId.value =  id;
     editPreferredDate.value = `${date} (${start} - ${end})`;
 
     const modal = new bootstrap.Modal(document.getElementById('editScheduleModal'));
     modal.show();
+}
+
+function bindAccessoriesInEdit(accessories) {
+    const accessoryIds = accessories ? accessories.split(",") : [];
+    accessoryIds.forEach(id => {
+        const option = editAccessoriesSelect.querySelector(`option[value="${id}"]`);
+
+        if (option) {
+            option.selected = true;
+            selectedAccessories.add(id);
+            selectedAccessoriesName.add(option.text);
+
+            createAccessoryChip(id, option.text, option, editSelectedAccessoriesDiv);
+        }
+    });
+    editAccessoriesSelect.value = "";
 }
 
 function validateBooking(scheduleId) {
@@ -428,17 +450,23 @@ function checkDuration(startStr, endStr, dateStr, errorDivId, maxHours = 5) {
     return true;
 }
 
-function validateAll(start, end, date) {
+function validateAllForms(start, end, date, isEdit = false) {
     let isValid = true;
 
-    if (!checkDuration(start, end, date, "dateError")) isValid = false;
+    // Duration check
+    if (!isEdit && !checkDuration(start, end, date, "dateError")) {
+        isValid = false;
+    }
 
-    const attendeeError = document.getElementById("attendeeError");
-    if (!attendees) {
+    // Attendees Validation
+    const attendeeError = document.getElementById(isEdit ? "editAttendeeError" : "attendeeError");
+    const attendeeInput = isEdit ? editAttendees : attendees;
+
+    if (!attendeeInput.value) {
         attendeeError.textContent = "Expected Attendees Required! (Minimum 5 & Maximum 60)";
         attendeeError.style.display = "block";
         isValid = false;
-    } else if (attendees.value < 5 || attendees.value > 60) {
+    } else if (attendeeInput.value < 5 || attendeeInput.value > 60) {
         attendeeError.textContent = "Attendees must be between 5 and 60.";
         attendeeError.style.display = "block";
         isValid = false;
@@ -446,8 +474,11 @@ function validateAll(start, end, date) {
         attendeeError.style.display = "none";
     }
 
-    const purposeText = purpose.value.trim();
-    const purposeError = document.getElementById("purposeError");
+    // Purpose Validation
+    const purposeInput = isEdit ? editPurpose : purpose;
+    const purposeError = document.getElementById(isEdit ? "editPurposeError" : "purposeError");
+    const purposeText = purposeInput.value.trim();
+
     if (!purposeText) {
         purposeError.textContent = "Purpose of the Event is required!";
         purposeError.style.display = "block";
@@ -460,19 +491,22 @@ function validateAll(start, end, date) {
         purposeError.style.display = "none";
     }
 
-    const signError = document.getElementById("signError");
-    if (!signature.files || signature.files.length === 0) {
-        signError.style.display = "block";
-        isValid = false;
-    } else {
-        signError.style.display = "none";
+    // Signature Validation
+    if (!isEdit) {
+        const signError = document.getElementById("signError");
+        if (!signature.files || signature.files.length === 0) {
+            signError.style.display = "block";
+            isValid = false;
+        } else {
+            signError.style.display = "none";
+        }
     }
 
     return isValid;
 }
 
 function submitData(submitType) {
-    if (!validateAll(start,end, date)) return;
+    if (!validateAllForms(start,end, date, false)) return;
 
     const formData = new FormData();
     formData.append("scheduleId", scheduleId.value);
@@ -505,17 +539,17 @@ function submitData(submitType) {
 }
 
 function submitEditData(submitType) {
-    if (!validateAll(start, end ,date)) return;
+    if (!validateAllForms(false, false, false, true)) return;
 
     const formData = new FormData();
-    formData.append("scheduleId", scheduleId.value);
+    formData.append("bookingId", bookingId.value);
     formData.append("eventId", eventId);
     formData.append("eventName", eventName);
-    formData.append("attendees", attendees.value);
+    formData.append("attendees", editAttendees.value);
 
     selectedAccessories.forEach(val => formData.append("accessories", val));
 
-    formData.append("purpose", purpose.value);
+    formData.append("purpose", editPurpose.value);
     formData.append("submitType", submitType);
 
     fetch(`${editBookingUrl}`, {
@@ -547,12 +581,20 @@ function resetModalFields() {
     if (selectedAccessoriesDiv) {
         selectedAccessoriesDiv.innerHTML = "";
     }
+    if (editSelectedAccessoriesDiv) {
+        editSelectedAccessoriesDiv.innerHTML = "";
+    }
     if (typeof selectedAccessories !== "undefined") {
         selectedAccessories.clear();
     }
-
+    if (typeof selectedAccessoriesName !== "undefined") {
+            selectedAccessoriesName.clear();
+        }
     if (accessoriesSelect) {
         accessoriesSelect.value = "";
+    }
+    if (editAccessoriesSelect) {
+        editAccessoriesSelect.value = "";
     }
 
     // Hide all error messages
@@ -570,6 +612,27 @@ document.getElementById("saveContinueBtn").addEventListener("click", () => submi
 document.getElementById("editBtn").addEventListener("click", () => submitEditData("SAVE"));
 document.getElementById("editContinueBtn").addEventListener("click", () => submitEditData("CONTINUE"));
 
+function createAccessoryChip(id, name, optionElement, div) {
+    const col = document.createElement("div");
+    col.className = "col-4";
+    col.dataset.value = id;
+
+    col.innerHTML = `
+        <div class="border rounded p-2 d-flex justify-content-between align-items-center">
+            <span>${name}</span>
+            <button type="button" class="btn-close ms-2" aria-label="Remove"></button>
+        </div>
+    `;
+
+    col.querySelector(".btn-close").addEventListener("click", function () {
+        selectedAccessories.delete(id);
+        selectedAccessoriesName.delete(name);
+        if (optionElement) optionElement.selected = false;
+        col.remove();
+    });
+
+    div.appendChild(col);
+}
 
 // cafeteria Usage Form
 

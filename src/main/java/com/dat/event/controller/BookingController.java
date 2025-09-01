@@ -107,16 +107,6 @@ public class BookingController {
                                                @RequestParam("scheduleDate") String scheduleDate,
                                                @RequestParam("eventName") String eventName, HttpSession session) {
 
-        System.out.println("schedule Id - " + scheduleId);
-        System.out.println("attendees - " + attendees);
-        System.out.println("accessories - " + accessories);
-        System.out.println("accessoriesName - " + accessoriesName);
-        System.out.println("purpose - " + purpose);
-        System.out.println("eventId - " + eventId);
-        System.out.println("eventName - " + eventName);
-        System.out.println("scheduleDate - " + scheduleDate);
-        System.out.println("signature - " + signature.getOriginalFilename());
-
         Map<String, String> response = new HashMap<>();
         if (session == null || session.getAttribute("staffNo") == null) {
             response.put("redirectUrl", contextPath + WebUrl.LOGIN_URL);
@@ -125,7 +115,7 @@ public class BookingController {
             return ResponseEntity.ok(response);
         }
         String staffId = (String) session.getAttribute("staffNo");
-//        bookingService.makeBooking(scheduleId, attendees, accessories, purpose, signature, staffId, eventName);
+        bookingService.makeBooking(scheduleId, attendees, accessories, purpose, signature, staffId, eventName);
         StaffDto staffDto = staffRepository.findByStaffNo(staffId).map(staffMapper::toDTO).orElseThrow();
 
         if (submitType.equals(Constants.SAVE)) {
@@ -159,10 +149,42 @@ public class BookingController {
         return ResponseEntity.ok(response);
     }
 
-//    @PostMapping(WebUrl.GET_BOOKING_SCHEDULE_URL)
-//    public ResponseEntity<BookingDto> getBookingSchedule(@RequestParam("scheduleId") Long scheduleId) {
-//        return ResponseEntity.ok(bookingService.getBookingSchedule(scheduleId));
-//    }
+    @PostMapping(WebUrl.GET_BOOKING_SCHEDULE_URL)
+    public ResponseEntity<BookingDto> getBookingSchedule(@RequestParam("scheduleId") Long scheduleId) {
+        return ResponseEntity.ok(bookingService.getBookingSchedule(scheduleId));
+    }
+
+    @PostMapping(WebUrl.EDIT_CAFETERIA_BOOKING_URL)
+    public ResponseEntity<?> edit_cafeteria_booking(@RequestParam("bookingId") Long bookingId,
+                                                    @RequestParam("attendees") int attendees,
+                                                    @RequestParam(value = "accessories", required = false) List<Long> accessories,
+                                                    @RequestParam("purpose") String purpose,
+                                                    @RequestParam("eventId") Long eventId,
+                                                    @RequestParam("eventName") String eventName,
+                                                    @RequestParam("submitType") String submitType, HttpSession session){
+
+        Map<String, String> response = new HashMap<>();
+        if (session == null || session.getAttribute("staffNo") == null) {
+            response.put("redirectUrl", contextPath + WebUrl.LOGIN_URL);
+            response.put("status", "error");
+            response.put("message", "Session has expired. Please log in again.");
+            return ResponseEntity.ok(response);
+        }
+        String staffName = (String) session.getAttribute("name");
+        System.out.println("staff name - "+ staffName);
+        bookingService.updateBooking(bookingId, attendees, accessories, purpose, staffName);
+
+        if (submitType.equals(Constants.SAVE)) {
+            response.put("redirectUrl", contextPath + WebUrl.EVENT_URL);
+            response.put("status", "success");
+            response.put("message", "Booking Updated Success.");
+        } else if (submitType.equals(Constants.CONTINUE)) {
+            response.put("redirectUrl", contextPath + WebUrl.CAFETERIA_BOOKING_URL.concat("/") + eventId + "/" + eventName);
+            response.put("status", "success");
+            response.put("message", "Booking Updated Success.");
+        }
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping(WebUrl.EVENT_BOOKING_URL)
     public String bookingList(HttpSession session, Model model) throws AccessDeniedException {
