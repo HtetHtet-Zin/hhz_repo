@@ -2,7 +2,7 @@ const tableBody = document.getElementById("staffTableBody");
 const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("search");
 const countElem = document.getElementById('count');
-const participantElem = document.getElementById('participant-text');
+const recordElem = document.getElementById('record-text');
 
 const table = tableBody.closest('table');
 const thCount = table.querySelectorAll('th').length;
@@ -23,7 +23,7 @@ searchInput.addEventListener("input", () => {
 
 function loadStaffData() {
 
-    fetch(`${participantUrl}`, {
+    fetch(`${bookingUrl}`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
@@ -33,23 +33,23 @@ function loadStaffData() {
     })
     .then(res => res.json())
     .then(data => {
-        participantCount(data.page.totalElements);
+        recordCount(data.page.totalElements);
         renderTable(data);
         renderPagination(data.page);
     })
     .catch(err => console.error("Error loading event:", err));
 }
 
-function participantCount(total) {
+function recordCount(total) {
     if (total === 0) {
         countElem.textContent = "no";
-        participantElem.textContent = "participants";
+        recordElem.textContent = "records";
     } else if (total === 1) {
         countElem.textContent = "1";
-        participantElem.textContent = "participant";
+        recordElem.textContent = "record";
     } else {
         countElem.textContent = total;
-        participantElem.textContent = "participants";
+        recordElem.textContent = "records";
     }
 }
 
@@ -60,7 +60,7 @@ function renderTable(data) {
     if (!data.content || data.content.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="${thCount}" style="text-align:center;">No participants yet</td>
+                <td colspan="${thCount}" style="text-align:center;">No records yet</td>
             </tr>
         `;
         return;
@@ -131,8 +131,6 @@ function changePage(page) {
     loadStaffData();
 }
 
-
-
 // --- Enable/Disable Approve/Reject Buttons Based on Textarea ---
 document.getElementById("modalTextarea").addEventListener("input", function () {
   const reason = this.value.trim();
@@ -183,48 +181,46 @@ function approveModalClose() {
 
 // --- Submit Approve ---
 async function approveModalSubmit() {
-  const reason = document.getElementById("modalTextarea").value.trim();
-  const selectedId =document.getElementById("selectedId").value;
-  const scheduleId =document.getElementById("scheduleId").value;
+    const reason = document.getElementById("modalTextarea").value.trim();
+    const selectedId =document.getElementById("selectedId").value;
+    const scheduleId =document.getElementById("scheduleId").value;
 
-  if (reason === "") {
-     alertAction("Please enter a reason.", {
-                      title: "Missing Reason!", variant: "danger"
-                  });
-    return;
-  }
-   const formData = new FormData();
+    if (reason === "") {
+        alertAction("Please enter a reason.", {
+            title: "Missing Reason!", variant: "danger"
+        });
+        return;
+    }
+    const formData = new FormData();
     if (await validateBooking(scheduleId)) {
-            approveModalClose();
-              alertAction("This time slot is already booked.", {
-                  title: "Booking Conflict!", variant: "danger"
-              });
+        approveModalClose();
+        alertAction("This time slot is already booked.", {
+            title: "Booking Conflict!", variant: "danger"
+        });
+    } else {
+        formData.append("bookingId", selectedId);
+        formData.append("approveReason", reason);
+        formData.append("formAction", "approve");
 
-   } else {
-       formData.append("bookingId", selectedId);
-       formData.append("approveReason", reason);
-       formData.append("formAction", "approve");
+        const okButton = document.querySelector('#customAlertBox button[onclick="approveModalSubmit()"]');
+        if (okButton) okButton.disabled = true;
 
+        fetch(`${bookingApprovedUrl}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response =>  response.json())
+        .then(data => {
+            const redirectUrl = new URL(data.redirectUrl, window.location.origin);
+            redirectUrl.searchParams.append('message', data.message || '');
+            redirectUrl.searchParams.append('messageType', data.status || '');
+            window.location.href = redirectUrl;
+        })
+        .catch(error => console.error("Error:", error));
 
-     const okButton = document.querySelector('#customAlertBox button[onclick="approveModalSubmit()"]');
-     if (okButton) okButton.disabled = true;
+        approveModalClose();
 
-             fetch('/club/approve', {
-                 method: 'POST',
-                 body: formData
-             })
-            .then(response =>  response.json())
-            .then(data => {
-                const redirectUrl = new URL(data.redirectUrl, window.location.origin);
-                redirectUrl.searchParams.append('message', data.message || '');
-                redirectUrl.searchParams.append('messageType', data.status || '');
-                window.location.href = redirectUrl;
-            })
-            .catch(error => console.error("Error:", error));
-
-     approveModalClose();
-
-          }
+    }
 }
 
 // --- Submit Reject ---
@@ -252,7 +248,7 @@ function rejectModalSubmit() {
   const rejectBtn = document.querySelector('#customAlertBox button[onclick="rejectModalSubmit()"]');
   if (rejectBtn) rejectBtn.disabled = true;
 
-            fetch('/club/approve', {
+            fetch(`${bookingApprovedUrl}`, {
                 method: 'POST',
                 body: formData
             })

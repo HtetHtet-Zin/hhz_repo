@@ -41,7 +41,7 @@
     <div class="">
         <div class="d-flex justify-content-between m-3 align-items-center">
             <div>
-                <p>There are <span id="count"></span> <span id="participant-text"></span>.</p>
+                <p>There are <span id="count"></span> <span id="record-text"></span>.</p>
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
@@ -122,13 +122,13 @@
 <script th:src="@{/js/main.js}"></script>
 <!-- data js -->
 <script>
-  var redirectMessage = '[[${message}]]';
-  var redirectMessageType = '[[${messageType}]]';
+    var redirectMessage = '[[${message}]]';
+    var redirectMessageType = '[[${messageType}]]';
 
-        const exportUrl = '[[@{${WebUrl.EVENT_STAFF_DOWNLOAD_URL}}]]';
-        const participantUrl = '[[@{${WebUrl.EVENT_BOOKING_URL}}]]';
-        const BookingUrl = '[[@{${WebUrl.EVENT_BOOKING_APPROVE_URL}}]]';
-            const checkBooked = '[[@{${WebUrl.CHECK_BOOKED_URL}}]]';
-    </script>
+    const exportUrl = '[[@{${WebUrl.EVENT_STAFF_DOWNLOAD_URL}}]]';
+    const bookingUrl = '[[@{${WebUrl.EVENT_BOOKING_URL}}]]';
+    const bookingApprovedUrl = '[[@{${WebUrl.EVENT_BOOKING_APPROVE_URL}}]]';
+    const checkBooked = '[[@{${WebUrl.CHECK_BOOKED_URL}}]]';
+</script>
 </body>
 </html>
