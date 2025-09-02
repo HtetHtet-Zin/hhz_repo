@@ -617,14 +617,12 @@ function renderTable() {
     });
 
     nextWeekBtn.addEventListener("click", () => {
-        currentPage++;
-        weekStart.setDate(weekStart.getDate() + 7);
+        if(currentPage < maximumPage) currentPage++;
         renderTable();
     });
 
     prevWeekBtn.addEventListener("click", () => {
-        currentPage--;
-        weekStart.setDate(weekStart.getDate() - 7);
+        if(currentPage > 1) currentPage--;
         renderTable();
     });
 
