@@ -2,7 +2,7 @@ spring:
   mail:
     host: diracetechnology-com.mail.protection.outlook.com
     username: myomyintaung@diracetechnology.com
-    password: zADCMNGVVoQN+sB+G8NNB2j9OHCsGF9b)=
+    password: 
     properties:
       mail:
         smtp:
