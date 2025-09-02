@@ -180,7 +180,6 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.findAllBooking(keyword.isBlank() ? null : keyword, page));
     }
 
-    ///  multiple approve
     @PostMapping(WebUrl.EVENT_BOOKING_APPROVE_URL)
     public ResponseEntity<Map<String, String>> approveForms(@RequestParam("bookingId") Long bookingId,
                                                             @RequestParam("approveReason") String reason,

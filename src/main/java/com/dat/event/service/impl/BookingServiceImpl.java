@@ -177,7 +177,7 @@ public class BookingServiceImpl implements BookingService {
 
         var booking = bookingRepository.findById(bookingId).orElseThrow();
         var schedule = scheduleRepository.findById(booking.getSchedule().getId()).orElseThrow();
-        schedule.setBookingFlag("approve".equalsIgnoreCase(action));
+        schedule.setBookingFlag("approve".equalsIgnoreCase(action)? true : false);
         booking.setSchedule(schedule);
         booking.setConfirmedBy(name);
         booking.setConfirmedDate(LocalDateTime.now());

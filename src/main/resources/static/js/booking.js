@@ -225,8 +225,9 @@ async function approveModalSubmit() {
 
 // --- Submit Reject ---
 function rejectModalSubmit() {
-    const reason = document.getElementById("modalTextarea").value.trim();
-    const selectedId = document.getElementById("approveButton").value.trim();
+  const reason = document.getElementById("modalTextarea").value.trim();
+  const selectedId =document.getElementById("selectedId").value;
+  const scheduleId =document.getElementById("scheduleId").value;
 
     if (reason === "") {
         approveModalShowMessage("Please enter a reason.", "error");
