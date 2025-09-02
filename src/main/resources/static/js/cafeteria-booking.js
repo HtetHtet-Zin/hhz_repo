@@ -106,7 +106,6 @@ function renderTable(data) {
     data.content.forEach((schedule, index) => {
         let btnHtml = "";
 
-
         if ( schedule.bookingFlag === null && handleBookingDate(schedule.date,schedule.bookingFlag) ) {
             btnHtml = `
                 <button class="book-btn"
@@ -115,7 +114,7 @@ function renderTable(data) {
                         data-start="${schedule.fromTime}"
                         data-end="${schedule.toTime}"
                         onclick="handleBookingClick(this)">
-                    <i class="bi bi-bookmark-check-fill"></i>
+                    <i class="bi bi-bell-fill text-primary"></i>
                 </button>
             `;
         } else if (schedule.bookingFlag === false) {
@@ -127,7 +126,7 @@ function renderTable(data) {
                         data-start="${schedule.fromTime}"
                         data-end="${schedule.toTime}"
                         onclick="handleEditBookingClick(this)">
-                     <i class="bi bi-hourglass-split"></i>
+                     <i class="bi bi-hourglass-split text-warning"></i>
                 </button>
                 `;
             }else{
@@ -138,14 +137,20 @@ function renderTable(data) {
                         data-start="${schedule.fromTime}"
                         data-end="${schedule.toTime}"
                         onclick="handleEditBookingClick(this)">
-                    <i class="bi bi-hourglass-split"></i>
+                    <i class="bi bi-hourglass-split text-warning"></i>
                 </button>
                 `;
             }
         } else if (schedule.bookingFlag === true) {
             btnHtml = `
                 <button class="book-btn" disabled>
-                    <i class="bi bi-check-circle-fill"></i>
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                </button>
+            `;
+        } else {
+            btnHtml = `
+                <button class="book-btn" disabled>
+                    <i class="bi bi-lock-fill text-danger"></i>
                 </button>
             `;
         }

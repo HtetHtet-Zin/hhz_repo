@@ -38,7 +38,7 @@
 }
 
 .book-btn{
-    color: var(--accent-2);
+    /*color: var(--accent-2);*/
     background-color: transparent;
     border: none;
 }
