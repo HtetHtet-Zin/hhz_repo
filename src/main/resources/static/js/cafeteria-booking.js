@@ -585,24 +585,18 @@ function resetModalFields() {
     preview.src = "";
     preview.style.display = "none";
 
-    if (selectedAccessoriesDiv) {
-        selectedAccessoriesDiv.innerHTML = "";
-    }
-    if (editSelectedAccessoriesDiv) {
-        editSelectedAccessoriesDiv.innerHTML = "";
-    }
-    if (typeof selectedAccessories !== "undefined") {
-        selectedAccessories.clear();
-    }
-    if (typeof selectedAccessoriesName !== "undefined") {
-            selectedAccessoriesName.clear();
-        }
-    if (accessoriesSelect) {
-        accessoriesSelect.value = "";
-    }
-    if (editAccessoriesSelect) {
-        editAccessoriesSelect.value = "";
-    }
+    if(editApplicantName) editApplicantName.value="";
+    if(editApplicantStaffId) editApplicantStaffId.value="";
+    if(editTeam) editTeam.value="";
+    if(editDepartment) editDepartment.value="";
+
+    if (selectedAccessoriesDiv) selectedAccessoriesDiv.innerHTML = "";
+    if (editSelectedAccessoriesDiv) editSelectedAccessoriesDiv.innerHTML = "";
+
+    if (typeof selectedAccessories !== "undefined") selectedAccessories.clear();
+    if (typeof selectedAccessoriesName !== "undefined") selectedAccessoriesName.clear();
+    if (accessoriesSelect) accessoriesSelect.value = "";
+    if (editAccessoriesSelect) editAccessoriesSelect.value = "";
 
     // Hide all error messages
     document.querySelectorAll(".text-error").forEach(el => el.style.display = "none");

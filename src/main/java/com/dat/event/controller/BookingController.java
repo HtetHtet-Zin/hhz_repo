@@ -150,7 +150,6 @@ public class BookingController {
             return ResponseEntity.ok(response);
         }
         String staffName = (String) session.getAttribute("name");
-        System.out.println("staff name - "+ staffName);
         bookingService.updateBooking(bookingId, attendees, accessories, purpose, staffName);
 
         if (submitType.equals(Constants.SAVE)) {

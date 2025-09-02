@@ -192,7 +192,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto getBookingSchedule(Long scheduleId) {
         Object[] obj = (Object[]) bookingRepository.getBookingSchedule(scheduleId);
         if (obj == null) {
-            System.out.println("No result found for scheduleId = " + scheduleId);
+            log.error("No result found for scheduleId = " + scheduleId);
             return null;
         }
         BookingDto book = new BookingDto();
