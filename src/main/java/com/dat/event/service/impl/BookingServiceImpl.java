@@ -202,7 +202,7 @@ public class BookingServiceImpl implements BookingService {
         book.setDepartment(obj[3].toString());
         book.setAttendees((Integer) obj[4]);
         book.setPurpose(obj[5].toString());
-        book.setAccessories(obj[6].toString());
+        book.setAccessories(obj[6] != null ? obj[6].toString(): null);
         book.setBookedDate(((Timestamp) obj[7]).toLocalDateTime());
         book.setId((Long) obj[8]);
 
