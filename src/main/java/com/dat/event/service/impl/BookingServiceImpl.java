@@ -24,7 +24,6 @@ import com.dat.event.service.BookingService;
 import com.dat.event.service.ImageStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -178,7 +177,7 @@ public class BookingServiceImpl implements BookingService {
 
         var booking = bookingRepository.findById(bookingId).orElseThrow();
         var schedule = scheduleRepository.findById(booking.getSchedule().getId()).orElseThrow();
-        schedule.setBookingFlag("approve".equalsIgnoreCase(action) ? true : false);
+        schedule.setBookingFlag("approve".equalsIgnoreCase(action));
         booking.setSchedule(schedule);
         booking.setConfirmedBy(name);
         booking.setConfirmedDate(LocalDateTime.now());

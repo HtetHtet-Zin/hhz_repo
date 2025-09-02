@@ -9,14 +9,10 @@ package com.dat.event.controller;
 import com.dat.event.common.constant.Constants;
 import com.dat.event.common.constant.WebUrl;
 import com.dat.event.common.exception.ResourceNotFoundException;
-import com.dat.event.common.mappers.StaffMapper;
 import com.dat.event.dto.StaffDto;
 import com.dat.event.email.config.EmailProperties;
 import com.dat.event.email.service.EmailService;
-import com.dat.event.entity.EventScheduleEntity;
 import com.dat.event.dto.EventScheduleDto;
-import com.dat.event.entity.StaffEntity;
-import com.dat.event.repository.StaffRepository;
 import com.dat.event.service.*;
 import jakarta.servlet.http.HttpSession;
 import com.dat.event.dto.BookingDto;
@@ -32,14 +28,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
 
@@ -68,9 +61,14 @@ public class BookingController {
     private String contextPath;
 
     @GetMapping(WebUrl.CAFETERIA_BOOKING_URL + "/{id}/{name}")
-    public String event_registration(@PathVariable("id") Long eventId, @PathVariable("name") String eventName, HttpSession session, Model model) {
+    public String event_registration(@PathVariable("id") Long eventId, @PathVariable("name") String eventName, HttpSession session, Model model) throws AccessDeniedException {
         if (session == null || session.getAttribute("staffNo") == null) {
             return "redirect:" + WebUrl.LOGIN_URL;
+        }
+
+        Object isAdmin = session.getAttribute("adminFlag");
+        if (!Boolean.TRUE.equals(isAdmin)) {
+            throw new AccessDeniedException("No Permission To - " + session.getAttribute("staffNo"));
         }
 
         var eventDto = eventService.getEvent(eventId);
@@ -124,7 +122,7 @@ public class BookingController {
 
         response.put("redirectUrl", redirectUrl);
         response.put("status", "success");
-        response.put("message", isMailSend ? "Booking Success." : "Booking Success but Mail Send Fail");
+        response.put("message", isMailSend ? "Booking Successful and Mail Send Successful" : "Booking Successful  but Mail Send Fail");
         return ResponseEntity.ok(response);
     }
 
@@ -165,7 +163,7 @@ public class BookingController {
     }
 
     @GetMapping(WebUrl.EVENT_BOOKING_URL)
-    public String bookingList(HttpSession session, Model model) throws AccessDeniedException {
+    public String bookingList(HttpSession session) throws AccessDeniedException {
         if (session != null && session.getAttribute("staffNo") != null) {
             Object isAdmin = session.getAttribute("adminFlag");
             if (!Boolean.TRUE.equals(isAdmin)) {
@@ -187,8 +185,7 @@ public class BookingController {
     public ResponseEntity<Map<String, String>> approveForms(@RequestParam("bookingId") Long bookingId,
                                                             @RequestParam("approveReason") String reason,
                                                             @RequestParam(value = "formAction", required = false) String action,
-                                                            HttpSession session,
-                                                            RedirectAttributes redirectAttributes) throws AccessDeniedException {
+                                                            HttpSession session) throws AccessDeniedException {
 
         Map<String, String> response = new HashMap<>();
         if (session != null && session.getAttribute("staffNo") != null) {
