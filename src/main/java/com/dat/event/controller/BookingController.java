@@ -63,8 +63,7 @@ public class BookingController {
     private final EventScheduleService eventScheduleService;
     private final EmailService emailService;
     private final EmailProperties emailProperties;
-    private final StaffRepository staffRepository;
-    private final StaffMapper staffMapper;
+    private final StaffService staffService;
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
@@ -116,36 +115,16 @@ public class BookingController {
         }
         String staffId = (String) session.getAttribute("staffNo");
         bookingService.makeBooking(scheduleId, attendees, accessories, purpose, signature, staffId, eventName);
-        StaffDto staffDto = staffRepository.findByStaffNo(staffId).map(staffMapper::toDTO).orElseThrow();
+        boolean isMailSend = sendEmail(attendees, accessoriesName, purpose, scheduleDate, eventName, staffId);
 
-        if (submitType.equals(Constants.SAVE)) {
-            response.put("redirectUrl", contextPath + WebUrl.EVENT_URL);
-            response.put("status", "success");
-            response.put("message", "Booking Success.");
-        } else if (submitType.equals(Constants.CONTINUE)) {
-            response.put("redirectUrl", contextPath + WebUrl.CAFETERIA_BOOKING_URL.concat("/") + eventId + "/" + eventName);
-            response.put("status", "success");
-            response.put("message", "Booking Success.");
-        }
+        String redirectUrl = switch (submitType) {
+            case Constants.SAVE -> contextPath + WebUrl.EVENT_URL;
+            case Constants.CONTINUE -> contextPath + WebUrl.CAFETERIA_BOOKING_URL.concat("/" + eventId + "/" + eventName);
+        };
 
-        try {
-            String template = new String(Files.readAllBytes(Paths.get(emailProperties.getTemplatePath())));
-            String requestAccessories = (accessoriesName == null || accessoriesName.isEmpty()) ? "None" : String.join(", ", accessoriesName);
-            String body = template
-                    .replace("{eventName}", eventName)
-                    .replace("{date}",scheduleDate)
-                    .replace("{attendees}", String.valueOf(attendees))
-                    .replace("{accessories}", requestAccessories)
-                    .replace("{purpose}", purpose)
-                    .replace("{name}", staffDto.getName())
-                    .replace("{team}", staffDto.getTeam())
-                    .replace("{department}", staffDto.getDepartment());
-            emailService.sendMail(staffDto.getEmail(), "Cafeteria Booking Request", body);
-        } catch (Exception e) {
-            response.put("redirectUrl", contextPath + WebUrl.CAFETERIA_BOOKING_URL.concat("/") + eventId + "/" + eventName);
-            response.put("status", "error");
-            response.put("message", "Failed to send email.");
-        }
+        response.put("redirectUrl", redirectUrl);
+        response.put("status", "success");
+        response.put("message", isMailSend ? "Booking Success." : "Booking Success but Mail Send Fail");
         return ResponseEntity.ok(response);
     }
 
@@ -231,5 +210,26 @@ public class BookingController {
         response.put("status", "error");
         response.put("message", "No Permission to" + session.getAttribute("staffNo"));
         return ResponseEntity.ok(response);
+    }
+
+    private boolean sendEmail(int attendees, List<String> accessoriesName, String purpose, String scheduleDate, String eventName, String staffNo) {
+        StaffDto staffDto = staffService.findByStaffNo(staffNo);
+        try {
+            String template = new String(Files.readAllBytes(Paths.get(emailProperties.getTemplatePath())));
+            String requestAccessories = (accessoriesName == null || accessoriesName.isEmpty()) ? "None" : String.join(", ", accessoriesName);
+            String body = template
+                    .replace("{eventName}", eventName)
+                    .replace("{date}", scheduleDate)
+                    .replace("{attendees}", String.valueOf(attendees))
+                    .replace("{accessories}", requestAccessories)
+                    .replace("{purpose}", purpose)
+                    .replace("{name}", staffDto.getName())
+                    .replace("{team}", staffDto.getTeam())
+                    .replace("{department}", staffDto.getDepartment());
+            emailService.sendMail(staffDto.getEmail(), "Cafeteria Booking Request", body);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

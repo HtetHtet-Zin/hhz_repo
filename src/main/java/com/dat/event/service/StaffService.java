@@ -21,4 +21,6 @@ public interface StaffService {
     void updateApproverFlag(String staffNo, boolean approverFlag);
 
     List<StaffDto> birthdayStaffList();
+
+    StaffDto findByStaffNo(String staffNo);
 }

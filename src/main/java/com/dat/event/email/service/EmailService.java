@@ -30,7 +30,5 @@ public class EmailService {
             helper.setText(body, false);
             mailSender.send(message);
         }
-
     }
-
 }

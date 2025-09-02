@@ -83,4 +83,9 @@ public class StaffServiceImpl implements StaffService {
     public List<StaffDto> birthdayStaffList() {
         return staffMapper.toDtoList(staffRepository.birthdayStaff(LocalDate.now().getMonthValue()));
     }
+
+    @Override
+    public StaffDto findByStaffNo(String staffNo) {
+        return staffRepository.findByStaffNo(staffNo).map(staffMapper::toDTO).orElseThrow();
+    }
 }
