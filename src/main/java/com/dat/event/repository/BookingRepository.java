@@ -51,6 +51,8 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
                AND es.date >= :tdyDate
                AND  (:keyword IS NULL 
                    OR LOWER(b.event_name) LIKE LOWER(CONCAT('%', :keyword, '%')) 
+                   OR LOWER(es.date) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(b.booked_date) LIKE LOWER(CONCAT('%', :keyword, '%'))
                    OR LOWER(b.status) LIKE LOWER(CONCAT('%', :keyword, '%'))
                    OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
                    OR LOWER(s.team) LIKE LOWER(CONCAT('%', :keyword, '%'))
@@ -95,4 +97,8 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
 
     @Query(value = "SELECT booking_id FROM tbl_booking WHERE schedule_id IN (:scheduleIds)", nativeQuery = true)
     List<Long> getBookingIdbyScheduleIds(@Param("scheduleIds") List<Long> scheduleIds);
+
+    @Modifying
+    @Query(value = "UPDATE tbl_booking set event_name = :eventName WHERE schedule_id IN (:scheduleIds)", nativeQuery = true)
+   void changeEventName(@Param("scheduleIds") List<Long> scheduleIds , @Param("eventName") String eventName);
 }

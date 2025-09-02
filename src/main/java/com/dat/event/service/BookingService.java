@@ -34,4 +34,6 @@ public interface BookingService {
     void updateBooking(Long bookingId, int attendees, List<Long> accessories, String purpose, String staffId);
 
     BookingDto getBookingSchedule(Long scheduleId);
+
+    void changeEventName(List<Long> scheduleIds , String eventName);
 }

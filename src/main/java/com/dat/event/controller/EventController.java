@@ -50,6 +50,7 @@ public class EventController {
     private final StaffService staffService;
     private final EventPlannerService eventPlannerService;
     private final ImageStorageService imageStorageService;
+    private final BookingService bookingService;
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
@@ -157,6 +158,9 @@ public class EventController {
                 imageStorageService.saveImage(eventPhotoFile, updateDto.getName(), true);
             } else if (!eventDto.getName().equals(requestEventPlanDto.getEventName())){
                     imageStorageService.updateImage(eventDto.getName(), requestEventPlanDto.getEventName());
+                    //if event name change also change event name in booking table
+                  List<Long>scheduleIds =  eventScheduleService.getAllScheduleIdByEvent(updateDto.getEventId());
+                  bookingService.changeEventName(scheduleIds,requestEventPlanDto.getEventName());
             }
             if (requestEventPlanDto.getEventLocation().equals("OFFICE")) {
                 response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(updateDto.getEventId().toString()).concat("/").concat(updateDto.getName()));

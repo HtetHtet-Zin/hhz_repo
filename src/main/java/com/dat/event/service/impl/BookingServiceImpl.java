@@ -22,6 +22,7 @@ import com.dat.event.repository.RequestedAccessoriesRepository;
 import com.dat.event.repository.StaffRepository;
 import com.dat.event.service.BookingService;
 import com.dat.event.service.ImageStorageService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -206,5 +207,11 @@ public class BookingServiceImpl implements BookingService {
         book.setId((Long) obj[8]);
 
         return book;
+    }
+
+    @Transactional
+    @Override
+    public void changeEventName(List<Long> scheduleIds , String eventName) {
+        bookingRepository.changeEventName(scheduleIds,eventName);
     }
 }
