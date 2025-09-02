@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpSession;
 import com.dat.event.dto.BookingDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -213,7 +215,8 @@ public class BookingController {
     private boolean sendEmail(int attendees, List<String> accessoriesName, String purpose, String scheduleDate, String eventName, String staffNo) {
         StaffDto staffDto = staffService.findByStaffNo(staffNo);
         try {
-            String template = new String(Files.readAllBytes(Paths.get(emailProperties.getTemplatePath())));
+            ClassPathResource resource = new ClassPathResource(emailProperties.getTemplatePath());
+            String template = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             String requestAccessories = (accessoriesName == null || accessoriesName.isEmpty()) ? "None" : String.join(", ", accessoriesName);
             String body = template
                     .replace("{eventName}", eventName)

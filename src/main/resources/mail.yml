@@ -12,7 +12,7 @@ spring:
 
 app:
   mail:
-    templatePath: template/template.txt
+    templatePath: template/EmailTemplate.txt
     recipients:
       - htoolaekyaw@diracetechnology.com
 
