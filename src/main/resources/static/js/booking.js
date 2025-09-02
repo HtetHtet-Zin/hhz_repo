@@ -225,44 +225,43 @@ async function approveModalSubmit() {
 
 // --- Submit Reject ---
 function rejectModalSubmit() {
-  const reason = document.getElementById("modalTextarea").value.trim();
-  const selectedId = document.getElementById("approveButton").value.trim();
+    const reason = document.getElementById("modalTextarea").value.trim();
+    const selectedId = document.getElementById("approveButton").value.trim();
 
+    if (reason === "") {
+        approveModalShowMessage("Please enter a reason.", "error");
+        return;
+    }
 
-  if (reason === "") {
-    approveModalShowMessage("Please enter a reason.", "error");
+    if (selectedId === "") {
+        approveModalShowMessage("No booking selected.", "error");
+        approveModalClose();
     return;
-  }
-
-  if (selectedId === "") {
-    approveModalShowMessage("No booking selected.", "error");
-    approveModalClose();
-    return;
-  }
+    }
 
     const formData = new FormData();
     formData.append("bookingId", selectedId);
     formData.append("approveReason", reason);
     formData.append("formAction", "reject");
 
-  const rejectBtn = document.querySelector('#customAlertBox button[onclick="rejectModalSubmit()"]');
-  if (rejectBtn) rejectBtn.disabled = true;
+    const rejectBtn = document.querySelector('#customAlertBox button[onclick="rejectModalSubmit()"]');
+    if (rejectBtn) rejectBtn.disabled = true;
 
-            fetch(`${bookingApprovedUrl}`, {
-                method: 'POST',
-                body: formData
-            })
-           .then(response =>  response.json())
-           .then(data => {
-               const redirectUrl = new URL(data.redirectUrl, window.location.origin);
-               redirectUrl.searchParams.append('message', data.message || '');
-               redirectUrl.searchParams.append('messageType', data.status || '');
-               window.location.href = redirectUrl;
-           })
-           .catch(error => console.error("Error:", error));
+    fetch(`${bookingApprovedUrl}`, {
+        method: 'POST',
+        body: formData
+    })
+   .then(response =>  response.json())
+   .then(data => {
+       const redirectUrl = new URL(data.redirectUrl, window.location.origin);
+       redirectUrl.searchParams.append('message', data.message || '');
+       redirectUrl.searchParams.append('messageType', data.status || '');
+       window.location.href = redirectUrl;
+   })
+   .catch(error => console.error("Error:", error));
 
 
-  approveModalClose();
+    approveModalClose();
 }
 
 
