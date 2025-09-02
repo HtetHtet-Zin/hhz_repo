@@ -746,17 +746,23 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+
+
     nextWeekBtn.addEventListener("click", () => {
-        currentPage++;
-        startDate.setDate(startDate.getDate() + 7);
-        renderTable();
+        if (currentPage < maximumPage) {
+            currentPage++;
+            renderTable();
+        }
     });
 
     prevWeekBtn.addEventListener("click", () => {
-        currentPage--;
-        startDate.setDate(startDate.getDate() - 7);
-        renderTable();
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
     });
+
+
 
     // Initial render
     renderTable();
