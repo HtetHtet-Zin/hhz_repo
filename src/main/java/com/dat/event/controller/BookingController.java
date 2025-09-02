@@ -120,6 +120,7 @@ public class BookingController {
         String redirectUrl = switch (submitType) {
             case Constants.SAVE -> contextPath + WebUrl.EVENT_URL;
             case Constants.CONTINUE -> contextPath + WebUrl.CAFETERIA_BOOKING_URL.concat("/" + eventId + "/" + eventName);
+            default -> throw new IllegalStateException("Unexpected submitType: " + submitType);
         };
 
         response.put("redirectUrl", redirectUrl);
