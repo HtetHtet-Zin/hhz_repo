@@ -500,63 +500,68 @@ document.addEventListener("DOMContentLoaded", () => {
    });
 
 
+let latestPage = 0;
+let currentPage = 1;
+const maximumPage = 5; // next 5 weeks
+const totalDays = maximumPage * 7; // 35 days
+let startDate = new Date(); // today
 
-    let latestPage = 0;
-    let currentPage = 1;
-    const maximumPage = 4;
+function renderTable() {
+    if (latestPage < currentPage) {
+        latestPage++;
 
-    function renderTable() {
-        const todayIndex = getTodayIndex();
-        // tableBody.innerHTML = "";
+        for (let i = (currentPage - 1) * 7; i < currentPage * 7; i++) {
+            if (i >= totalDays) break;
 
-        if(/*canCreateNewPage*/ latestPage < currentPage){
-            latestPage++;
-            daysOfWeek.forEach((day, i) => {
-                const date = new Date(weekStart);
-                const disabledAction = i < todayIndex;
-                date.setDate(weekStart.getDate() + i);
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
 
-                const isoDate = date.toISOString().split('T')[0];
-                const row = document.createElement("tr");
-                row.classList.add('page');
-                row.classList.add('page-' + currentPage);
-                row.dataset.day = day;
-                row.dataset.date = isoDate;
+            const day = daysOfWeek[date.getDay()];
+            const isoDate = date.toISOString().split('T')[0];
+            const disabledAction = date < new Date().setHours(0, 0, 0, 0); // past days
 
-                const dayCell = document.createElement("td");
-                dayCell.innerHTML = `<strong style="margin-right: 10px;">${day}</strong><small>(${formatDate(date)})</small>`;
-                if (i === todayIndex) {
-                    dayCell.style.backgroundColor = "#d1e7dd";
-                    dayCell.style.fontWeight = "bold";
-                }
+            const row = document.createElement("tr");
+            row.classList.add("page", "page-" + currentPage);
+            row.dataset.day = day;
+            row.dataset.date = isoDate;
 
-                const slotWrapper = document.createElement("td");
-                slotWrapper.colSpan = 2;
-                slotWrapper.className = "slot-wrapper";
-                slotWrapper.dataset.day = day;
-                slotWrapper.classList.add('group-' + currentPage);
+            // Day cell
+            const dayCell = document.createElement("td");
+            dayCell.innerHTML = `<strong style="margin-right: 10px;">${day}</strong><small>(${formatDate(date)})</small>`;
+            if (isoDate === new Date().toISOString().split('T')[0]) {
+                dayCell.style.backgroundColor = "#d1e7dd";
+                dayCell.style.fontWeight = "bold";
+            }
 
-                // Add initial slot input
-                slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
+            // Slot wrapper
+            const slotWrapper = document.createElement("td");
+            slotWrapper.colSpan = 2;
+            slotWrapper.className = "slot-wrapper";
+            slotWrapper.dataset.day = day;
+            slotWrapper.classList.add("group-" + currentPage);
 
-                const addBtnCell = document.createElement("td");
-                const addBtn = document.createElement("button");
-                addBtn.type = "button";
-                addBtnCell.className = "add-btn-td";
-                addBtn.className = "btn btn-sm btn-success addSlotBtn";
-                addBtn.textContent = "+";
-                addBtn.dataset.day = day;
-                disableOrEnableInput(addBtn, disabledAction);
-                addBtnCell.appendChild(addBtn);
+            // Always add one empty slot for create
+            slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
 
-                row.append(dayCell, slotWrapper, addBtnCell);
-                tableBody.appendChild(row);
-            });
+            // Add button
+            const addBtnCell = document.createElement("td");
+            const addBtn = document.createElement("button");
+            addBtn.type = "button";
+            addBtn.className = "btn btn-sm btn-success addSlotBtn";
+            addBtn.textContent = "+";
+            addBtn.dataset.day = day;
+            disableOrEnableInput(addBtn, disabledAction);
+            addBtnCell.appendChild(addBtn);
+
+            row.append(dayCell, slotWrapper, addBtnCell);
+            tableBody.appendChild(row);
         }
-        showPage();
-        disableOrEnableInput(nextWeekBtn, currentPage == latestPage && latestPage == maximumPage);
-        disableOrEnableInput(prevWeekBtn, currentPage == 1);
     }
+
+    showPage();
+    disableOrEnableInput(nextWeekBtn, currentPage === latestPage && latestPage === maximumPage);
+    disableOrEnableInput(prevWeekBtn, currentPage === 1);
+}
 
     function showPage(){
         document.querySelectorAll('.page').forEach(element => {

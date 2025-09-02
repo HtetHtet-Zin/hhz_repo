@@ -610,64 +610,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let latestPage = 0;
     let currentPage = 1;
-    const maximumPage = 4;
+    let startDate = new Date(); // today
+    const maximumPage = 5; // next 5 weeks
+    const totalDays = maximumPage * 7; // 35 days
 
     function renderTable() {
         const todayIndex = getTodayIndex();
         // tableBody.innerHTML = "";
 
-        if(/*canCreateNewPage*/ latestPage < currentPage) {
+        if (latestPage < currentPage) {
             latestPage++;
-            daysOfWeek.forEach((day, i) => {
-            const date = new Date(weekStart);
-            const disabledAction = i < todayIndex;
-            date.setDate(weekStart.getDate() + i);
 
-            const isoDate = date.toISOString().split('T')[0];
-            const row = document.createElement("tr");
-            row.classList.add('page');
-            row.classList.add('page-' + currentPage);
-            row.dataset.day = day;
-            row.dataset.date = isoDate;
+            for (let i = (currentPage - 1) * 7; i < currentPage * 7; i++) {
+                if (i >= totalDays) break;
+
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+
+                const day = daysOfWeek[date.getDay()];
+                const isoDate = date.toISOString().split('T')[0];
+                const disabledAction = date < new Date().setHours(0,0,0,0);
+
+                const row = document.createElement("tr");
+                row.classList.add("page");
+                row.classList.add("page-" + currentPage);
+                row.dataset.day = day;
+                row.dataset.date = isoDate;
 
                 const dayCell = document.createElement("td");
                 dayCell.innerHTML = `<strong style="margin-right: 10px;">${day}</strong><small>(${formatDate(date)})</small>`;
-                if (i === todayIndex) {
+                if (isoDate === new Date().toISOString().split('T')[0]) {
                     dayCell.style.backgroundColor = "#d1e7dd";
                     dayCell.style.fontWeight = "bold";
                 }
 
-            const slotWrapper = document.createElement("td");
-            slotWrapper.colSpan = 2;
-            slotWrapper.className = "slot-wrapper";
-            slotWrapper.dataset.day = day;
-            slotWrapper.classList.add('group-' + currentPage);
-            let addEmptyRow = true;
-            eventScheduleList.forEach(member => {
-                // Add initial slot input
-                if(isoDate == member.date){
-                    addEmptyRow = false;
-                    slotWrapper.appendChild(createSlotInput1(day, disabledAction,member, true));
+                const slotWrapper = document.createElement("td");
+                slotWrapper.colSpan = 2;
+                slotWrapper.className = "slot-wrapper";
+                slotWrapper.dataset.day = day;
+                slotWrapper.classList.add('group-' + currentPage);
+
+                let addEmptyRow = true;
+                eventScheduleList.forEach(member => {
+                    if (isoDate === member.date) {
+                        addEmptyRow = false;
+                        slotWrapper.appendChild(createSlotInput1(day, disabledAction, member, true));
+                    }
+                });
+
+                if (addEmptyRow) {
+                    slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
                 }
-            });
 
-            if(addEmptyRow){
-                slotWrapper.appendChild(createSlotInput(day, disabledAction, true));
-            }
-            const addBtnCell = document.createElement("td");
-            const addBtn = document.createElement("button");
-            addBtn.type = "button";
-            addBtnCell.className = "add-btn-td";
-            addBtn.className = "btn btn-sm btn-success addSlotBtn";
-            addBtn.textContent = "+";
-            addBtn.dataset.day = day;
-            disableOrEnableInput(addBtn, disabledAction);
-            addBtnCell.appendChild(addBtn);
+                const addBtnCell = document.createElement("td");
+                const addBtn = document.createElement("button");
+                addBtn.type = "button";
+                addBtn.className = "btn btn-sm btn-success addSlotBtn";
+                addBtn.textContent = "+";
+                addBtn.dataset.day = day;
+                disableOrEnableInput(addBtn, disabledAction);
+                addBtnCell.appendChild(addBtn);
 
-            row.append(dayCell, slotWrapper, addBtnCell);
+                row.append(dayCell, slotWrapper, addBtnCell);
                 tableBody.appendChild(row);
-            });
+
+            }
         }
+
         showPage();
         disableOrEnableInput(nextWeekBtn, currentPage == latestPage && latestPage == maximumPage);
         disableOrEnableInput(prevWeekBtn, currentPage == 1);
@@ -739,13 +748,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     nextWeekBtn.addEventListener("click", () => {
         currentPage++;
-        weekStart.setDate(weekStart.getDate() + 7);
+        startDate.setDate(startDate.getDate() + 7);
         renderTable();
     });
 
     prevWeekBtn.addEventListener("click", () => {
         currentPage--;
-        weekStart.setDate(weekStart.getDate() - 7);
+        startDate.setDate(startDate.getDate() - 7);
         renderTable();
     });
 

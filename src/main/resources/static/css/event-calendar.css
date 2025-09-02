@@ -163,5 +163,15 @@ input[type="time"] {
     }
 }
 
+#timeSlotTable {
+    border-collapse: collapse;
+    width: 100%;
+}
 
+#timeSlotTable,
+#timeSlotTable th,
+#timeSlotTable td {
+    border: 0.8px solid #c8c6c6;
+    padding: 5px;
+}
 
