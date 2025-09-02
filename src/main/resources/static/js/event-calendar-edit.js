@@ -822,6 +822,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         endDateTime: formatDateTime(date, endTime),
                         eventTimeId: eventTimeId
                     });
+                }else{
+                           const deletedId = Number(hiddenInput[0]?.value);
+                              deleteScheduleList.push(deletedId);
                 }
             });
         });
