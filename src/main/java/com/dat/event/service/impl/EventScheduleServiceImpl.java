@@ -77,7 +77,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                     .createdAt(LocalDateTime.now())
                     .updateAt(LocalDateTime.now())
                     .updatedBy(staffNo)
-                    .delFlg(false)
+                    .rejectFlag(false)
                     .build();
             eventScheduleRepository.save(eventScheduleMapper.toEntity(dto));
         });
@@ -114,6 +114,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                 .name(objects[4] != null ? objects[4].toString() : null)
                 .participantCount(objects[5] != null ? Integer.valueOf(objects[5].toString()) : null)
                 .bookingFlag(objects[6] != null ? (((Number) objects[6]).intValue() == 1) : null)
+                .rejectFlag(objects[7] != null ? (((Number) objects[7]).intValue() == 1) : null)
                 .build()
         );
     }
@@ -146,7 +147,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                     entity.setEvent(eventRepository.getReferenceById(eventDto.getEventId()));
                     entity.setStartTime(eventTime.getStartDateTime().toLocalTime());
                     entity.setEndTime(eventTime.getEndDateTime().toLocalTime());
-                    entity.setDelFlag(false);
+                    entity.setRejectFlag(false);
                     entity.setCreatedAt(LocalDateTime.now());
                     entity.setCreatedBy(staffNo);
                     entity.setUpdatedAt(LocalDateTime.now());
@@ -175,7 +176,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
 
     @Override
     public List<EventScheduleDto> getEventSchedule(Long eventId) {
-        return eventScheduleMapper.toDtoList(eventScheduleRepository.findByEvent_EventIdAndDelFlagFalse(eventId));
+        return eventScheduleMapper.toDtoList(eventScheduleRepository.findByEvent_EventId(eventId));
     }
 
     @Transactional

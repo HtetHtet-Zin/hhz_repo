@@ -39,7 +39,7 @@ public class EventScheduleEntity implements Serializable {
     private EventEntity event;
 
     private LocalDate date;
-    private boolean delFlag;
+    private boolean rejectFlag;
     private Boolean bookingFlag;
     private LocalTime startTime;
     private LocalTime endTime;

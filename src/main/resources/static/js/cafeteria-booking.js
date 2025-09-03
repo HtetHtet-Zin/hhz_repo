@@ -105,8 +105,13 @@ function renderTable(data) {
 
     data.content.forEach((schedule, index) => {
         let btnHtml = "";
-
-        if ( schedule.bookingFlag === null && handleBookingDate(schedule.date,schedule.bookingFlag) ) {
+        if (schedule.rejectFlag === true) {
+            btnHtml = `
+                <button class="book-btn" disabled>
+                    <i class="bi bi-x-circle text-danger"></i>
+                </button>
+            `;
+        } else if ( schedule.bookingFlag === null && handleBookingDate(schedule.date,schedule.bookingFlag) ) {
             btnHtml = `
                 <button class="book-btn"
                         data-id="${schedule.id}"

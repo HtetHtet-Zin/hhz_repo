@@ -40,7 +40,7 @@ public class EventScheduleDto {
     private LocalDateTime createdAt;
     private String updatedBy;
     private LocalDateTime updateAt;
-    private Boolean delFlg;
+    private Boolean rejectFlag;
     private Boolean bookingFlag;
     private Integer participantCount;
 
