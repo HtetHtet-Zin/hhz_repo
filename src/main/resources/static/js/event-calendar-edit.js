@@ -449,7 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
         removeBtn.type = "button";
         removeBtn.textContent = "-";
         removeBtn.className = "btn btn-sm btn-danger removeSlotBtn";
-        disableOrEnableInput(removeBtn, disabledAction);
+        //disableOrEnableInput(removeBtn, disabledAction);
         if (isOnly) {
             removeBtn.title = "At least one slot required";
         }
@@ -629,7 +629,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const day = daysOfWeek[date.getDay()];
                 const isoDate = date.toISOString().split('T')[0];
-                const disabledAction = date < new Date().setHours(0,0,0,0);
+               // const disabledAction = date < new Date().setHours(0,0,0,0);
+                let disabledAction = false;
 
                 const row = document.createElement("tr");
                 row.classList.add("page");
@@ -654,8 +655,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 eventScheduleList.forEach(member => {
                     if (isoDate === member.date) {
                         addEmptyRow = false;
+                        //bookingFlag can be null
+                        disabledAction = member?.bookingFlag == true ? true : false;
                         slotWrapper.appendChild(createSlotInput1(day, disabledAction, member, true));
                     }
+                    disabledAction = false;
                 });
 
                 if (addEmptyRow) {
