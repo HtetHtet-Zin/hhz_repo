@@ -655,8 +655,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 eventScheduleList.forEach(member => {
                     if (isoDate === member.date) {
                         addEmptyRow = false;
-                        //bookingFlag can be null
-                        disabledAction = member?.bookingFlag == true ? true : false;
+                        if(member.rejectFlag){
+                        disabledAction = true;
+                        }else{
+                         //bookingFlag can be null
+                         disabledAction = member?.bookingFlag == true ? true : false;
+                        }
                         slotWrapper.appendChild(createSlotInput1(day, disabledAction, member, true));
                     }
                     disabledAction = false;

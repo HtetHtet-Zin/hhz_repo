@@ -147,7 +147,6 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                     entity.setEvent(eventRepository.getReferenceById(eventDto.getEventId()));
                     entity.setStartTime(eventTime.getStartDateTime().toLocalTime());
                     entity.setEndTime(eventTime.getEndDateTime().toLocalTime());
-                    entity.setRejectFlag(false);
                     entity.setCreatedAt(LocalDateTime.now());
                     entity.setCreatedBy(staffNo);
                     entity.setUpdatedAt(LocalDateTime.now());
