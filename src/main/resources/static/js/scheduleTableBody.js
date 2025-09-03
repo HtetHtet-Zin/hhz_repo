@@ -118,6 +118,7 @@ function renderTable(data) {
                 <td>${(data.page.number * data.page.size) + index + 1}</td>
                 <td>${schedule.name}</td>
                 <td>${schedule.date} (${schedule.fromTime} - ${schedule.toTime})</td>
+                <td>${schedule.bookingFlag == null ? 'Other Location' : (schedule.bookingFlag == 1 ? 'Cafeteria Area' : 'Default Location')}</td>
                 <td>${schedule.participantCount == 0 ? 'No Participant' : (schedule.participantCount == 1 ? '1 participant' : schedule.participantCount + ' participants')}</td>
             </tr>
         `;
