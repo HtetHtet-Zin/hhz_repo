@@ -651,7 +651,7 @@ function renderTable() {
             row.querySelectorAll(".time-slot").forEach(slot => {
                 const timeInput = slot.querySelectorAll('input[type="time"]');
                 const startTime = timeInput[0].value;
-                const endTime = timeInput[0].value;
+                const endTime = timeInput[1].value;
                 if (startTime && endTime) {
                     dateTimeList.push({
                         startDateTime: `${date} ${startTime}`,

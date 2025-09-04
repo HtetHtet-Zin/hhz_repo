@@ -155,7 +155,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                 });
 
             }
-            if(requestEventPlanDto.getDeleteScheduleList() != null) {
+            if(requestEventPlanDto.getDeleteScheduleList().get(0) != null) {
                 List<Long> scheduleIds = requestEventPlanDto.getDeleteScheduleList();
                 if(bookingRepository.existsByScheduleIdIn(scheduleIds)){
                     List<Long> bookingIds = bookingRepository.getBookingIdbyScheduleIds(scheduleIds);
@@ -168,7 +168,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
             }
 
         }catch (Exception e){
-            System.out.println(e.getStackTrace());
+            System.out.println(e.getMessage());
         }
 
     }

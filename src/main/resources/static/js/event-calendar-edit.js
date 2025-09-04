@@ -748,8 +748,12 @@ document.addEventListener("DOMContentLoaded", () => {
                                       const deletedId = input?.value; // shorter than getAttribute
                                         const id = Number(deletedId);
                                           deleteScheduleList.push(id);
-                    inputs.forEach(inp => inp.value = "");
+                    inputs.forEach(inp =>{ inp.value = "";
+                     inp.disabled = false;
+                     inp.style.cursor = 'pointer';
+                    });
                       input.value = "";
+
                 }
             }
         });
@@ -823,7 +827,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const hiddenInput = slot.querySelectorAll('[data-id = "hidden"]');
                 const startTime = timeInput[0]?.value;
                 const endTime = timeInput[1]?.value;
-                const eventTimeId =  Number(hiddenInput[0]?.value);
+                const eventTimeId =  Number(hiddenInput[0]?.value) == 0 ? null : Number(hiddenInput[0]?.value) ;
                 if (startTime && endTime) {
                     dateTimeList.push({
                         startDateTime: formatDateTime(date, startTime),
