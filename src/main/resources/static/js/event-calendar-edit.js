@@ -676,7 +676,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 addBtn.className = "btn btn-sm btn-success addSlotBtn";
                 addBtn.textContent = "+";
                 addBtn.dataset.day = day;
-                disableOrEnableInput(addBtn, disabledAction);
+                   if(slotWrapper != null && slotWrapper.children.length >= 3){
+                           disableOrEnableInput(addBtn, true);
+                      }else{
+                       disableOrEnableInput(addBtn, false);
+                      }
+
                 addBtnCell.appendChild(addBtn);
 
                 row.append(dayCell, slotWrapper, addBtnCell);
