@@ -739,6 +739,7 @@ document.addEventListener("DOMContentLoaded", () => {
                               const deletedId = input?.value; // shorter than getAttribute
                                 const id = Number(deletedId);
                                 console.log(id);
+
                                   deleteScheduleList.push(id);
 
                     slotDiv.remove();
@@ -747,7 +748,9 @@ document.addEventListener("DOMContentLoaded", () => {
                       const input = slotDiv.querySelector("input[type='hidden']");
                                       const deletedId = input?.value; // shorter than getAttribute
                                         const id = Number(deletedId);
+
                                           deleteScheduleList.push(id);
+
                     inputs.forEach(inp =>{ inp.value = "";
                      inp.disabled = false;
                      inp.style.cursor = 'pointer';
@@ -836,7 +839,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                 }else{
                            const deletedId = Number(hiddenInput[0]?.value);
+                                if(deletedId){
                               deleteScheduleList.push(deletedId);
+                              }
                 }
             });
         });
