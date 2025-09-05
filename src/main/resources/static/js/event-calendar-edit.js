@@ -739,6 +739,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.target.classList.contains("removeSlotBtn")) {
                 const slotDiv = e.target.closest(".time-slot");
                 const wrapper = slotDiv.parentElement;
+                    const addBtn = wrapper.parentElement.lastElementChild.lastElementChild;
+                     if(wrapper.children.length >= 3){
+                                            enableInput(addBtn);
+                                              }
+
                 if (wrapper.children.length > 1) {
                  const input = slotDiv.querySelector("input[type='hidden']");
                               const deletedId = input?.value; // shorter than getAttribute
