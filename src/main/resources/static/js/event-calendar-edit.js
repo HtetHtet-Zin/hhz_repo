@@ -587,8 +587,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
            // Check overlap (ignore current slot)
-           const startInt = parseInt(startTime.replace(":", ""));
-           const endInt = parseInt(endTime.replace(":", ""));
+//           const startInt = parseInt(startTime.replace(":", ""));
+//           const endInt = parseInt(endTime.replace(":", ""));
 
            const isOverlap = Array.from(wrapper.querySelectorAll(".time-slot"))
                .filter(s => s !== slot)
