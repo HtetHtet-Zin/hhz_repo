@@ -550,62 +550,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Event delegation for real-time duplicate & overlap check
    // Real-time validation for time slots
-    tableBody.addEventListener("change",async (e) => {
-       if (e.target.type === "time") {
-            const slot = e.target.closest(".time-slot");
-            const wrapper = slot.closest(".slot-wrapper");
-            const day = wrapper.dataset.day;
+ tableBody.addEventListener("change", async (e) => {
+     if (e.target.type !== "time") return;
 
-            const startInput = slot.querySelector("input[type='time']:first-of-type");
-            const endInput = slot.querySelector("input[type='time']:last-of-type");
-            const startTime = startInput.value;
-            const endTime = endInput.value;
+     const slot = e.target.closest(".time-slot");
+     if (!slot) return;
 
-            if (!startTime || !endTime) {
-                return;
-            }
+     const wrapper = slot.closest(".slot-wrapper");
+     if (!wrapper) return;
 
-            // Check if endTime is after startTime
-            if (parseInt(endTime.replace(":", "")) <= parseInt(startTime.replace(":", ""))) {
-               await alertAction("End time must be after Start time..", { title: "Select Correct Time!", variant: "danger"});
-               endInput.value = "";
-               return;
-            }
+     const inputs = slot.querySelectorAll("input[type='time']");
+     if (inputs.length < 2) return; // must have start and end
 
-            // Check duplicates (ignore current slot)
-            const isDuplicate = Array.from(wrapper.querySelectorAll(".time-slot"))
-            .filter(s => s !== slot)
-            .some(s => {
-               const sInputs = s.querySelectorAll("input[type='time']");
-               return sInputs[0].value === startTime && sInputs[1].value === endTime;
-            });
-            if (isDuplicate) {
-               await alertAction("Can't add duplicate schedule for this day. Please Select Another Different Time.", { title: "Select Correct Time!", variant: "danger"});
-               startInput.value = "";
-               endInput.value = "";
-               return;
-            }
+     const [startInput, endInput] = inputs;
+     const startTime = startInput.value;
+     const endTime = endInput.value;
 
-           // Check overlap (ignore current slot)
-//           const startInt = parseInt(startTime.replace(":", ""));
-//           const endInt = parseInt(endTime.replace(":", ""));
+//     console.log("Updated times => Start:", startTime, "End:", endTime);
 
-           const isOverlap = Array.from(wrapper.querySelectorAll(".time-slot"))
-               .filter(s => s !== slot)
-               .some(s => {
-                   const sInputs = s.querySelectorAll("input[type='time']");
-                   const sStart = parseInt(sInputs[0].value.replace(":", ""));
-                   const sEnd = parseInt(sInputs[1].value.replace(":", ""));
-                   return startInt < sEnd && endInt > sStart;
-               });
+     // only validate if both have values
+     if (!startTime || !endTime) return;
 
-           if (isOverlap) {
-               await alertAction("Can't add overlapping schedule for this day. Please Select Another Different Time.", { title: "Select Correct Time!", variant: "danger"});
-               startInput.value = "";
-               endInput.value = "";
-               return;
-           }
-       }
+     const startInt = parseInt(startTime.replace(":", ""));
+     const endInt = parseInt(endTime.replace(":", ""));
+
+     if (endInt <= startInt) {
+       await alertAction("End time must be after Start time.", {
+         title: "Select Correct Time!",
+         variant: "danger",
+       });
+       endInput.value = "";
+       return;
+     }
+
+     // duplicate check
+     const isDuplicate = Array.from(wrapper.querySelectorAll(".time-slot"))
+       .filter(s => s !== slot)
+       .some(s => {
+         const sInputs = s.querySelectorAll("input[type='time']");
+         return (
+           sInputs.length >= 2 &&
+           sInputs[0].value === startTime &&
+           sInputs[1].value === endTime
+         );
+       });
+
+     if (isDuplicate) {
+       await alertAction("Duplicate schedule for this day.", {
+         title: "Select Correct Time!",
+         variant: "danger",
+       });
+       startInput.value = "";
+       endInput.value = "";
+       return;
+     }
+
+     // overlap check
+     const isOverlap = Array.from(wrapper.querySelectorAll(".time-slot"))
+       .filter(s => s !== slot)
+       .some(s => {
+         const sInputs = s.querySelectorAll("input[type='time']");
+         if (sInputs.length < 2) return false;
+         const sStart = parseInt(sInputs[0].value.replace(":", ""));
+         const sEnd = parseInt(sInputs[1].value.replace(":", ""));
+         return startInt < sEnd && endInt > sStart;
+       });
+
+     if (isOverlap) {
+       await alertAction("Overlapping schedule for this day.", {
+         title: "Select Correct Time!",
+         variant: "danger",
+       });
+       startInput.value = "";
+       endInput.value = "";
+     }
    });
 
     let latestPage = 0;
