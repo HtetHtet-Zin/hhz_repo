@@ -31,6 +31,8 @@ public interface EventScheduleService {
 
     List<Long> getAllScheduleIdByEvent(Long eventId);
 
+    List<Long> getAllScheduleIdByEventForParticipant(Long eventId);
+
     void updateEventSchedule(EventDto eventDto, UpdateEventPlanDto requestEventPlanDto, String staffNo);
 
     List<EventScheduleDto> getEventSchedule(Long eventId);

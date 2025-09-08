@@ -20,13 +20,14 @@ function toggleAll(source) {
         // Add all visible checkbox IDs to the set
         document.querySelectorAll('input[name="selectedScheduleIds"]').forEach(cb => {
             cb.checked = true;
-            selectedScheduleIds.add(Number(cb.value));
         });
+        selectedScheduleIds = new Set(allScheduleIds);
     } else {
         // Uncheck all visible checkboxes
         document.querySelectorAll('input[name="selectedScheduleIds"]').forEach(cb => {
             cb.checked = false;
         });
+        selectedScheduleIds = new Set();
     }
 
     checkJoinButtonState();

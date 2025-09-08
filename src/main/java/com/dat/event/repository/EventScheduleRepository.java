@@ -55,8 +55,11 @@ public interface EventScheduleRepository extends JpaRepository<EventScheduleEnti
             """, nativeQuery = true)
     Page<Object[]> getScheduleByEventIdForBooking(@Param("eventId") Long eventId,@Param("tdyDate") LocalDate tdyDate, @Param("keyword") String keyword, Pageable pageable);
 
-    @Query(value = "SELECT id FROM tbl_event_schedule WHERE event_id = :eventId", nativeQuery = true)
-    List<Long> getAllScheduleIdByEvent(@Param("eventId") Long eventId);
+    @Query(value = "SELECT id FROM tbl_event_schedule WHERE event_id = :eventId AND date >= :todayDate", nativeQuery = true)
+    List<Long> getAllScheduleIdByEvent(@Param("eventId") Long eventId, @Param("todayDate") LocalDate todayDate);
+
+    @Query(value = "SELECT id FROM tbl_event_schedule WHERE event_id = :eventId AND date >= :todayDate AND (booking_flag IS NULL OR booking_flag = 1)", nativeQuery = true)
+    List<Long> getAllScheduleIdByEventForParticipant(@Param("eventId") Long eventId, @Param("todayDate") LocalDate todayDate);
 
     List<EventScheduleEntity> findByEvent_EventId(@Param("eventId") Long eventId);
 

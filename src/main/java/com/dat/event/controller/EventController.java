@@ -220,7 +220,7 @@ public class EventController {
 
         model.addAttribute("planner", eventPlannerService.getEventWithSchedule(eventId));
         model.addAttribute("registeredSchedule", eventRegistrationService.getRegisteredSchedule(eventId, (Long) session.getAttribute("id")));
-        model.addAttribute("allScheduleIds", eventScheduleService.getAllScheduleIdByEvent(eventId));
+        model.addAttribute("allScheduleIds", eventScheduleService.getAllScheduleIdByEventForParticipant(eventId));
         return "event-registration";
     }
 

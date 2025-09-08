@@ -27,10 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * EventScheduleServiceImpl Class.
@@ -121,7 +119,12 @@ public class EventScheduleServiceImpl implements EventScheduleService {
 
     @Override
     public List<Long> getAllScheduleIdByEvent(Long eventId) {
-        return eventScheduleRepository.getAllScheduleIdByEvent(eventId);
+        return eventScheduleRepository.getAllScheduleIdByEvent(eventId, LocalDate.now());
+    }
+
+    @Override
+    public List<Long> getAllScheduleIdByEventForParticipant(Long eventId) {
+        return eventScheduleRepository.getAllScheduleIdByEventForParticipant(eventId, LocalDate.now());
     }
 
     @Transactional
