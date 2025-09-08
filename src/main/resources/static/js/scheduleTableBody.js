@@ -38,6 +38,9 @@ function checkJoinButtonState() {
         originalScheduleIds.size === selectedScheduleIds.size &&
         [...originalScheduleIds].every(id => selectedScheduleIds.has(id));
     joinBtn.disabled = isSame;
+    if(allScheduleIds.length == selectedScheduleIds.size) {
+        selectAllCheckbox.checked = true;
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -52,7 +55,7 @@ searchInput.addEventListener("input", () => {
 
 function activityCount(total) {
     if (total === 0) {
-        countElem.textContent = "no";
+        countElem.textContent = "no";``
         activityElem.textContent = "activities";
     } else if (total === 1) {
         countElem.textContent = "1";
@@ -138,7 +141,6 @@ function renderTable(data) {
             checkJoinButtonState();
         });
     });
-
     checkJoinButtonState();
 }
 

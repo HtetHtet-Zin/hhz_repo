@@ -70,7 +70,6 @@ public class StaffController {
     @PostMapping(WebUrl.STAFF_URL + "/approver-flag")
     public ResponseEntity<Void> updateApproverFlag(@RequestParam("staffNo") String staffNo,
                                                    @RequestParam(value = "approverFlag", defaultValue = "false") boolean approverFlag) {
-
         staffService.updateApproverFlag(staffNo, approverFlag);
 
         return ResponseEntity.ok().build();

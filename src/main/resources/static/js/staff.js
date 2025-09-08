@@ -58,20 +58,21 @@ function renderTable(data) {
                 <td>${staff.department}</td>
                 <td>${staff.mobile}</td>
                 <td style="text-align:center;">
-                    <input type="checkbox" class="admin-flag-toggle"
-                           data-id="${staff.staffNo}"
-                           ${staff.adminFlag ? "checked" : ""}>
+                    <input hx-post="/club/staff/admin-flag"
+                        hx-vals='js:{"staffNo": "${staff.staffNo}", "adminFlag": event.target.checked}'
+                        type="checkbox"
+                    ${staff.adminFlag?'checked':''}>
                 </td>
                 <td style="text-align:center;">
-                    <input type="checkbox" class="approver-flag-toggle"
-                           data-id="${staff.staffNo}"
-                           ${staff.approverFlag ? "checked" : ""}>
+                    <input hx-post="/club/staff/approver-flag"
+                        hx-vals='js:{"staffNo": "${staff.staffNo}", "approverFlag": event.target.checked}'
+                        type="checkbox"
+                    ${staff.approverFlag?'checked':''}>
                 </td>
             </tr>
         `;
     });
-    setUpAdminFlag();
-    setUpApproverFlag();
+    htmx.process(tableBody);
 }
 
 function renderPagination(page) {
@@ -110,62 +111,4 @@ function changePage(page) {
     if (page < 0) return;
     currentPage = page;
     loadStaffData();
-}
-
-function setUpAdminFlag(){
-     document.querySelectorAll(".admin-flag-toggle").forEach(checkbox => {
-        checkbox.addEventListener("change", async function () {
-            const id = this.dataset.id;
-            const adminFlag = this.checked;
-
-            try {
-                const response = await fetch('/club/staff/admin-flag', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        staffNo: id,
-                        adminFlag: adminFlag
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error("Server error");
-                }
-            } catch (error) {
-                alert("Error updating admin flag.");
-                this.checked = !adminFlag; // revert checkbox state if failed
-            }
-        });
-    });
-}
-
-function setUpApproverFlag(){
-     document.querySelectorAll(".approver-flag-toggle").forEach(checkbox => {
-        checkbox.addEventListener("change", async function () {
-            const id = this.dataset.id;
-            const approverFlag = this.checked;
-
-            try {
-                const response = await fetch('/club/staff/approver-flag', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        staffNo: id,
-                        approverFlag: approverFlag
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error("Server error");
-                }
-            } catch (error) {
-                alert("Error updating approver flag.");
-                this.checked = !approverFlag; // revert checkbox state if failed
-            }
-        });
-    });
 }
