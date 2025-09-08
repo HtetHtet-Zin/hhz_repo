@@ -38,7 +38,7 @@
   <!-- Page Title -->
 
   <div class="event-slider">
-    <button class="slide-btn left" onclick="changePage(-1)">&#10094;&#10094;</button>
+    <button class="slide-btn left" onclick="changePage(-1)" th:if="${!#lists.isEmpty(eventList)}">&#10094;&#10094;</button>
 
     <div class="container">
       <div class="grid" id="eventGrid">
@@ -63,20 +63,22 @@
             </div>
           </div>
         </div>
-        <div class="no-events" th:if="${#lists.isEmpty(eventList)}">
-          <lottie-player
-                  th:src="@{/icon/doing_jobs.json}"
-                  background="transparent"
-                  speed="1"
-                  style="width: 300px; height: 300px; margin:auto;"
-                  loop
-                  autoplay>
-          </lottie-player>
+
         </div>
+        <div class="no-events" th:if="${#lists.isEmpty(eventList)}">
+            <lottie-player
+                    th:src="@{/icon/doing_jobs.json}"
+                    background="transparent"
+                    speed="1"
+                    style="width: 500px; height: 500px; margin:auto;"
+                    loop
+                    autoplay>
+            </lottie-player>
       </div>
+
     </div>
 
-    <button class="slide-btn right" onclick="changePage(1)">&#10095;&#10095;</button>
+    <button class="slide-btn right" onclick="changePage(1)" th:if="${!#lists.isEmpty(eventList)}">&#10095;&#10095;</button>
   </div>
 
 </main>
