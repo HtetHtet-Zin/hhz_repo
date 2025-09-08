@@ -60,8 +60,8 @@ public class EventServiceImpl implements EventService {
                 .eventId(eventId)
                 .name(eventName)
                 .description(description)
-                .createdAt(LocalDateTime.now())
-                .createdBy(staffNo)
+                .updatedAt(LocalDateTime.now())
+                .updatedBy(staffNo)
                 .delFlag(false)
                 .build())));
     }
