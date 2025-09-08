@@ -33,4 +33,6 @@ public class EventDto {
     private boolean delFlag;
     private LocalDateTime createdAt;
     private String createdBy;
+    private LocalDateTime updatedAt;
+    private String updatedBy;
 }

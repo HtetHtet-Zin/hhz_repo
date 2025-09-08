@@ -138,12 +138,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void updateBooking(Long bookingId, int attendees, List<Long> accessories, String purpose, String staffName) {
+    public void updateBooking(Long bookingId, int attendees, List<Long> accessories, String purpose, String staffNo) {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
         booking.setAttendees(attendees);
         booking.setPurpose(purpose);
-        booking.setUpdatedBy(staffName);
+        booking.setUpdatedBy(staffNo);
         booking.setUpdatedAt(LocalDateTime.now());
 
         // clear

@@ -147,8 +147,8 @@ public class BookingController {
             response.put("message", "Session has expired. Please log in again.");
             return ResponseEntity.ok(response);
         }
-        String staffName = (String) session.getAttribute("name");
-        bookingService.updateBooking(bookingId, attendees, accessories, purpose, staffName);
+        String staffNo = (String) session.getAttribute("staffNo");
+        bookingService.updateBooking(bookingId, attendees, accessories, purpose, staffNo);
 
         if (submitType.equals(Constants.SAVE)) {
             response.put("redirectUrl", contextPath + WebUrl.EVENT_URL);

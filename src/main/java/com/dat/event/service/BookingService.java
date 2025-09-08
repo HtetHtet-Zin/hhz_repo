@@ -31,7 +31,7 @@ public interface BookingService {
     List<AccessoriesDto> getAccessories();
 
     void makeBooking(Long scheduleId, int attendees, List<Long> accessories, String purpose, MultipartFile signature, String staffId, String eventName);
-    void updateBooking(Long bookingId, int attendees, List<Long> accessories, String purpose, String staffId);
+    void updateBooking(Long bookingId, int attendees, List<Long> accessories, String purpose, String staffNo);
 
     BookingDto getBookingSchedule(Long scheduleId);
 
