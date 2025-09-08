@@ -364,7 +364,9 @@ function handleEditBookingClick(button) {
         editSignedDate.value = formattedDate;
         bindAccessoriesInEdit(data.accessories);
 
-        editPreview.src = `/club/photo/signature/${data.bookedBy}.jpg`;
+//        editPreview.src = `/club/photo/signature/${data.bookedBy}.jpg`;
+          editPreview.src = `/club/photo/signature/${data.bookedBy}.jpg?ts=${Date.now()}`;
+
     })
     .catch(err => console.error("Error loading schedule:", err));
     editPreferredDate.value = `${date} (${start} - ${end})`;
