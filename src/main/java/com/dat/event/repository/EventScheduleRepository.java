@@ -6,7 +6,6 @@
  * *************************************************************/
 package com.dat.event.repository;
 
-import com.dat.event.dto.EventScheduleDto;
 import com.dat.event.entity.EventScheduleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -71,6 +70,7 @@ public interface EventScheduleRepository extends JpaRepository<EventScheduleEnti
 
     List<EventScheduleEntity> findByDateAndBookingFlagTrue(LocalDate date);
 
-
+    @Query("SELECT event.name FROM EventScheduleEntity WHERE id = :id")
+    String findEventNameById(Long id);
 
 }

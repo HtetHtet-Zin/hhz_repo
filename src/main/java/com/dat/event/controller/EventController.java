@@ -248,7 +248,7 @@ public class EventController {
         if (!conflicts.isEmpty()) {
             response.put("redirectUrl", contextPath + url.concat("/").concat(eventName));
             response.put("status", "error");
-            response.put("message", "Already Registered at this date and time - " + String.join(", ", conflicts));
+            response.put("message", "Already Registered at this date and time - " + String.join(",</br>", conflicts));
             return ResponseEntity.ok(response);
         }
         int success = eventRegistrationService.registerEvent(staffId, registeredScheduleIds, eventId);

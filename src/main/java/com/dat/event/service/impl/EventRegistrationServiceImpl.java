@@ -76,8 +76,9 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
                     LocalDate date = index[1] != null ? LocalDate.parse(index[1].toString()) : null;
                     String start = index[2] != null ? LocalTime.parse(index[2].toString()).format(CommonUtility.formatTo12Hrs) : null;
                     String end = index[3] != null ? LocalTime.parse(index[3].toString()).format(CommonUtility.formatTo12Hrs) : null;
-                    log.info("Duplicate in - " + date + " (" + start + " - " + end + ")");
-                    return date + " (" + start + " - " + end + ")";
+                    String eventName = eventScheduleRepository.findEventNameById(index[0] instanceof final Long scheduleId ? scheduleId : null);
+                    log.info("Duplicate in - " + eventName + ", " + date + " (" + start + " - " + end + ")");
+                    return eventName + ",</br>" + date + " (" + start + " - " + end + ")";
                 }).toList();
     }
 
@@ -94,15 +95,15 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
                     rowDataList.add(index.incrementAndGet());
                     rowDataList.add(report.getEventName());
                     rowDataList.add(
-                        CommonUtility.ifNoDataReturnDash(String.valueOf(report.getDate())) + " (" +
-                            CommonUtility.ifNoDataReturnDash(
-                                report.getStartTime() != null ? report.getStartTime().format(CommonUtility.formatTo12Hrs) : null
-                            ) +
-                            " - " +
-                            CommonUtility.ifNoDataReturnDash(
-                                report.getEndTime() != null ? report.getEndTime().format(CommonUtility.formatTo12Hrs) : null
-                            ) +
-                        ")"
+                            CommonUtility.ifNoDataReturnDash(String.valueOf(report.getDate())) + " (" +
+                                    CommonUtility.ifNoDataReturnDash(
+                                            report.getStartTime() != null ? report.getStartTime().format(CommonUtility.formatTo12Hrs) : null
+                                    ) +
+                                    " - " +
+                                    CommonUtility.ifNoDataReturnDash(
+                                            report.getEndTime() != null ? report.getEndTime().format(CommonUtility.formatTo12Hrs) : null
+                                    ) +
+                                    ")"
                     );
                     rowDataList.add(report.getStaffNo());
                     rowDataList.add(report.getStaffName());
