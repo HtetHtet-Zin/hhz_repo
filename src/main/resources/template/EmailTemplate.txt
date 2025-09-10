@@ -1,14 +1,33 @@
-Dear HR,
-
-I would like to request a booking of the Office Cafeteria for the following event:
-
-Event                   :   {eventName}
-Purpose of the Event    :   {purpose}
-Booking Date and Time   :   {date}
-Expected Attendees      :   {attendees}
-Requested Accessories   :   {accessories}
-
-Best regards,
-{name}
-{team}
-{department}
+<html>
+    <body>
+        <p>Dear HR,</p>
+            <p>I would like to request a booking of the <b style="color: orange;">Office Cafeteria</b> for the following event:</p>
+                 <table cellpadding="6" cellspacing="0" style="border-collapse: collapse; font-family: Arial, sans-serif;">
+                      <tr>
+                        <td style="font-weight:bold; width:180px;">Event</td>
+                        <td> : &nbsp; {eventName}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:bold;">Purpose of the Event</td>
+                        <td> : &nbsp; {purpose}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:bold;">Booking Date and Time</td>
+                        <td> : &nbsp; {date}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:bold;">Expected Attendees</td>
+                        <td> : &nbsp; {attendees}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:bold;">Requested Accessories</td>
+                        <td> : &nbsp; {accessories}</td>
+                      </tr>
+                    </table>
+        <p>Best regards,<br/>
+           {name}<br/>
+           {team}<br/>
+           {department}
+        </p>
+    </body>
+</html>
