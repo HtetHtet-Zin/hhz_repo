@@ -48,7 +48,6 @@ public interface BookingRepository extends JpaRepository<BookingEntity,Long> {
                INNER JOIN tbl_staff s ON s.staff_no = b.booked_by
                INNER JOIN tbl_event_schedule es ON es.id = b.schedule_id
                WHERE b.del_flag = false
-               AND es.date >= :tdyDate
                AND  (:keyword IS NULL 
                    OR LOWER(b.event_name) LIKE LOWER(CONCAT('%', :keyword, '%')) 
                    OR LOWER(es.date) LIKE LOWER(CONCAT('%', :keyword, '%'))
