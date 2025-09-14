@@ -84,21 +84,14 @@ public class EventScheduleServiceImpl implements EventScheduleService {
     @Override
     public Page<EventScheduleDto> getScheduleById(Long eventId, String keyword, int page, boolean booking) {
 
-        Page<Object[]> schedules;
         LocalDate  tdyDate = LocalDate.now();
-        if (booking) {
-            schedules = eventScheduleRepository.getScheduleByEventIdForBooking(
-                    eventId,tdyDate,
+
+        Page<Object[]>   schedules = eventScheduleRepository.getScheduleByEventId(
+                    eventId,tdyDate,booking,
                     keyword,
                     PageRequest.of(page, Constants.PAGE_LIMIT)
             );
-        } else {
-            schedules = eventScheduleRepository.getScheduleByEventId(
-                    eventId,tdyDate,
-                    keyword,
-                    PageRequest.of(page, Constants.PAGE_LIMIT)
-            );
-        }
+
 
         return schedules.map(objects -> EventScheduleDto.builder()
                 .id(objects[0] != null ? Long.valueOf(objects[0].toString()) : null)
