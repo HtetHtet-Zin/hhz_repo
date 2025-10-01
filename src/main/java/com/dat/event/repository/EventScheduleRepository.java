@@ -37,7 +37,10 @@ public interface EventScheduleRepository extends JpaRepository<EventScheduleEnti
                      :booking = false
                      OR (sch.booking_flag IS NULL OR sch.booking_flag = 1)
                    )
-            AND (sch.booking_flag IS NULL OR sch.booking_flag = 1)
+            AND (
+                     :booking = true
+                     OR (sch.booking_flag IS NULL OR sch.booking_flag in (0,1))
+                   )
             AND (:keyword IS NULL OR date LIKE %:keyword%)
             GROUP BY sch.id, sch.start_time, sch.end_time, sch.date, eve.name, sch.booking_flag, sch.reject_flag
             ORDER BY sch.date ASC, sch.start_time ASC, sch.end_time ASC
