@@ -63,3 +63,8 @@ ldap:
   INITIAL_CONTEXT_FACTORY : com.sun.jndi.ldap.LdapCtxFactory
   SECURITY_AUTHENTICATION : simple
   REFERRAL : follow
+
+filepath:
+  base-route: photo
+  event: eventPhoto
+  signature: signature

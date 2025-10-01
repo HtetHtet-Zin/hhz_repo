@@ -2,11 +2,13 @@ package com.dat.event.service.impl;
 
 import com.dat.event.service.ImageStorageService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.processing.Generated;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,12 +26,23 @@ import java.util.stream.Stream;
 @Service
 public class ImageStorageServiceImpl implements ImageStorageService {
 
+    @Generated("application")
+    @Value("${filepath.base-route}")
+    private String BASE;
+
+    @Generated("application")
+    @Value("${filepath.event}")
+    private String EVENT;
+
+    @Generated("application")
+    @Value("${filepath.signature}")
+    private String SIGNATURE;
+
     @Override
     public void saveImage(MultipartFile file, String name, boolean isEvent) {
         try {
             String projectRoot = System.getProperty("user.dir");
-
-            Path imageDir = Paths.get(projectRoot, "photo", isEvent ? "eventPhoto" : "signature");
+            Path imageDir = Paths.get(projectRoot, BASE, isEvent ? EVENT : SIGNATURE);
             if (!Files.exists(imageDir)) {
                 Files.createDirectories(imageDir);
             }
@@ -50,7 +63,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
 
     @Override
     public Map<String, String> findEventImage(List<String> eventNames) {
-        Path folder = Paths.get("photo/eventPhoto");
+        Path folder = Paths.get(BASE .concat("/").concat(EVENT));
         Map<String, String> result = new HashMap<>();
 
         try (Stream<Path> files = Files.list(folder)) {
@@ -73,7 +86,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         try {
             String projectRoot = System.getProperty("user.dir");
 
-            Path of = Path.of(projectRoot, "photo", "eventPhoto");
+            Path of = Path.of(projectRoot, BASE, EVENT);
             Path oldNamePath = of.resolve(oldEventName+".jpg");
 
 
