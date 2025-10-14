@@ -49,7 +49,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Page<StaffDto> findAll(final int page) {
         return staffRepository.findAll(
-                PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc(StaffEntity.Fields.adminFlag), Sort.Order.desc(StaffEntity.Fields.approverFlag), Sort.Order.asc(StaffEntity.Fields.staffNo))
+                PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.asc(StaffEntity.Fields.staffNo))
                 )
         ).map(staffMapper::toDTO);
     }
@@ -57,12 +57,12 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Page<StaffDto> findAll(final String keyword, final int page) {
         final String trimKeyword = CommonUtility.trimSentence(keyword);
-        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCaseOrTeamContainingIgnoreCaseOrDepartmentContainingIgnoreCase(trimKeyword, trimKeyword, trimKeyword, trimKeyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by(Sort.Order.desc(StaffEntity.Fields.adminFlag), Sort.Order.desc(StaffEntity.Fields.approverFlag), Sort.Order.asc(StaffEntity.Fields.staffNo)))).map(staffMapper::toDTO);
+        return staffRepository.findByNameContainingIgnoreCaseOrStaffNoContainingIgnoreCaseOrTeamContainingIgnoreCaseOrDepartmentContainingIgnoreCase(trimKeyword, trimKeyword, trimKeyword, trimKeyword, PageRequest.of(page, Constants.PAGE_LIMIT, Sort.by( Sort.Order.asc(StaffEntity.Fields.staffNo)))).map(staffMapper::toDTO);
     }
 
     @Override
     public List<StaffDto> findAll() {
-        return staffMapper.toDtoList(staffRepository.findAll(Sort.by(Sort.Order.desc(StaffEntity.Fields.adminFlag), Sort.Order.desc(StaffEntity.Fields.approverFlag), Sort.Order.asc(StaffEntity.Fields.staffNo))));
+        return staffMapper.toDtoList(staffRepository.findAll(Sort.by( Sort.Order.asc(StaffEntity.Fields.staffNo))));
     }
 
     @Override
