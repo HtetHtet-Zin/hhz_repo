@@ -34,11 +34,11 @@ public interface EventScheduleRepository extends JpaRepository<EventScheduleEnti
             WHERE sch.event_id = :eventId
              AND sch.date >= :tdyDate
              AND (
-                     :booking = false
+                     :booking = true
                      OR (sch.booking_flag IS NULL OR sch.booking_flag = 1)
                    )
             AND (
-                     :booking = true
+                     :booking = false
                      OR (sch.booking_flag IS NULL OR sch.booking_flag in (0,1))
                    )
             AND (:keyword IS NULL OR date LIKE %:keyword%)
