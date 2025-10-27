@@ -79,4 +79,7 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
     @Query(value = "DELETE FROM tbl_event_registration WHERE schedule_id IN (:scheduleIds)", nativeQuery = true)
     void deleteRegistration(@Param("scheduleIds") List<Long> scheduleIds);
 
+    @Query("SELECT CASE WHEN COUNT(DISTINCT staff) < 10 THEN true ELSE false END FROM EventRegistrationEntity WHERE schedule.event.eventId = :eventId")
+    boolean availableToRegister(@Param("eventId") Long eventId);
+
 }

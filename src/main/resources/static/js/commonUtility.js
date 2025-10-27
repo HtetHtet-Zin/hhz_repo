@@ -1,4 +1,5 @@
 function disableOrEnableInput(inputElement, condition){
+    if(inputElement == null || inputElement == undefined) return;
     if(condition){
         inputElement.disabled = true;
         inputElement.style.cursor = 'default';
@@ -9,11 +10,13 @@ function disableOrEnableInput(inputElement, condition){
 }
 
 function disableInput(inputElement){
+    if(inputElement == null || inputElement == undefined) return;
     inputElement.disabled = true;
     inputElement.style.cursor = 'default';
 }
 
 function enableInput(inputElement){
+    if(inputElement == null || inputElement == undefined) return;
     inputElement.disabled = false;
     inputElement.style.cursor = 'pointer';
 }

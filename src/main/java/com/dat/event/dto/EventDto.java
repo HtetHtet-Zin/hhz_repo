@@ -34,5 +34,6 @@ public class EventDto {
     private LocalDateTime createdAt;
     private String createdBy;
     private LocalDateTime updatedAt;
+    private String location;
     private String updatedBy;
 }

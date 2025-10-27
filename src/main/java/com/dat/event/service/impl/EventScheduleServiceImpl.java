@@ -8,6 +8,7 @@ package com.dat.event.service.impl;
 
 import com.dat.event.common.CommonUtility;
 import com.dat.event.common.constant.Constants;
+import com.dat.event.common.mappers.EventMapper;
 import com.dat.event.common.mappers.EventScheduleMapper;
 import com.dat.event.dto.EventDto;
 import com.dat.event.dto.EventScheduleDto;
@@ -54,6 +55,8 @@ public class EventScheduleServiceImpl implements EventScheduleService {
 
     private final RequestedAccessoriesRepository requestedAccessoriesRepository;
 
+    private final EventMapper eventMapper;
+
     @Override
     public void saveEventSchedule(EventDto eventDto, RequestEventPlanDto requestEventPlanDto, String staffNo) {
         // create schedule, (eventId,date,startTime,endTime,createAt,createBy,updateAt,updateBy)
@@ -92,6 +95,8 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                     PageRequest.of(page, Constants.PAGE_LIMIT)
             );
 
+        final EventDto eventDto = eventMapper.toDTO(eventRepository.findById(eventId).orElseThrow());
+
 
         return schedules.map(objects -> EventScheduleDto.builder()
                 .id(objects[0] != null ? Long.valueOf(objects[0].toString()) : null)
@@ -103,6 +108,7 @@ public class EventScheduleServiceImpl implements EventScheduleService {
                         : null)
                 .date(objects[3] != null ? LocalDate.parse(objects[3].toString()) : null)
                 .name(objects[4] != null ? objects[4].toString() : null)
+                .eventDto(eventDto)
                 .participantCount(objects[5] != null ? Integer.valueOf(objects[5].toString()) : null)
                 .bookingFlag(objects[6] != null ? (((Number) objects[6]).intValue() == 1) : null)
                 .rejectFlag(objects[7] != null ? (((Number) objects[7]).intValue() == 1) : null)

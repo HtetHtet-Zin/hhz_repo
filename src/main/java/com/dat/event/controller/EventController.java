@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,8 @@ public class EventController {
                 throw new AccessDeniedException("No Permission To - " + session.getAttribute("staffNo"));
             }
             model.addAttribute("staffs", staffService.findAll());
+            model.addAttribute("today", LocalDate.now());
+            model.addAttribute("repeat", "Never");
             return "event-create-page";
         }
         return "redirect:" + WebUrl.LOGIN_URL;
@@ -92,10 +95,9 @@ public class EventController {
             response.put("status", "error");
             response.put("message", "Session has expired. Please log in again.");
             return ResponseEntity.ok(response);
-
         }
 
-        EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo);
+        EventDto savedDto = eventService.save(requestEventPlanDto.getEventName(), requestEventPlanDto.getDescription(), eventPhotoFile, loginStaffNo, requestEventPlanDto.getEventLocation());
         eventScheduleService.saveEventSchedule(savedDto, requestEventPlanDto, loginStaffNo);
         eventPlannerService.saveEventPlanner(savedDto, requestEventPlanDto, loginStaffNo);
         imageStorageService.saveImage(eventPhotoFile, savedDto.getName(), true);
@@ -144,8 +146,8 @@ public class EventController {
 
     @PostMapping(WebUrl.EVENT_EDIT_URL)
     public ResponseEntity<?> editEvent(HttpSession session,
-            @RequestPart("eventData") UpdateEventPlanDto requestEventPlanDto,
-            @RequestPart(value = "eventPhoto", required = false) MultipartFile eventPhotoFile) {
+                                       @RequestPart("eventData") UpdateEventPlanDto requestEventPlanDto,
+                                       @RequestPart(value = "eventPhoto", required = false) MultipartFile eventPhotoFile) {
         Map<String, String> response = new HashMap<>();
         String loginStaffNo = session != null && session.getAttribute("staffNo") != null ? session.getAttribute("staffNo").toString() : null;
         EventDto eventDto = eventService.findById(requestEventPlanDto.getEventId());
@@ -156,11 +158,11 @@ public class EventController {
             eventPlannerService.updateEventPlanner(updateDto, requestEventPlanDto, loginStaffNo);
             if (eventPhotoFile != null && !eventPhotoFile.isEmpty()) {
                 imageStorageService.saveImage(eventPhotoFile, updateDto.getName(), true);
-            } else if (!eventDto.getName().equals(requestEventPlanDto.getEventName())){
-                    imageStorageService.updateImage(eventDto.getName(), requestEventPlanDto.getEventName());
-                    //if event name change also change event name in booking table
-                  List<Long>scheduleIds =  eventScheduleService.getAllScheduleIdByEvent(updateDto.getEventId());
-                  bookingService.changeEventName(scheduleIds,requestEventPlanDto.getEventName());
+            } else if (!eventDto.getName().equals(requestEventPlanDto.getEventName())) {
+                imageStorageService.updateImage(eventDto.getName(), requestEventPlanDto.getEventName());
+                //if event name change also change event name in booking table
+                List<Long> scheduleIds = eventScheduleService.getAllScheduleIdByEvent(updateDto.getEventId());
+                bookingService.changeEventName(scheduleIds, requestEventPlanDto.getEventName());
             }
             if (requestEventPlanDto.getEventLocation().equals("OFFICE")) {
                 response.put("redirectUrl", contextPath.concat(WebUrl.CAFETERIA_BOOKING_URL).concat("/").concat(updateDto.getEventId().toString()).concat("/").concat(updateDto.getName()));
@@ -216,6 +218,7 @@ public class EventController {
             return "redirect:" + WebUrl.LOGIN_URL;
         }
         var eventDto = eventService.getEvent(eventId);
+
         if (!eventDto.getName().trim().equals(eventName.trim())) throw new ResourceNotFoundException();
 
         model.addAttribute("planner", eventPlannerService.getEventWithSchedule(eventId));
@@ -256,6 +259,10 @@ public class EventController {
             response.put("redirectUrl", contextPath + url.concat("/").concat(eventName));
             response.put("status", "error");
             response.put("message", isNew ? "Fail to Participate." : "Fail to Update.");
+        } else if (success == -1) {
+            response.put("redirectUrl", contextPath + url.concat("/").concat(eventName));
+            response.put("status", "error");
+            response.put("message", "Fail to Participate, the limit or participant is reached.");
         } else {
             response.put("redirectUrl", contextPath.concat(WebUrl.EVENT_URL));
             response.put("status", "success");

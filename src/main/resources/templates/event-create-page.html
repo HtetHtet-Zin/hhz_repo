@@ -36,6 +36,9 @@
             <div id="navStep2" class="wizard-step-link" onclick="goToStep(2)">
                 <span class="step-number">2</span> Event Schedules
             </div>
+            <div id="navStep3" hidden class="wizard-step-link" onclick="goToStep(3)">
+                <span class="step-number">3</span> Booking
+            </div>
         </div>
 
         <form id="eventForm" novalidate>
@@ -76,32 +79,18 @@
                                     document.getElementById('fileName').textContent = file.name;
                                }" required type="file"/>
                     </div>
-                    <div class="mb-3">
-                        <span class="form-label d-block">Event Location <span class="text-danger">*</span></span>
-                        <div class="radio-group" id="eventLocation">
-                            <label class="radio">
-                                <input type="radio" name="eventLocation" id="eventLocationOffice" value="OFFICE"
-                                       >
-                                <span class="radio-mark"></span>
-                                <span>Office Cafeteria</span>
-                            </label>
-                            <label class="radio">
-                                <input type="radio" name="eventLocation" id="eventLocationOther" value="OTHER"
-                                       >
-                                <span class="radio-mark"></span>
-                                <span>Other Location</span>
-                            </label>
-                        </div>
 
-                        <!-- Hidden input -->
-                        <div id="otherLocationDiv" class="mt-2" style="display:none;">
-                            <label for="otherLocation" class="form-label" style="display:none;">Other Location</label>
-                            <input type="text" class="form-control" id="otherLocation" name="otherLocation"
-                                   placeholder="Enter other location">
-                        </div>
-                        <div class="text-danger mt-1" id="eventLocationError" style="display:none;">
-                            Please select event location.
-                        </div>
+                    <div class="mb-3">
+                        <label for="maxJoin" class="form-label">Max Attendees </label>
+                        <input type="number"
+                               class="form-control"
+                               id="maxJoin"
+                               name="maxJoin"
+                               placeholder="Max Attendees"
+                               min="1"
+                               th:max="${maximumStaff}"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 2)">
+
                     </div>
 
                     <div class="mb-3">
@@ -226,36 +215,178 @@
                     </div>
                 </div>
 
-                <!-- Step 2: Select Time Slots -->
+                <!-- Step 2: Reservation / Time Slot Selection -->
                 <div class="wizard-step" id="step2" th:fragment="time-slot-select">
-                    <div class="d-flex justify-content-between mb-2">
-                        <button class="btn cancel" id="prevWeekBtn" type="button"> &#10094;&#10094;
-                            Previous Week
-                        </button><!--←-->
-                        <button class="btn cancel" id="nextWeekBtn" type="button">
-                            Next Week &#10095;&#10095;
-                        </button><!--→-->
-                    </div>
-                    <table class="table table-bordered" id="timeSlotTable">
-                        <thead>
-                        <tr id="headerRow">
-                            <th>Day</th>
-                            <th colspan="2" class="col">Time Slots (hh:mm A)</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
+                    <div class="reservation-form" style="width: 100%;">
+                        <div class="row g-3 align-items-center">
+                            <!-- Begin -->
+                            <div class="col-md-6">
+                                <label for="begin-date" class="form-label">Begin</label>
+                                <div class="input-group">
+                                    <input type="date" id="begin-date" class="form-control"
+                                           th:value="${#temporals.format(today, 'yyyy-MM-dd')}">
+                                    <select id="begin-time" class="form-select">
+                                        <option>07:00</option>
+                                        <option selected>08:00</option>
+                                        <option>08:30</option>
+                                        <option>09:00</option>
+                                        <option>09:30</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                    <div class="d-flex justify-content-between mt-3">
-                        <button class="btn cancel" onclick="goToStep(1)" style="width: 125px;" type="button">
-                            Back
-                        </button>
-                        <button class="btn confirm" onclick="submitEvent()" style="width: 125px;" type="button">
-                            Submit Event
-                        </button>
+                            <!-- End -->
+                            <div class="col-md-6">
+                                <label for="end-date" class="form-label">
+                                    End <span id="today-day" class="today-label"
+                                              th:text="${#temporals.format(today, 'yyyy-MM-dd')}"></span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="date" id="end-date" class="form-control"
+                                           th:value="${#temporals.format(today, 'yyyy-MM-dd')}">
+                                    <select id="end-time" class="form-select">
+                                        <option>08:30</option>
+                                        <option selected>09:00</option>
+                                        <option>09:30</option>
+                                        <option>10:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <small id="reservation-length" class="text-muted">Reservation Length 0 days 0 hours 0 minutes</small>
+                        </div>
+
+                        <div class="row mt-3 align-items-center">
+                            <div class="col-md-4">
+                                <label for="repeat" class="form-label">Repeat</label>
+                                <select id="repeat" class="form-select" th:value="${repeat}">
+                                    <option value="Never" th:selected="${repeat eq 'Never'}">Never</option>
+                                    <option value="Daily" th:selected="${repeat eq 'Daily'}">Daily</option>
+                                    <option value="Weekly" th:selected="${repeat eq 'Weekly'}">Weekly</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="every" class="form-label">Every</label>
+                                <div class="input-group">
+                                    <input type="number" id="every" class="form-control" min="1" value="1"
+                                           th:disabled="${repeat eq 'Never'}">
+                                    <span class="input-group-text" id="repeat-unit"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weekday Selection -->
+                        <div class="weekday-btns mt-3" id="weekday-section" style="display:none;">
+                            <button type="button" class="btn btn-outline-secondary"
+                                    th:classappend="${today.dayOfWeek.name() eq 'SUNDAY'} ? ' active' : ''">Sun</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    th:classappend="${today.dayOfWeek.name() eq 'MONDAY'} ? ' active' : ''">Mon</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    th:classappend="${today.dayOfWeek.name() eq 'TUESDAY'} ? ' active' : ''">Tue</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    th:classappend="${today.dayOfWeek.name() eq 'WEDNESDAY'} ? ' active' : ''">Wed</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    th:classappend="${today.dayOfWeek.name() eq 'THURSDAY'} ? ' active' : ''">Thu</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    th:classappend="${today.dayOfWeek.name() eq 'FRIDAY'} ? ' active' : ''">Fri</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    th:classappend="${today.dayOfWeek.name() eq 'SATURDAY'} ? ' active' : ''">Sat</button>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="description" class="form-label">Description of Schedule</label>
+                            <textarea id="description" class="form-control" rows="3" placeholder="Enter reservation details"></textarea>
+                        </div>
+
+                        <div class="mt-3">
+                            <span class="form-label d-block">Event Location <span class="text-danger">*</span></span>
+                            <div class="radio-group" id="eventLocation">
+                                <label class="radio">
+                                    <input type="radio" name="eventLocation" id="eventLocationOffice" value="OFFICE" onchange="eventLocationOnChange()"
+                                    >
+                                    <span class="radio-mark"></span>
+                                    <span>Office Cafeteria</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="eventLocation" id="eventLocationOther" value="OTHER" onchange="eventLocationOnChange()"
+                                    >
+                                    <span class="radio-mark"></span>
+                                    <span>Other Location</span>
+                                </label>
+                            </div>
+
+                            <!-- Hidden input -->
+                            <div id="otherLocationDiv" class="mt-2" style="display:none;">
+                                <label for="otherLocation" class="form-label" style="display:none;">Other Location</label>
+                                <input type="text" class="form-control" id="otherLocation" name="otherLocation"
+                                       placeholder="Enter other location">
+                            </div>
+                            <div class="text-danger mt-1" id="eventLocationError" style="display:none;">
+                                Please select event location.
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <button class="btn cancel" onclick="goToStep(1)" style="width: 125px;" type="button">Back</button>
+                            <button class="btn confirm" id="step_2Btn" onclick="submitEvent()" disabled style="width: auto; white-space: nowrap;" type="button">Submit Event</button>
+                        </div>
                     </div>
                 </div>
+                <!-- Step 3: Booking Confirmation -->
+                <div class="wizard-step" id="step3">
+                    <div class="booking-review p-3">
+                        <h4>Review Your Reservation</h4>
+                        <hr>
+
+                        <div class="mb-3">
+                            <strong>Event Name:</strong>
+                            <span id="reviewEventName"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Event Photo:</strong>
+                            <span id="reviewEventPhoto"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Location:</strong>
+                            <span id="reviewLocation"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Incharge Person:</strong>
+                            <span id="reviewIncharge"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Supported Members:</strong>
+                            <ul id="reviewMembers"></ul>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Reservation Period:</strong>
+                            <span id="reviewPeriod"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Repeat:</strong>
+                            <span id="reviewRepeat"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Description:</strong>
+                            <span id="reviewDescription"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn cancel" onclick="goToStep(2)" type="button">Back</button>
+                            <button class="btn confirm" onclick="submitEvent()" type="button">Confirm Booking</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </form>
     </div>
@@ -267,5 +398,183 @@
 <script th:src="@{/js/main.js}"></script>
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/toast.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function goToStep(step) {
+    const steps = document.querySelectorAll('.wizard-step');
+    const navLinks = document.querySelectorAll('.wizard-step-link');
+
+    steps.forEach(s => s.classList.remove('active'));
+    navLinks.forEach(n => n.classList.remove('active'));
+
+    document.getElementById('step' + step).classList.add('active');
+    if(step <= 3) {
+        document.getElementById('navStep' + step).classList.add('active');
+    }
+
+    // Populate Step 3 when navigating to it
+    if(step === 4) populateStep3();
+}
+</script>
+<script>
+  const beginDate = document.getElementById('begin-date');
+  const endDate = document.getElementById('end-date');
+  const beginTime = document.getElementById('begin-time');
+  const endTime = document.getElementById('end-time');
+  const lengthLabel = document.getElementById('reservation-length');
+  const repeatSelect = document.getElementById('repeat');
+  const repeatUnit = document.getElementById('repeat-unit');
+  const weekdaySection = document.getElementById('weekday-section');
+  const everyInput = document.getElementById('every');
+  const weekdayBtns = weekdaySection.querySelectorAll('button');
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+  // Toggle weekday buttons
+  weekdayBtns.forEach(btn => {
+    btn.addEventListener('click', () => btn.classList.toggle('active'));
+  });
+
+  function getSelectedWeekdays() {
+    return Array.from(weekdayBtns)
+      .filter(btn => btn.classList.contains('active'))
+      .map(btn => btn.textContent);
+  }
+
+  // Calculate reservation length or repeat summary
+  function calculateLength() {
+    const start = new Date(`${beginDate.value}T${beginTime.value}:00`);
+    let end = new Date(`${endDate.value}T${endTime.value}:00`);
+    const repeat = repeatSelect.value;
+    const every = parseInt(everyInput.value) || 1;
+
+    if (repeat === "Daily") {
+      end = new Date(start);
+      end.setDate(start.getDate() + every);
+      endDate.value = end.toISOString().split('T')[0];
+      lengthLabel.textContent = `Repeats every ${every} day(s) — until ${end.toDateString()}`;
+    }
+    else if (repeat === "Weekly") {
+      end = new Date(start);
+      end.setDate(start.getDate() + every * 7);
+      endDate.value = end.toISOString().split('T')[0];
+      const selectedDays = getSelectedWeekdays();
+      const daysText = selectedDays.length ? selectedDays.join(', ') : "no day selected";
+      lengthLabel.textContent = `Repeats every ${every} week(s) on ${daysText} — until ${end.toDateString()}`;
+    }
+    else {
+      const diffSec = (end - start) / 1000;
+      if (diffSec < 0) {
+        lengthLabel.textContent = "⚠️ End time must be after Begin time";
+        return;
+      }
+      const daysDiff = Math.floor(diffSec / (3600*24));
+      const hours = Math.floor((diffSec % (3600*24)) / 3600);
+      const minutes = Math.floor((diffSec % 3600) / 60);
+      lengthLabel.textContent = `Reservation Length ${daysDiff} days ${hours} hours ${minutes} minutes`;
+    }
+  }
+
+  function updateRepeatBehavior() {
+    const val = repeatSelect.value;
+    const todayStr = beginDate.value; // server-side today
+
+    if (val === 'Never') {
+        everyInput.disabled = true;
+        repeatUnit.textContent = '';
+        weekdaySection.style.display = 'none';
+        endDate.value = todayStr;
+    } else {
+        everyInput.disabled = false;
+        if (val === 'Daily') {
+            repeatUnit.textContent = 'days';
+            weekdaySection.style.display = 'none';
+        } else if (val === 'Weekly') {
+            repeatUnit.textContent = 'weeks';
+            weekdaySection.style.display = 'block';
+            if (!Array.from(weekdayBtns).some(btn => btn.classList.contains('active'))) {
+                weekdayBtns[new Date(todayStr).getDay()].classList.add('active');
+            }
+        }
+    }
+    calculateLength();
+}
+
+// On load
+updateRepeatBehavior();
+
+// Event listeners
+repeatSelect.addEventListener('change', updateRepeatBehavior);
+[beginDate, endDate, beginTime, endTime, everyInput].forEach(el => el.addEventListener('change', calculateLength));
+weekdayBtns.forEach(btn => btn.addEventListener('click', calculateLength));
+</script>
+<script>
+    function populateStep3() {
+    // Step 1 values
+    document.getElementById('reviewEventName').textContent = document.getElementById('eventName').value;
+    document.getElementById('reviewEventPhoto').textContent = document.getElementById('fileName').textContent;
+
+    const location = document.querySelector('input[name="eventLocation"]:checked');
+    document.getElementById('reviewLocation').textContent = location
+    ? (location.value === 'OTHER' ? document.getElementById('otherLocation').value : 'Office Cafeteria')
+    : '';
+
+
+    document.getElementById('reviewIncharge').textContent = document.getElementById('inchargePerson').value;
+
+    // Supported Members
+    const supportedList = document.querySelectorAll('#supportedList tr');
+    const reviewMembers = document.getElementById('reviewMembers');
+    reviewMembers.innerHTML = '';
+    supportedList.forEach(row => {
+        const memberName = row.cells[1].textContent;
+        const month = row.cells[2].textContent;
+        const li = document.createElement('li');
+        li.textContent = `${memberName} (${month})`;
+        reviewMembers.appendChild(li);
+    });
+
+    // Step 2 values
+    const startDate = document.getElementById('begin-date').value;
+    const startTime = document.getElementById('begin-time').value;
+    const endDate = document.getElementById('end-date').value;
+    const endTime = document.getElementById('end-time').value;
+    document.getElementById('reviewPeriod').textContent = `${startDate} ${startTime} → ${endDate} ${endTime}`;
+
+    const repeat = document.getElementById('repeat').value;
+    const every = document.getElementById('every').value;
+    const weekdays = getSelectedWeekdays().join(', ');
+    document.getElementById('reviewRepeat').textContent = repeat === 'Never' ? 'No Repeat'
+        : repeat === 'Daily' ? `Every ${every} day(s)`
+        : `Every ${every} week(s) on ${weekdays}`;
+
+    document.getElementById('reviewDescription').textContent = document.getElementById('description').value;
+}
+
+</script>
+
+<!--Form control script-->
+<script>
+
+    const form = document.getElementById('eventForm');
+    const step_2Btn = document.getElementById('step_2Btn');
+    const step_3Tag = document.getElementById('navStep3');
+    function eventLocationOnChange(){
+        const eventLocationValue = form.eventLocation.value;
+
+        if(eventLocationValue != ''){
+            step_2Btn.disabled = false;
+            if(eventLocationValue == 'OFFICE'){
+                step_2Btn.innerText = 'Book Cafeteria';
+                step_2Btn.setAttribute('onclick', 'goToStep(3)');
+                step_3Tag.hidden = false;
+            } else if (eventLocationValue == 'OTHER') {
+                step_2Btn.innerText = 'Submit Event';
+                step_2Btn.setAttribute('onclick', 'submitEvent()');
+                step_3Tag.hidden = true;
+            }
+        }
+
+    }
+</script>
 </body>
 </html>

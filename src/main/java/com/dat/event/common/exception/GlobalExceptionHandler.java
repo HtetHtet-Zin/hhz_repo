@@ -9,6 +9,7 @@ package com.dat.event.common.exception;
 import com.dat.event.common.constant.WebUrl;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,5 +34,10 @@ public class GlobalExceptionHandler {
         model.addAttribute("LOGIN_URL", WebUrl.LOGIN_URL);
         //ex.printStackTrace();
         return "404";
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<String> handleBadRequestException(BadRequestException ex){
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

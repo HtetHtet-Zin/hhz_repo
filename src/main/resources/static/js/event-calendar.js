@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         }
-        if(currentStep.id === "step1") {
+        if(currentStep.id === "step2") {
             if (!validateEventLocation()) {
                 isValid = false;
             }
@@ -439,8 +439,76 @@ document.addEventListener("DOMContentLoaded", () => {
         return slot;
     }
 
+      // Submit form handler (example, enhance as needed)
+    function submitEvent() {
+        const dateTimeList = [];
+        const form = document.getElementById("eventForm");
+        const members = Array.from(supportedList.querySelectorAll("tr")).map((row) => {
+            const tds = row.querySelectorAll("td");
+                return {
+                    name: tds[1]?.textContent.trim() || '',
+                    month: tds[2]?.textContent.trim() || '',
+                    memberId: tds[3]?.textContent.trim() || '',
+                };
+        });
+        try{
+        tableBody.querySelectorAll("tr").forEach(row => {
+            const date = row.dataset.date;
+            if (!date) {
+                console.error("Missing date for a time slot wrapper. Skipping.");
+                return; // Skips this iteration if date is missing
+            }
+            row.querySelectorAll(".time-slot").forEach(slot => {
+                const timeInput = slot.querySelectorAll('input[type="time"]');
+                const startTime = timeInput[0].value;
+                const endTime = timeInput[1].value;
+                if (startTime && endTime) {
+                    dateTimeList.push({
+                        startDateTime: `${date} ${startTime}`,
+                        endDateTime: `${date} ${endTime}`
+                    });
+                }
+            });
+        });
+        }catch(ignore){}
+        const jsonPayload = {
+            eventName: form.eventName.value,
+            eventLocation: form.eventLocation.value,
+            description: form.eventDesc.value,
+            inChargePerson: form.inchargePerson.dataset.dataId,
+            supportedMembers: members,
+            eventTimes: dateTimeList
+        };
+
+        const formData = new FormData();
+        const fileInput = document.getElementById("eventPhoto");
+        if (fileInput.files.length > 0) {
+            formData.append("eventPhoto", fileInput.files[0]);
+        }
+        formData.append("eventData", new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
+
+        fetch('/club/event-create', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response =>  response.json())
+        .then(data => {
+            const redirectUrl = new URL(data.redirectUrl, window.location.origin);
+            redirectUrl.searchParams.append('message', data.message || '');
+            redirectUrl.searchParams.append('messageType', data.status || '');
+            window.location.href = redirectUrl;
+        })
+        .catch(error => console.error("Error:", error));
+    }
+    // Expose functions globally
+    window.goToStep = goToStep;
+    window.submitEvent = submitEvent;
+    window.selectIncharge = window.selectIncharge;
+    window.selectMember = window.selectMember;
+
     // Event delegation for real-time duplicate & overlap check
    // Real-time validation for time slots
+   try{
     tableBody.addEventListener("change",async (e) => {
         if (e.target.type === "time") {
             const slot = e.target.closest(".time-slot");
@@ -498,7 +566,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
    });
-
+}catch(ignore){}
 
 let latestPage = 0;
 let currentPage = 1;
@@ -554,7 +622,9 @@ function renderTable() {
             addBtnCell.appendChild(addBtn);
 
             row.append(dayCell, slotWrapper, addBtnCell);
-            tableBody.appendChild(row);
+            try{
+                tableBody.appendChild(row);
+            } catch(ignore){}
         }
     }
 
@@ -572,8 +642,10 @@ function renderTable() {
         });
     }
 
+
     // Event delegation for add/remove time slots
-    tableBody.addEventListener("click", async (e) => {
+    try{
+        tableBody.addEventListener("click", async (e) => {
         if (e.target.classList.contains("addSlotBtn")) {
             const day = e.target.dataset.day;
             const wrapper = document.querySelector(`.group-${currentPage}.slot-wrapper[data-day="${day}"]`);
@@ -615,85 +687,19 @@ function renderTable() {
             }
         }
     });
+        nextWeekBtn.addEventListener("click", () => {
+            if(currentPage < maximumPage) currentPage++;
+            renderTable();
+        });
 
-    nextWeekBtn.addEventListener("click", () => {
-        if(currentPage < maximumPage) currentPage++;
-        renderTable();
-    });
+        prevWeekBtn.addEventListener("click", () => {
+            if(currentPage > 1) currentPage--;
+            renderTable();
+        });
+    }catch(ignore){}
 
-    prevWeekBtn.addEventListener("click", () => {
-        if(currentPage > 1) currentPage--;
-        renderTable();
-    });
 
     // Initial render
     renderTable();
-
-    // Submit form handler (example, enhance as needed)
-    function submitEvent() {
-        const dateTimeList = [];
-        const form = document.getElementById("eventForm");
-        const members = Array.from(supportedList.querySelectorAll("tr")).map((row) => {
-            const tds = row.querySelectorAll("td");
-                return {
-                    name: tds[1]?.textContent.trim() || '',
-                    month: tds[2]?.textContent.trim() || '',
-                    memberId: tds[3]?.textContent.trim() || '',
-                };
-        });
-
-        tableBody.querySelectorAll("tr").forEach(row => {
-            const date = row.dataset.date;
-            if (!date) {
-                console.error("Missing date for a time slot wrapper. Skipping.");
-                return; // Skips this iteration if date is missing
-            }
-            row.querySelectorAll(".time-slot").forEach(slot => {
-                const timeInput = slot.querySelectorAll('input[type="time"]');
-                const startTime = timeInput[0].value;
-                const endTime = timeInput[1].value;
-                if (startTime && endTime) {
-                    dateTimeList.push({
-                        startDateTime: `${date} ${startTime}`,
-                        endDateTime: `${date} ${endTime}`
-                    });
-                }
-            });
-        });
-
-        const jsonPayload = {
-            eventName: form.eventName.value,
-            eventLocation: form.eventLocation.value,
-            description: form.eventDesc.value,
-            inChargePerson: form.inchargePerson.dataset.dataId,
-            supportedMembers: members,
-            eventTimes: dateTimeList
-        };
-
-        const formData = new FormData();
-        const fileInput = document.getElementById("eventPhoto");
-        if (fileInput.files.length > 0) {
-            formData.append("eventPhoto", fileInput.files[0]);
-        }
-        formData.append("eventData", new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
-
-        fetch('/club/event-create', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response =>  response.json())
-        .then(data => {
-            const redirectUrl = new URL(data.redirectUrl, window.location.origin);
-            redirectUrl.searchParams.append('message', data.message || '');
-            redirectUrl.searchParams.append('messageType', data.status || '');
-            window.location.href = redirectUrl;
-        })
-        .catch(error => console.error("Error:", error));
-    }
-    // Expose functions globally
-    window.goToStep = goToStep;
-    window.submitEvent = submitEvent;
-    window.selectIncharge = window.selectIncharge;
-    window.selectMember = window.selectMember;
 
 });

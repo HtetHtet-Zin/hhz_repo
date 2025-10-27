@@ -38,6 +38,7 @@ public class EventEntity {
     private String createdBy;
     private LocalDateTime updatedAt;
     private String updatedBy;
+    private int location;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "event")
     private List<EventScheduleEntity> eventScheduleEntityList = new ArrayList<>();

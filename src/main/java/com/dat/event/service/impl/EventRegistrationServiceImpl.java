@@ -34,6 +34,7 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     private final EventRegistrationRepository eventRegistrationRepository;
     private final StaffRepository staffRepository;
     private final EventScheduleRepository eventScheduleRepository;
+    final Object lock = new Object();
 
     @Override
     public Page<EventStaffDto> fetchEventStaffList(String eventName, String keyword, final int page) {
@@ -54,17 +55,20 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
     @Transactional
     public int registerEvent(Long staffId, List<Long> registeredScheduleIds, Long eventId) {
         int count = 0;
-        eventRegistrationRepository.deleteSchedule(eventId, staffId);
-        StaffEntity staff = staffRepository.findById(staffId).orElseThrow(() -> new IllegalArgumentException("Invalid Staff ID"));
-        if (registeredScheduleIds == null) return 1;
-        for (Long scheduleId : registeredScheduleIds) {
-            EventScheduleEntity schedule = eventScheduleRepository.findById(scheduleId)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid schedule ID"));
-            EventRegistrationEntity registration = new EventRegistrationEntity();
-            registration.setStaff(staff);
-            registration.setSchedule(schedule);
-            eventRegistrationRepository.save(registration);
-            count++;
+        synchronized (lock) {
+            eventRegistrationRepository.deleteSchedule(eventId, staffId);
+            if (!eventRegistrationRepository.availableToRegister(eventId)) return -1;
+            StaffEntity staff = staffRepository.findById(staffId).orElseThrow(() -> new IllegalArgumentException("Invalid Staff ID"));
+            if (registeredScheduleIds == null) return 1;
+            for (Long scheduleId : registeredScheduleIds) {
+                EventScheduleEntity schedule = eventScheduleRepository.findById(scheduleId)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid schedule ID"));
+                EventRegistrationEntity registration = new EventRegistrationEntity();
+                registration.setStaff(staff);
+                registration.setSchedule(schedule);
+                eventRegistrationRepository.save(registration);
+                count++;
+            }
         }
         return count;
     }

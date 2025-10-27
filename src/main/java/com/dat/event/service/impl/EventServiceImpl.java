@@ -8,14 +8,7 @@ package com.dat.event.service.impl;
 
 import com.dat.event.common.mappers.EventMapper;
 import com.dat.event.dto.EventDto;
-import com.dat.event.entity.EventEntity;
-import com.dat.event.entity.EventRegistrationEntity;
-import com.dat.event.entity.EventScheduleEntity;
-import com.dat.event.repository.EventPlannerRepository;
-import com.dat.event.repository.EventRegistrationRepository;
 import com.dat.event.repository.EventRepository;
-import com.dat.event.repository.EventScheduleRepository;
-import com.dat.event.service.EventScheduleService;
 import com.dat.event.service.EventService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -44,23 +37,25 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
 
     @Override
-    public EventDto save(String eventName, String description, MultipartFile file, String staffNo) {
-        return eventMapper.toDTO(repository.save(eventMapper.toEntity(EventDto.builder()
-                .name(eventName)
-                .description(description)
-                .createdAt(LocalDateTime.now())
-                .createdBy(staffNo)
-                .delFlag(false)
-                .build())));
+    public EventDto save(String eventName, String description, MultipartFile file, String staffNo, String location) {
+        return eventMapper.toDTO(repository.save(eventMapper.toEntity(
+                EventDto.builder()
+                        .name(eventName)
+                        .description(description)
+                        .location(location)
+                        .createdAt(LocalDateTime.now())
+                        .createdBy(staffNo)
+                        .delFlag(false)
+                        .build())));
     }
 
     @Override
     public EventDto update(Long eventId, String eventName, String description, MultipartFile file, String staffNo) {
-          var event =  repository.findById(eventId).orElseThrow();
-          event.setName(eventName);
-          event.setDescription(description);
-          event.setUpdatedAt(LocalDateTime.now());
-          event.setUpdatedBy(staffNo);
+        var event = repository.findById(eventId).orElseThrow();
+        event.setName(eventName);
+        event.setDescription(description);
+        event.setUpdatedAt(LocalDateTime.now());
+        event.setUpdatedBy(staffNo);
         return eventMapper.toDTO(repository.save(event));
     }
 
