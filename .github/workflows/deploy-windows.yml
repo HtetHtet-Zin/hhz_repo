@@ -31,7 +31,7 @@ jobs:
           username: Admin
           password: ggi@1234
           source: "target/*.war"
-          target: ${{ C:\deploy }}
+          target: C:\deploy
 
       - name: Deploy WAR on Server
         uses: appleboy/ssh-action@v1.0.3
