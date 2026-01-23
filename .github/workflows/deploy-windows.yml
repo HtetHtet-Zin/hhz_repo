@@ -1,0 +1,41 @@
+name: Deploy WAR to Windows Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build WAR
+        run: mvn clean package -DskipTests
+
+      - name: Copy WAR to Windows Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.WIN_HOST }}
+          username: ${{ secrets.WIN_USER }}
+          password: ${{ secrets.WIN_PASS }}
+          source: "target/*.war"
+          target: ${{ secrets.DEPLOY_PATH }}
+
+      - name: Deploy WAR on Windows Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.WIN_HOST }}
+          username: ${{ secrets.WIN_USER }}
+          password: ${{ secrets.WIN_PASS }}
+          script: |
+            powershell C:\deploy\deploy.ps1
