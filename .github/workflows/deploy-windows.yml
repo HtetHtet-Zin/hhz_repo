@@ -1,13 +1,15 @@
 name: Deploy WAR to Windows Server
 
+#  Trigger section
 on:
   push:
     branches:
       - main
 
+#  Build environment
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -25,17 +27,17 @@ jobs:
       - name: Copy WAR to Windows Server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.WIN_HOST }}
-          username: ${{ secrets.WIN_USER }}
-          password: ${{ secrets.WIN_PASS }}
+          host: 10.1.8.67
+          username: Admin
+          password: ggi@1234
           source: "target/*.war"
-          target: ${{ secrets.DEPLOY_PATH }}
+          target: ${{ C:\deploy }}
 
-      - name: Deploy WAR on Windows Server
+      - name: Deploy WAR on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.WIN_HOST }}
-          username: ${{ secrets.WIN_USER }}
-          password: ${{ secrets.WIN_PASS }}
+          host: 10.1.8.67
+          username: Admin
+          password: ggi@1234
           script: |
             powershell C:\deploy\deploy.ps1
