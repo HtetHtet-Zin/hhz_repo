@@ -27,9 +27,9 @@ jobs:
       - name: Copy WAR to Windows Server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: 10.1.8.67
-          username: Admin
-          password: ggi@1234
+          host: 10.1.9.96
+          username: root
+          password: 123@Dir@ce
           source: "target/*.war"
           target: C:\deploy
 
