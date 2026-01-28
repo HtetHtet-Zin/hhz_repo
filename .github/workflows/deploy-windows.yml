@@ -9,7 +9,7 @@ on:
 #  Build environment
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
