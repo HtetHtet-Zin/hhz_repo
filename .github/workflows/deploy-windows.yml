@@ -1,25 +1,43 @@
-name: Local PC WAR Release
+name: Deploy WAR to Windows Server
 
+#  Trigger section
 on:
   push:
     branches:
       - main
 
+#  Build environment
 jobs:
   build-and-deploy:
-    runs-on: self-hosted   # ⭐ REQUIRED for local PC
+    runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout source
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Build WAR
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
       - name: Build WAR
         run: mvn clean package -DskipTests
 
-      # 3️⃣ Deploy locally using PowerShell
-      - name: Deploy WAR to Local PC
-        shell: powershell
-        run: |
-          powershell C:\deploy\deploy_local.ps1
+      - name: Copy WAR to Windows Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 10.1.8.67
+          username: Admin
+          password: ggi@1234
+          source: "target/*.war"
+          target: C:\deploy
+
+      - name: Deploy WAR on Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 10.1.8.67
+          username: Admin
+          password: ggi@1234
+          script: |
+            powershell C:\deploy\deploy.ps1
