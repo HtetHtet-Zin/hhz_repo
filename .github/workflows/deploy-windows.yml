@@ -27,17 +27,17 @@ jobs:
       - name: Copy WAR to Windows Server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: 10.1.9.96
-          username: root
-          password: 123@Dir@ce
+          host: myserver.example.com
+          username: Admin
+          password: admin
           source: "target/*.war"
           target: C:\deploy
 
       - name: Deploy WAR on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 10.1.9.96
-          username: root
-          password: 123@Dir@ce
+          host: myserver.example.com
+          username: Admin
+          password: admin
           script: |
             powershell C:\deploy\deploy.ps1
