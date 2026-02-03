@@ -1,43 +1,33 @@
-name: Deploy WAR to Windows Server
+name: SVN → WAR → Tomcat (Windows CI/CD)
 
-#  Trigger section
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"   # auto check every 10 minutes
 
-#  Build environment
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  build-deploy:
+    runs-on: self-hosted
+
+    env:
+      SVN_REPO_URL: http://your-svn-server/svn/project/trunk
+      APP_NAME: club
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      - name: Checkout from SVN
+        run: |
+          if exist app rmdir /S /Q app
+          svn checkout %SVN_REPO_URL% app
 
       - name: Build WAR
-        run: mvn clean package -DskipTests
+        run: |
+          cd app
+          mvn clean package -DskipTests
 
-      - name: Copy WAR to Windows Server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: myserver.example.com
-          username: Admin
-          password: admin
-          source: "target/*.war"
-          target: C:\deploy
-
-      - name: Deploy WAR on Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: myserver.example.com
-          username: Admin
-          password: admin
-          script: |
-            powershell C:\deploy\deploy.ps1
+      - name: Deploy WAR to Tomcat
+        run: |
+          net stop Tomcat10
+          del /Q C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\*.war
+          rmdir /S /Q C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\%APP_NAME%
+          xcopy app\target\*.war C:\Program Files\Apache Software Foundation\Tomcat 10.1\webapps\%APP_NAME%.war /Y
+          net start Tomcat10
